@@ -5,7 +5,7 @@ steps:
 - name: Build (Clang)
   image: abcminiuser/docker-ci-ubuntu-buildtools
   commands:
-  - sudo apt install -y cmake
+  - apt update && apt install -y cmake
   - export CC=/usr/bin/clang
   - export CXX=/usr/bin/clang++
   - $CC --version
@@ -15,7 +15,7 @@ steps:
 - name: Build (GCC)
   image: abcminiuser/docker-ci-ubuntu-buildtools
   commands:
-  - sudo apt install -y cmake
+  - apt update && apt install -y cmake
   - export CC=/usr/bin/gcc
   - export CXX=/usr/bin/g++
   - $CC --version
