@@ -14,7 +14,7 @@ PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, 
 	, m_playerIndex(playerIndex)
 	, m_playerProperties(properties)
 {
-	m_engineAcceleration_ms2	= properties.engineForce_GN * 1000 / properties.mass_t;
+	m_engineAcceleration_ms2	= properties.engineForce_N / properties.mass_kg;
 
 	const float rotationDegreesPerInterval = properties.rotation_degPerSec * kRotationIntervalMs / 1000;
 	m_rotationalThrustLeft		= RotationMatrix(-rotationDegreesPerInterval);

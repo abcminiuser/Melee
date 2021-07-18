@@ -5,6 +5,8 @@
 #include <array>
 #include <algorithm>
 
+#include <SDL2_gfxPrimitives.h>
+
 using namespace Melee;
 
 SDLRenderer::SDLRenderer(Engine& engine)
@@ -70,6 +72,9 @@ int SDLRenderer::runModal()
         m_engine.update(kMillisecondsPerFrame);
     }
 
+    SDL_DestroyRenderer(m_renderer);
+    m_renderer = nullptr;
+
     return 0;
 }
 
@@ -101,6 +106,18 @@ void SDLRenderer::renderEntities()
 
                 SDL_SetRenderDrawColor(m_renderer, (playerIndex % 3 == 0) ? 255 : 0, (playerIndex % 3 == 1) ? 255 : 0, (playerIndex % 3 == 2) ? 255 : 0, SDL_ALPHA_OPAQUE);
                 SDL_RenderDrawLinesF(m_renderer, drawPoints.data(), drawPoints.size());
+                break;
+            }
+
+            case Entity::Type::Planet:
+            {
+                const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
+
+                const auto planetPos = planetEntity->position() / 1000;
+                const auto planetRadius = planetEntity->radius();
+
+                SDL_SetRenderDrawColor(m_renderer, 180, 180, 180, SDL_ALPHA_OPAQUE);
+                circleRGBA(m_renderer, planetPos.x, planetPos.y, planetRadius / 100, 128, 128, 128, 255);
                 break;
             }
         }

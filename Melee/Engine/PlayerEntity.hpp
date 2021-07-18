@@ -19,7 +19,7 @@ namespace Melee
 
 		struct PlayerProperties : Properties
 		{
-			uint32_t	engineForce_GN		= 0;
+			float		engineForce_N		= 0;
 			float		rotation_degPerSec	= 0;
 		};
 

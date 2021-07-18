@@ -17,8 +17,8 @@ namespace Melee
 
 		struct Properties
 		{
-			uint32_t mass_t = 0;
-			uint32_t maxVelocity = 0;
+			float		mass_kg = 0;
+			uint32_t	maxVelocity = 0;
 		};
 
 	public:

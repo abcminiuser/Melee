@@ -6,6 +6,7 @@
 #include "EngineTypes.hpp"
 
 #include "Entity.hpp"
+#include "PlanetEntity.hpp"
 #include "PlayerEntity.hpp"
 
 namespace Melee
