@@ -1,7 +1,5 @@
 #include "Entity.hpp"
 
-#include <cstdio>
-
 using namespace Melee;
 
 Entity::Entity(Type type, const Properties& properties, const Point& pos)

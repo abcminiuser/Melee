@@ -14,24 +14,28 @@ SDLRenderer::SDLRenderer(Engine& engine)
 {
     SDL_Init(SDL_INIT_VIDEO);
 
-    m_window = std::shared_ptr<SDL_Window>(SDL_CreateWindow(
-        "Melee",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        1024,
-        768,
-        0
-    ), SDL_DestroyWindow);
+    m_window = SDL_CreateWindow(
+            "Melee",
+            SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED,
+            1024,
+            768,
+            0
+        );
+
+    m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 }
 
 SDLRenderer::~SDLRenderer()
 {
+    SDL_DestroyRenderer(m_renderer);
+    SDL_DestroyWindow(m_window);
+
     SDL_Quit();
 }
 
 int SDLRenderer::runModal()
 {
-    m_renderer = SDL_CreateRenderer(m_window.get(), -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
     bool run = true;
@@ -71,9 +75,6 @@ int SDLRenderer::runModal()
 
         m_engine.update(kMillisecondsPerFrame);
     }
-
-    SDL_DestroyRenderer(m_renderer);
-    m_renderer = nullptr;
 
     return 0;
 }

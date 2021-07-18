@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include <memory>
-
 #include <SDL.h>
 
 namespace Melee
@@ -11,19 +9,19 @@ namespace Melee
     class SDLRenderer final
     {
     public:
-        explicit                        SDLRenderer(Engine& engine);
+        explicit            SDLRenderer(Engine& engine);
         ~SDLRenderer();
 
-        int                             runModal();
+        int                 runModal();
 
     private:
-        void                            renderEntities();
-        void                            handleKey(SDL_Keycode key, bool down);
+        void                renderEntities();
+        void                handleKey(SDL_Keycode key, bool down);
 
     private:
-        Engine& m_engine;
+        Engine&             m_engine;
 
-        std::shared_ptr<SDL_Window>     m_window = nullptr;
-        SDL_Renderer*                   m_renderer = nullptr;
+        SDL_Window*         m_window = nullptr;
+        SDL_Renderer*       m_renderer = nullptr;
     };
 }
