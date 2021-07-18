@@ -32,7 +32,7 @@ namespace Melee
 
 	// Entity i/f:
 	public:
-		void		update(uint32_t msElapsed) override;
+		void		update(const EntityList& entities, uint32_t msElapsed) override;
 
 	private:
 		struct Flags

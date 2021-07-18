@@ -1,8 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <memory>
-
 #include "EngineTypes.hpp"
 
 #include "Entity.hpp"
@@ -22,6 +19,6 @@ namespace Melee
 		void		update(uint32_t msElapsed);
 
 	private:
-		std::vector<std::shared_ptr<Entity>> m_entities;
+		EntityList	m_entities;
 	};
 }

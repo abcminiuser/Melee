@@ -5,7 +5,7 @@ using namespace Melee;
 Engine::Engine()
 {
 	PlayerEntity::PlayerProperties playerProps = {};
-	playerProps.mass_kg = 90.718e6; // Cruise ship average displacement, close enough?
+	playerProps.mass_kg = 90.718e6;
 	playerProps.engineForce_N = 2e9;
 	playerProps.maxVelocity = 0;
 	playerProps.rotation_degPerSec = 100;
@@ -18,7 +18,7 @@ Engine::Engine()
 	m_entities.emplace_back(player2);
 
 	PlanetEntity::PlanetProperties planetProps = {};
-	planetProps.mass_kg = 5.9736e24;
+	planetProps.mass_kg = 5.9736e24 / 1000;
 	planetProps.radius_km = 6371;
 
 	auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 800 * 1000, 300 * 1000 });
@@ -28,5 +28,5 @@ Engine::Engine()
 void Engine::update(uint32_t msElapsed)
 {
 	for (const auto& entity : m_entities)
-		entity->update(msElapsed);
+		entity->update(m_entities, msElapsed);
 }

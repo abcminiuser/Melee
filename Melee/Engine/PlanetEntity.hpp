@@ -18,6 +18,10 @@ namespace Melee
 
 		float		radius() const { return m_planetProperties.radius_km; }
 
+	// Entity i/f:
+	public:
+		void		update(const EntityList& entities, uint32_t msElapsed) override;
+
 	private:
 		const PlanetProperties	m_planetProperties;
 	};

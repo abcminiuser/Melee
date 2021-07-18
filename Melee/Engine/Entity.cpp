@@ -12,7 +12,7 @@ Entity::Entity(Type type, const Properties& properties, const Point& pos)
 	m_maxVelocitySquared = properties.maxVelocity * properties.maxVelocity;
 }
 
-void Entity::update(uint32_t msElapsed)
+void Entity::update(const EntityList& entities, uint32_t msElapsed)
 {
 	m_position += m_velocity;
 	m_velocity += m_acceleration;
@@ -20,4 +20,9 @@ void Entity::update(uint32_t msElapsed)
 	const auto newVelocitySquared = m_velocity.lengthSquared();
 	if (newVelocitySquared > m_maxVelocitySquared)
 		m_velocity *= m_maxVelocitySquared / newVelocitySquared;
+}
+
+void Entity::applyExternalForce(const Vector2d& forceVector)
+{
+	m_velocity += forceVector;
 }

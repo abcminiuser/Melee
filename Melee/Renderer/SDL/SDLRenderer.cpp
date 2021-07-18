@@ -101,11 +101,11 @@ void SDLRenderer::renderEntities()
                 shipPoints[1] = playerPos + rotateLeft90 * playerHeading * 5;
                 shipPoints[2] = playerPos + rotateRight90 * playerHeading * 5;
 
-                static const auto ToSDLPoint = [](const auto& p) { return SDL_FPoint{ p.x, p.y };  };
-                std::array<SDL_FPoint, 4> drawPoints = { ToSDLPoint(shipPoints[0]), ToSDLPoint(shipPoints[1]), ToSDLPoint(shipPoints[2]), ToSDLPoint(shipPoints[0]) };
+                static const auto ToSDLPoint = [](const auto& p) { return SDL_Point{ (int)p.x, (int)p.y };  };
+                std::array<SDL_Point, 4> drawPoints = { ToSDLPoint(shipPoints[0]), ToSDLPoint(shipPoints[1]), ToSDLPoint(shipPoints[2]), ToSDLPoint(shipPoints[0]) };
 
                 SDL_SetRenderDrawColor(m_renderer, (playerIndex % 3 == 0) ? 255 : 0, (playerIndex % 3 == 1) ? 255 : 0, (playerIndex % 3 == 2) ? 255 : 0, SDL_ALPHA_OPAQUE);
-                SDL_RenderDrawLinesF(m_renderer, drawPoints.data(), drawPoints.size());
+                SDL_RenderDrawLines(m_renderer, drawPoints.data(), drawPoints.size());
                 break;
             }
 
@@ -117,7 +117,7 @@ void SDLRenderer::renderEntities()
                 const auto planetRadius = planetEntity->radius();
 
                 SDL_SetRenderDrawColor(m_renderer, 180, 180, 180, SDL_ALPHA_OPAQUE);
-                circleRGBA(m_renderer, planetPos.x, planetPos.y, planetRadius / 100, 128, 128, 128, 255);
+                circleRGBA(m_renderer, (int)planetPos.x, (int)planetPos.y, (int)(planetRadius / 100), 128, 128, 128, 255);
                 break;
             }
         }

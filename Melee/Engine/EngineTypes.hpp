@@ -2,9 +2,13 @@
 
 #include <cstdint>
 #include <cmath>
+#include <vector>
+#include <memory>
 
 namespace Melee
 {
+	class Entity;
+
 	struct Vector2d
 	{
 		float x = 0;
@@ -115,4 +119,6 @@ namespace Melee
 	}
 
 	using Point = Vector2d;
+
+	using EntityList = std::vector<std::shared_ptr<Entity>>;
 }

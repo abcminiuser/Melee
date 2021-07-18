@@ -25,13 +25,17 @@ namespace Melee
 		explicit		Entity(Type type, const Properties& properties, const Point& pos);
 		virtual			~Entity() = default;
 
-		virtual void	update(uint32_t msElapsed);
+		virtual void	update(const EntityList& entities, uint32_t msElapsed);
 
 		Type			type() const { return m_type; }
 		const auto&		properties() const { return m_properties; }
 
 		Point			position() const { return m_position; }
 		Vector2d		heading() const { return m_heading; }
+
+		auto			mass() const { return m_properties.mass_kg; }
+
+		void			applyExternalForce(const Vector2d& forceVector);
 
 	protected:
 		const Type			m_type;
