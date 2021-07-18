@@ -19,3 +19,5 @@ string(STRIP "${SDL2_LIBRARIES}" SDL2_LIBRARIES)
 add_library(SDL2 INTERFACE)
 target_link_libraries(SDL2 INTERFACE ${SDL2_LIBRARIES})
 target_include_directories(SDL2 INTERFACE ${SDL2_INCLUDE_DIRS})
+
+add_library(SDL2::Main ALIAS SDL2)

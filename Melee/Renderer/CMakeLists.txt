@@ -2,6 +2,8 @@
 
 if (WIN32)
     list (APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../Vendor)
+else ()
+    list (APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../Vendor/sdl2-cmake-modules/)
 endif ()
 
 find_package(SDL2 REQUIRED)
@@ -15,7 +17,7 @@ add_library(Renderer
 target_include_directories(Renderer PRIVATE ../)
 target_compile_features(Renderer PUBLIC cxx_std_17)
 target_compile_definitions(Renderer PUBLIC _USE_MATH_DEFINES)
-target_link_libraries(Renderer PUBLIC SDL2 SDL2_gfx)
+target_link_libraries(Renderer PUBLIC SDL2::Main SDL2::GFX)
 
 if(WIN32)
     foreach(DLL ${SDL2_DLLS})

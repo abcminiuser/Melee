@@ -17,3 +17,5 @@ set(SDL2_GFX_LIBRARIES SDL2_gfx)
 
 target_link_libraries(SDL2_gfx PRIVATE SDL2)
 target_include_directories(SDL2_gfx PUBLIC ${SDL2_GFX_INCLUDE_DIRS})
+
+add_library(SDL2::GFX ALIAS SDL2_gfx)
