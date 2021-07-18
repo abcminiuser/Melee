@@ -1,14 +1,24 @@
 #include "PlayerEntity.hpp"
 
-#include <cmath>
+#include <algorithm>
 
 using namespace Melee;
 
-PlayerEntity::PlayerEntity(int playerIndex, const Point& pos)
-	: Entity(Entity::Type::Player, pos)
-	, m_playerIndex(playerIndex)
+namespace
 {
-	m_heading = RotationMatrix(32) * Vector2d{ 1, 0 };
+	constexpr uint32_t kRotationIntervalMs = 10;
+}
+
+PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& pos)
+	: Entity(Entity::Type::Player, properties, pos)
+	, m_playerIndex(playerIndex)
+	, m_playerProperties(properties)
+{
+	m_engineAcceleration_ms2	= properties.engineForce_GN * 1000 / properties.mass_t;
+
+	const float rotationDegreesPerInterval = properties.rotation_degPerSec * kRotationIntervalMs / 1000;
+	m_rotationalThrustLeft		= RotationMatrix(-rotationDegreesPerInterval);
+	m_rotationalThrustRight		= RotationMatrix(rotationDegreesPerInterval);
 }
 
 void PlayerEntity::handleKey(KeyEvent key, bool down)
@@ -36,20 +46,34 @@ void PlayerEntity::update(uint32_t msElapsed)
 	const auto rotateFlags = m_flags & (Flags::RotateLeftActive | Flags::RotateRightActive);
 	if (rotateFlags == Flags::RotateLeftActive)
 	{
-		static const auto rotateLeft = RotationMatrix(-1);
-		m_heading = rotateLeft * m_heading;
+		m_rotationMsElapsed += msElapsed;
+
+		while (m_rotationMsElapsed > kRotationIntervalMs)
+		{
+			m_heading = m_rotationalThrustLeft * m_heading;
+			m_rotationMsElapsed -= std::min(kRotationIntervalMs, m_rotationMsElapsed);
+		}
 	}
 	else if (rotateFlags == Flags::RotateRightActive)
 	{
-		static const auto rotateRight = RotationMatrix(1);
-		m_heading = rotateRight * m_heading;
+		m_rotationMsElapsed += msElapsed;
+
+		while (m_rotationMsElapsed > kRotationIntervalMs)
+		{
+			m_heading = m_rotationalThrustRight * m_heading;
+			m_rotationMsElapsed -= std::min(kRotationIntervalMs, m_rotationMsElapsed);
+		}
+	}
+	else
+	{
+		m_rotationMsElapsed = 0;
 	}
 
 	const auto thrustFlags = m_flags & (Flags::ThrustActive | Flags::ReverseThrustActive);
 	if (thrustFlags == Flags::ThrustActive)
-		m_acceleration = m_heading * 10;
+		m_acceleration = m_heading * m_engineAcceleration_ms2;
 	else if (thrustFlags == Flags::ReverseThrustActive)
-		m_acceleration = -m_heading * 10;
+		m_acceleration = -m_heading * m_engineAcceleration_ms2;
 	else
 		m_acceleration = Vector2d{ 0, 0 };
 

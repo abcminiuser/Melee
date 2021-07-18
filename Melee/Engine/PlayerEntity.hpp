@@ -17,8 +17,14 @@ namespace Melee
 			FireSpecial,
 		};
 
+		struct PlayerProperties : Properties
+		{
+			uint32_t	engineForce_GN		= 0;
+			float		rotation_degPerSec	= 0;
+		};
+
 	public:
-		explicit	PlayerEntity(int playerIndex, const Point& pos);
+		explicit	PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& pos);
 		virtual		~PlayerEntity() = default;
 
 		int			index() const		{ return m_playerIndex; }
@@ -29,8 +35,6 @@ namespace Melee
 		void		update(uint32_t msElapsed) override;
 
 	private:
-		const int	m_playerIndex;
-
 		struct Flags
 		{
 			enum Mask : uint32_t
@@ -42,6 +46,14 @@ namespace Melee
 			};
 		};
 
-		uint32_t	m_flags = 0;
+		const int				m_playerIndex;
+		const PlayerProperties	m_playerProperties;
+
+		float					m_engineAcceleration_ms2;
+		Matrix2x2				m_rotationalThrustLeft;
+		Matrix2x2				m_rotationalThrustRight;
+
+		uint32_t				m_flags = 0;
+		uint32_t				m_rotationMsElapsed = 0;
 	};
 }

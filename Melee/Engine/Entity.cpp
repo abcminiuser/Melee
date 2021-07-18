@@ -4,23 +4,20 @@
 
 using namespace Melee;
 
-Entity::Entity(Type type, const Point& pos)
+Entity::Entity(Type type, const Properties& properties, const Point& pos)
 	: m_type(type)
+	, m_properties(properties)
 	, m_position(pos)
-	, m_heading{ 1, 0 }
 {
-
+	m_maxVelocitySquared = properties.maxVelocity * properties.maxVelocity;
 }
 
 void Entity::update(uint32_t msElapsed)
 {
 	m_position += m_velocity;
+	m_velocity += m_acceleration;
 
-	if (! m_maxVelocitySquared || ((m_velocity.x * m_velocity.x + m_velocity.y * m_velocity.y) < m_maxVelocitySquared))
-		m_velocity += m_acceleration;
-}
-
-void Entity::setMaxVelocity(uint32_t velocity)
-{
-	m_maxVelocitySquared = velocity * velocity;
+	const auto newVelocitySquared = m_velocity.lengthSquared();
+	if (newVelocitySquared > m_maxVelocitySquared)
+		m_velocity *= m_maxVelocitySquared / newVelocitySquared;
 }

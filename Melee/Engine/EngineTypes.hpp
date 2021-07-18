@@ -10,6 +10,18 @@ namespace Melee
 		float x = 0;
 		float y = 0;
 
+		float lengthSquared() const
+		{
+			return x * x + y * y;
+		}
+
+		float length() const
+		{
+			return sqrt(x * x + y * y);
+		}
+
+		// TODO: Cross Product
+
 		Vector2d& operator +=(const Vector2d& other)
 		{
 			x += other.x;
@@ -41,8 +53,6 @@ namespace Melee
 
 			return *this;
 		}
-
-		// TODO: Cross Product
 
 		Vector2d operator -() const
 		{
