@@ -1,5 +1,9 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
+if (WIN32)
+    list (APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../Vendor)
+endif ()
+
 find_package(SDL2 REQUIRED)
 find_package(SDL2_gfx REQUIRED)
 
@@ -12,3 +16,10 @@ target_include_directories(Renderer PRIVATE ../)
 target_compile_features(Renderer PUBLIC cxx_std_17)
 target_compile_definitions(Renderer PUBLIC _USE_MATH_DEFINES)
 target_link_libraries(Renderer PUBLIC SDL2 SDL2_gfx)
+
+if(WIN32)
+    foreach(DLL ${SDL2_DLLS})
+        add_custom_command(TARGET Renderer POST_BUILD COMMAND
+            ${CMAKE_COMMAND} -E copy_if_different ${DLL} $<TARGET_FILE_DIR:Renderer>/..)
+    endforeach()
+endif()
