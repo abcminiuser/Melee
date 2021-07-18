@@ -1,0 +1,23 @@
+kind: pipeline
+name: default
+
+steps:
+- name: Build (Clang)
+  image: abcminiuser/docker-ci-ubuntu-buildtools
+  commands:
+  - sudo apt install -y cmake
+  - export CC=/usr/bin/clang
+  - export CXX=/usr/bin/clang++
+  - $CC --version
+  - cmake -B build -G "Unix Makefiles" .
+  - cmake --build build
+
+- name: Build (GCC)
+  image: abcminiuser/docker-ci-ubuntu-buildtools
+  commands:
+  - sudo apt install -y cmake
+  - export CC=/usr/bin/gcc
+  - export CXX=/usr/bin/g++
+  - $CC --version
+  - cmake -B build -G "Unix Makefiles" .
+  - cmake --build build

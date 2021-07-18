@@ -16,7 +16,7 @@ target_compile_features(Melee PUBLIC cxx_std_17)
 if(MSVC)
     target_compile_options(Melee PUBLIC /W3 /WX)
 else()
-    target_compile_options(Melee PUBLIC -Wall -Wextra -pedantic -Werror)
+    target_compile_options(Melee PUBLIC -Wall -Wextra -Werror -Wno-unused-parameter)
 endif()
 
 if(WIN32)
