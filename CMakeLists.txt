@@ -2,5 +2,4 @@
 
 project ("Melee")
 
-# Include sub-projects.
 add_subdirectory ("Melee")
