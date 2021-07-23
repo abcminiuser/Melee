@@ -19,6 +19,9 @@ PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, 
 	const float rotationDegreesPerInterval = properties.rotation_degPerSec * kRotationIntervalMs / 1000;
 	m_rotationalThrustLeft		= RotationMatrix(-rotationDegreesPerInterval);
 	m_rotationalThrustRight		= RotationMatrix(rotationDegreesPerInterval);
+
+	m_health					= properties.maxHealth;
+	m_energy					= properties.maxEnergy;
 }
 
 void PlayerEntity::handleKey(KeyEvent key, bool down)
@@ -41,7 +44,7 @@ void PlayerEntity::handleKey(KeyEvent key, bool down)
 		UpdateFlag(Flags::RotateRightActive, down);
 }
 
-void PlayerEntity::update(const EntityList& entities, uint32_t msElapsed)
+void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
 {
 	const auto rotateFlags = m_flags & (Flags::RotateLeftActive | Flags::RotateRightActive);
 	if (rotateFlags == Flags::RotateLeftActive)
@@ -77,5 +80,5 @@ void PlayerEntity::update(const EntityList& entities, uint32_t msElapsed)
 	else
 		m_acceleration = Vector2d{ 0, 0 };
 
-	Entity::update(entities, msElapsed);
+	Entity::update(engine, msElapsed);
 }

@@ -7,7 +7,7 @@ namespace Melee
 	class PlanetEntity : public Entity
 	{
 	public:
-		struct PlanetProperties : Properties
+		struct PlanetProperties : public Properties
 		{
 			float	radius_km;
 		};
@@ -20,7 +20,7 @@ namespace Melee
 
 	// Entity i/f:
 	public:
-		void		update(const EntityList& entities, uint32_t msElapsed) override;
+		void		update(Engine& engine, uint32_t msElapsed) override;
 
 	private:
 		const PlanetProperties	m_planetProperties;

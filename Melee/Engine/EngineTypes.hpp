@@ -2,11 +2,12 @@
 
 #include <cstdint>
 #include <cmath>
-#include <vector>
+#include <forward_list>
 #include <memory>
 
 namespace Melee
 {
+	class Engine;
 	class Entity;
 
 	struct Vector2d
@@ -120,5 +121,5 @@ namespace Melee
 
 	using Point = Vector2d;
 
-	using EntityList = std::vector<std::shared_ptr<Entity>>;
+	using EntityList = std::forward_list<std::shared_ptr<Entity>>;
 }

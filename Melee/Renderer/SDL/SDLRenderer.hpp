@@ -16,6 +16,9 @@ namespace Melee
 
     private:
         void                renderEntities();
+        void				renderPlayerHuds();
+
+        void                handleMetricsUpdate(int screenWidth, int screenHeight);
         void                handleKey(SDL_Keycode key, bool down);
 
     private:
@@ -23,5 +26,8 @@ namespace Melee
 
         SDL_Window*         m_window = nullptr;
         SDL_Renderer*       m_renderer = nullptr;
+
+        SDL_Rect            m_playfieldArea;
+        SDL_Rect            m_playerHudArea;
     };
 }

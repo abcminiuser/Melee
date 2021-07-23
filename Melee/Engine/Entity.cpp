@@ -10,10 +10,12 @@ Entity::Entity(Type type, const Properties& properties, const Point& pos)
 	m_maxVelocitySquared = properties.maxVelocity * properties.maxVelocity;
 }
 
-void Entity::update(const EntityList& entities, uint32_t msElapsed)
+void Entity::update(Engine& engine, uint32_t msElapsed)
 {
 	m_position += m_velocity;
-	m_velocity += m_acceleration;
+	m_velocity += m_acceleration + m_externalAcceleration;
+
+	m_externalAcceleration = {};
 
 	const auto newVelocitySquared = m_velocity.lengthSquared();
 	if (newVelocitySquared > m_maxVelocitySquared)
@@ -22,5 +24,5 @@ void Entity::update(const EntityList& entities, uint32_t msElapsed)
 
 void Entity::applyExternalForce(const Vector2d& forceVector)
 {
-	m_velocity += forceVector;
+	m_externalAcceleration += forceVector;
 }

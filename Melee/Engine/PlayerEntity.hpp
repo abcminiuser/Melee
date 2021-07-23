@@ -17,10 +17,13 @@ namespace Melee
 			FireSpecial,
 		};
 
-		struct PlayerProperties : Properties
+		struct PlayerProperties : public Properties
 		{
 			float		engineForce_N		= 0;
 			float		rotation_degPerSec	= 0;
+
+			uint32_t	maxHealth			= 0;
+			uint32_t	maxEnergy			= 0;
 		};
 
 	public:
@@ -30,9 +33,12 @@ namespace Melee
 		int			index() const		{ return m_playerIndex; }
 		void		handleKey(KeyEvent key, bool down);
 
+		uint32_t	health() const		{ return m_health; }
+		uint32_t	energy() const		{ return m_energy; }
+
 	// Entity i/f:
 	public:
-		void		update(const EntityList& entities, uint32_t msElapsed) override;
+		void		update(Engine& engine, uint32_t msElapsed) override;
 
 	private:
 		struct Flags
@@ -55,5 +61,8 @@ namespace Melee
 
 		uint32_t				m_flags = 0;
 		uint32_t				m_rotationMsElapsed = 0;
+
+		uint32_t				m_health = 0;
+		uint32_t				m_energy = 0;
 	};
 }

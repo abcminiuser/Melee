@@ -25,7 +25,7 @@ namespace Melee
 		explicit		Entity(Type type, const Properties& properties, const Point& pos);
 		virtual			~Entity() = default;
 
-		virtual void	update(const EntityList& entities, uint32_t msElapsed);
+		virtual void	update(Engine& engine, uint32_t msElapsed);
 
 		Type			type() const { return m_type; }
 		const auto&		properties() const { return m_properties; }
@@ -48,5 +48,7 @@ namespace Melee
 
 		Vector2d			m_velocity;
 		Vector2d			m_acceleration;
+
+		Vector2d			m_externalAcceleration;
 	};
 }

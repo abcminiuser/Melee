@@ -9,21 +9,47 @@
 
 using namespace Melee;
 
+namespace
+{
+    // FIXME: User key mappings
+    const std::unordered_map<SDL_Keycode, PlayerEntity::KeyEvent> kPlayer1Keys =
+    {
+        { SDLK_w,       PlayerEntity::KeyEvent::Thrust },
+        { SDLK_a,       PlayerEntity::KeyEvent::RotateLeft },
+        { SDLK_s,       PlayerEntity::KeyEvent::ReverseThrust },
+        { SDLK_d,       PlayerEntity::KeyEvent::RotateRight },
+    };
+    const std::unordered_map<SDL_Keycode, PlayerEntity::KeyEvent> kPlayer2Keys =
+    {
+        { SDLK_UP,      PlayerEntity::KeyEvent::Thrust },
+        { SDLK_LEFT,    PlayerEntity::KeyEvent::RotateLeft },
+        { SDLK_DOWN,    PlayerEntity::KeyEvent::ReverseThrust },
+        { SDLK_RIGHT,   PlayerEntity::KeyEvent::RotateRight },
+    };
+
+    SDL_Point ToSDLPoint(const Point& p)
+    {
+        return SDL_Point{ (int)p.x, (int)p.y };
+    };
+}
+
 SDLRenderer::SDLRenderer(Engine& engine)
     : m_engine(engine)
 {
     SDL_Init(SDL_INIT_VIDEO);
 
     m_window = SDL_CreateWindow(
-            "Melee",
-            SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED,
-            1024,
-            768,
-            0
-        );
+        "Melee",
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        1024,
+        768,
+        SDL_WINDOW_RESIZABLE
+    );
 
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+
+    handleMetricsUpdate(1024, 768);
 }
 
 SDLRenderer::~SDLRenderer()
@@ -45,6 +71,7 @@ int SDLRenderer::runModal()
         SDL_RenderClear(m_renderer);
 
         renderEntities();
+        renderPlayerHuds();
 
         SDL_Event event;
         if (SDL_PollEvent(&event))
@@ -61,6 +88,14 @@ int SDLRenderer::runModal()
                 case SDL_KEYUP:
                 {
                     handleKey(event.key.keysym.sym, event.type == SDL_KEYDOWN);
+                    break;
+                }
+
+                case SDL_WINDOWEVENT:
+                {
+                    if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+                        handleMetricsUpdate(event.window.data1, event.window.data2);
+
                     break;
                 }
             }
@@ -97,16 +132,14 @@ void SDLRenderer::renderEntities()
                 static const auto rotateLeft90 = RotationMatrix(-90);
                 static const auto rotateRight90 = RotationMatrix(90);
 
-                std::array<Point, 3> shipPoints;
-                shipPoints[0] = playerPos + playerHeading * 20;
-                shipPoints[1] = playerPos + rotateLeft90 * playerHeading * 5;
-                shipPoints[2] = playerPos + rotateRight90 * playerHeading * 5;
-
-                static const auto ToSDLPoint = [](const auto& p) { return SDL_Point{ (int)p.x, (int)p.y };  };
-                std::array<SDL_Point, 4> drawPoints = { ToSDLPoint(shipPoints[0]), ToSDLPoint(shipPoints[1]), ToSDLPoint(shipPoints[2]), ToSDLPoint(shipPoints[0]) };
+                std::array<SDL_Point, 4> shipPoints;
+                shipPoints[0] = ToSDLPoint(playerPos + playerHeading * 20);
+                shipPoints[1] = ToSDLPoint(playerPos + rotateLeft90 * playerHeading * 5);
+                shipPoints[2] = ToSDLPoint(playerPos + rotateRight90 * playerHeading * 5);
+                shipPoints[3] = shipPoints[0];
 
                 SDL_SetRenderDrawColor(m_renderer, (playerIndex % 3 == 0) ? 255 : 0, (playerIndex % 3 == 1) ? 255 : 0, (playerIndex % 3 == 2) ? 255 : 0, SDL_ALPHA_OPAQUE);
-                SDL_RenderDrawLines(m_renderer, drawPoints.data(), drawPoints.size());
+                SDL_RenderDrawLines(m_renderer, shipPoints.data(), shipPoints.size());
                 break;
             }
 
@@ -125,29 +158,32 @@ void SDLRenderer::renderEntities()
     }
 }
 
+void SDLRenderer::renderPlayerHuds()
+{
+	SDL_SetRenderDrawColor(m_renderer, 150, 150, 150, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(m_renderer, &m_playerHudArea);
+
+#if 0
+    const auto& playerEntities = m_engine.getEntities(Entity::Type::Player);
+
+    auto playerRect = SDL_Rect{ m_playerHudArea.x, 0, m_playerHudArea.w, m_playerHudArea.w };
+    SDL_SetRenderDrawColor(m_renderer, 250, 250, 150, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(m_renderer, &playerRect);
+#endif
+}
+
+void SDLRenderer::handleMetricsUpdate(int screenWidth, int screenHeight)
+{
+    const auto kPlayerHUDWidth = screenWidth / 5;
+
+    m_playfieldArea = SDL_Rect{ 0, 0, screenWidth - kPlayerHUDWidth, screenHeight };
+    m_playerHudArea = SDL_Rect{ m_playfieldArea.w, 0, kPlayerHUDWidth, screenHeight };
+}
+
 void SDLRenderer::handleKey(SDL_Keycode key, bool down)
 {
-    // FIXME: User key mappings
-    static const std::unordered_map<SDL_Keycode, PlayerEntity::KeyEvent> kPlayer1Keys =
+    for (const auto& entity : m_engine.getEntities(Entity::Type::Player))
     {
-        { SDLK_w,       PlayerEntity::KeyEvent::Thrust },
-        { SDLK_a,       PlayerEntity::KeyEvent::RotateLeft },
-        { SDLK_s,       PlayerEntity::KeyEvent::ReverseThrust },
-        { SDLK_d,       PlayerEntity::KeyEvent::RotateRight },
-    };
-    static const std::unordered_map<SDL_Keycode, PlayerEntity::KeyEvent> kPlayer2Keys =
-    {
-        { SDLK_UP,      PlayerEntity::KeyEvent::Thrust },
-        { SDLK_LEFT,    PlayerEntity::KeyEvent::RotateLeft },
-        { SDLK_DOWN,    PlayerEntity::KeyEvent::ReverseThrust },
-        { SDLK_RIGHT,   PlayerEntity::KeyEvent::RotateRight },
-    };
-
-    for (const auto& entity : m_engine.getEntities())
-    {
-        if (entity->type() != Entity::Type::Player)
-            continue;
-
         const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
         const auto& playerKeyMap = playerEntity->index() == 0 ? kPlayer1Keys : kPlayer2Keys;
 
