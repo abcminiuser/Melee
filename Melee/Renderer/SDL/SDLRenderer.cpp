@@ -31,6 +31,8 @@ namespace
     {
         return SDL_Point{ (int)p.x, (int)p.y };
     };
+
+    constexpr auto kPixelsPerKm = 100;
 }
 
 SDLRenderer::SDLRenderer(Engine& engine)
@@ -49,7 +51,23 @@ SDLRenderer::SDLRenderer(Engine& engine)
 
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
+    m_engine.setCollisionCallback(
+        [this](const std::shared_ptr<Entity>& e1, const std::shared_ptr<Entity>& e2)
+        {
+            const auto distanceBetweenEntitiesSquared = (e1->position() - e2->position()).lengthSquared();
+            const auto minCollisionRadius = e1->properties().radius_km + e2->properties().radius_km;
+
+            // Crude radius check
+            if (distanceBetweenEntitiesSquared / kPixelsPerKm > (minCollisionRadius * minCollisionRadius))
+                return false;
+
+            // TODO: Pixel/geometry accurate collision check
+            return true;
+        });
+
     handleMetricsUpdate(1024, 768);
+
+    setupTestGame();
 }
 
 SDLRenderer::~SDLRenderer()
@@ -58,6 +76,32 @@ SDLRenderer::~SDLRenderer()
     SDL_DestroyWindow(m_window);
 
     SDL_Quit();
+}
+
+void SDLRenderer::setupTestGame()
+{
+    PlayerEntity::PlayerProperties playerProps = {};
+    playerProps.mass_kg = 90.718e6;
+    playerProps.engineForce_N = 2e9;
+    playerProps.maxVelocity = 0;
+    playerProps.rotation_degPerSec = 100;
+    playerProps.maxVelocity = 1000;
+    playerProps.maxHealth = 20;
+    playerProps.maxEnergy = 10;
+    playerProps.radius_km = 1000;
+
+    auto player1 = std::make_shared<PlayerEntity>(0, playerProps, Point{ 200 * 1000, 200 * 1000 });
+    m_engine.addEntity(player1);
+
+    auto player2 = std::make_shared<PlayerEntity>(1, playerProps, Point{ 100, 100 });
+    m_engine.addEntity(player2);
+
+    PlanetEntity::PlanetProperties planetProps = {};
+    planetProps.mass_kg = 5.9736e24 / 5000;
+    planetProps.radius_km = 6371;
+
+    auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 400 * 1000, 300 * 1000 });
+    m_engine.addEntity(planet);
 }
 
 int SDLRenderer::runModal()
@@ -128,14 +172,15 @@ void SDLRenderer::renderEntities()
                 const int playerIndex = playerEntity->index();
                 const auto playerPos = playerEntity->position() / 1000;
                 const auto playerHeading = playerEntity->heading();
+                const auto playerRadius = playerEntity->properties().radius_km;
 
                 static const auto rotateLeft90 = RotationMatrix(-90);
                 static const auto rotateRight90 = RotationMatrix(90);
 
                 std::array<SDL_Point, 4> shipPoints;
-                shipPoints[0] = ToSDLPoint(playerPos + playerHeading * 20);
-                shipPoints[1] = ToSDLPoint(playerPos + rotateLeft90 * playerHeading * 5);
-                shipPoints[2] = ToSDLPoint(playerPos + rotateRight90 * playerHeading * 5);
+                shipPoints[0] = ToSDLPoint(playerPos + playerHeading * (playerRadius / kPixelsPerKm));
+                shipPoints[1] = ToSDLPoint(playerPos + rotateLeft90 * playerHeading * (playerRadius / kPixelsPerKm));
+                shipPoints[2] = ToSDLPoint(playerPos + rotateRight90 * playerHeading * (playerRadius / kPixelsPerKm));
                 shipPoints[3] = shipPoints[0];
 
                 SDL_SetRenderDrawColor(m_renderer, (playerIndex % 3 == 0) ? 255 : 0, (playerIndex % 3 == 1) ? 255 : 0, (playerIndex % 3 == 2) ? 255 : 0, SDL_ALPHA_OPAQUE);
@@ -148,10 +193,10 @@ void SDLRenderer::renderEntities()
                 const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
 
                 const auto planetPos = planetEntity->position() / 1000;
-                const auto planetRadius = planetEntity->radius();
+                const auto planetRadius = planetEntity->properties().radius_km;
 
                 SDL_SetRenderDrawColor(m_renderer, 180, 180, 180, SDL_ALPHA_OPAQUE);
-                circleRGBA(m_renderer, (int)planetPos.x, (int)planetPos.y, (int)(planetRadius / 100), 128, 128, 128, 255);
+                circleRGBA(m_renderer, (int)planetPos.x, (int)planetPos.y, (int)(planetRadius / kPixelsPerKm), 128, 128, 128, 255);
                 break;
             }
         }

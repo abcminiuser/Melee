@@ -82,3 +82,22 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
 
 	Entity::update(engine, msElapsed);
 }
+
+void PlayerEntity::collide(Engine& engine, Entity& otherEntity)
+{
+	switch (otherEntity.type())
+	{
+		case Entity::Type::Asteroid:
+		case Entity::Type::Planet:
+		case Entity::Type::Player:
+			m_acceleration = {};
+			m_velocity = -m_velocity;
+
+			break;
+
+		case Entity::Type::Projectile:
+			break;
+	}
+
+	Entity::collide(engine, otherEntity);
+}

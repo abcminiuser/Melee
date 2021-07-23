@@ -15,6 +15,8 @@ namespace Melee
         int                 runModal();
 
     private:
+        void                setupTestGame();
+
         void                renderEntities();
         void				renderPlayerHuds();
 

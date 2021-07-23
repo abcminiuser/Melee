@@ -18,6 +18,7 @@ namespace Melee
 		struct Properties
 		{
 			float		mass_kg = 0;
+			float		radius_km = 0;
 			uint32_t	maxVelocity = 0;
 		};
 
@@ -26,14 +27,13 @@ namespace Melee
 		virtual			~Entity() = default;
 
 		virtual void	update(Engine& engine, uint32_t msElapsed);
+		virtual void	collide(Engine& engine, Entity& otherEntity);
 
 		Type			type() const { return m_type; }
 		const auto&		properties() const { return m_properties; }
 
 		Point			position() const { return m_position; }
 		Vector2d		heading() const { return m_heading; }
-
-		auto			mass() const { return m_properties.mass_kg; }
 
 		void			applyExternalForce(const Vector2d& forceVector);
 

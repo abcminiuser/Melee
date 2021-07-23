@@ -9,14 +9,14 @@ namespace Melee
 	public:
 		struct PlanetProperties : public Properties
 		{
-			float	radius_km;
+			
 		};
 
 	public:
 		explicit	PlanetEntity(const PlanetProperties& properties, const Point& pos);
 		virtual		~PlanetEntity() = default;
 
-		float		radius() const { return m_planetProperties.radius_km; }
+		const auto& properties() const { return m_planetProperties; }
 
 	// Entity i/f:
 	public:

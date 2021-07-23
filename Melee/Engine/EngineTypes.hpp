@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <cmath>
-#include <forward_list>
+#include <list>
 #include <memory>
 
 namespace Melee
@@ -23,6 +23,11 @@ namespace Melee
 		float length() const
 		{
 			return sqrt(x * x + y * y);
+		}
+
+		Vector2d normalised() const
+		{
+			return Vector2d{ x, y } / length();
 		}
 
 		// TODO: Cross Product
@@ -121,5 +126,5 @@ namespace Melee
 
 	using Point = Vector2d;
 
-	using EntityList = std::forward_list<std::shared_ptr<Entity>>;
+	using EntityList = std::list<std::shared_ptr<Entity>>;
 }

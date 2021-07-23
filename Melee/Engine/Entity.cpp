@@ -22,6 +22,11 @@ void Entity::update(Engine& engine, uint32_t msElapsed)
 		m_velocity *= m_maxVelocitySquared / newVelocitySquared;
 }
 
+void Entity::collide(Engine& engine, Entity& otherEntity)
+{
+
+}
+
 void Entity::applyExternalForce(const Vector2d& forceVector)
 {
 	m_externalAcceleration += forceVector;

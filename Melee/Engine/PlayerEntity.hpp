@@ -30,6 +30,8 @@ namespace Melee
 		explicit	PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& pos);
 		virtual		~PlayerEntity() = default;
 
+		const auto& properties() const { return m_playerProperties; }
+
 		int			index() const		{ return m_playerIndex; }
 		void		handleKey(KeyEvent key, bool down);
 
@@ -39,6 +41,7 @@ namespace Melee
 	// Entity i/f:
 	public:
 		void		update(Engine& engine, uint32_t msElapsed) override;
+		void		collide(Engine& engine, Entity& otherEntity) override;
 
 	private:
 		struct Flags
