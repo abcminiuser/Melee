@@ -10,14 +10,15 @@ find_package (SDL2 REQUIRED)
 find_package (SDL2_gfx REQUIRED)
 
 add_library (Renderer
+    SDL/SDLEntityRenderer.cpp
+    SDL/SDLEntityRenderer.hpp
     SDL/SDLRenderer.cpp
     SDL/SDLRenderer.hpp
 )
 
 target_include_directories (Renderer PRIVATE ../)
 target_compile_features (Renderer PUBLIC cxx_std_17)
-target_compile_definitions (Renderer PUBLIC _USE_MATH_DEFINES)
-target_link_libraries (Renderer PUBLIC SDL2::Main SDL2::GFX)
+target_link_libraries (Renderer PUBLIC SDL2::Main SDL2::GFX Engine)
 
 if (MSVC)
     foreach (DLL ${SDL2_DLLS})

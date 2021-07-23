@@ -1,11 +1,11 @@
 ﻿#include "Renderer/SDL/SDLRenderer.hpp"
+#include "Renderer/SDL/SDLEntityRenderer.hpp"
+
 #include "Engine/Engine.hpp"
 
 #include <unordered_map>
 #include <array>
 #include <algorithm>
-
-#include <SDL2_gfxPrimitives.h>
 
 using namespace Melee;
 
@@ -27,12 +27,10 @@ namespace
         { SDLK_RIGHT,   PlayerEntity::KeyEvent::RotateRight },
     };
 
-    SDL_Point ToSDLPoint(const Point& p)
-    {
-        return SDL_Point{ (int)p.x, (int)p.y };
-    };
+    constexpr auto kWindowWidth = 1024;
+    constexpr auto kWindowHeight = 768;
 
-    constexpr auto kPixelsPerKm = 100;
+    constexpr auto kKilometersPerPixel = 180;
 }
 
 SDLRenderer::SDLRenderer(Engine& engine)
@@ -44,8 +42,8 @@ SDLRenderer::SDLRenderer(Engine& engine)
         "Melee",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        1024,
-        768,
+        kWindowWidth,
+        kWindowHeight,
         SDL_WINDOW_RESIZABLE
     );
 
@@ -54,18 +52,11 @@ SDLRenderer::SDLRenderer(Engine& engine)
     m_engine.setCollisionCallback(
         [this](const std::shared_ptr<Entity>& e1, const std::shared_ptr<Entity>& e2)
         {
-            const auto distanceBetweenEntitiesSquared = (e1->position() - e2->position()).lengthSquared();
-            const auto minCollisionRadius = e1->properties().radius_km + e2->properties().radius_km;
-
-            // Crude radius check
-            if (distanceBetweenEntitiesSquared / kPixelsPerKm > (minCollisionRadius * minCollisionRadius))
-                return false;
-
             // TODO: Pixel/geometry accurate collision check
             return true;
         });
 
-    handleMetricsUpdate(1024, 768);
+    handleMetricsUpdate(kWindowWidth, kWindowHeight);
 
     setupTestGame();
 }
@@ -81,8 +72,8 @@ SDLRenderer::~SDLRenderer()
 void SDLRenderer::setupTestGame()
 {
     PlayerEntity::PlayerProperties playerProps = {};
-    playerProps.mass_kg = 90.718e6;
-    playerProps.engineForce_N = 2e9;
+    playerProps.mass_kg = 9.718e6;
+    playerProps.engineForce_N = 2.5e7;
     playerProps.maxVelocity = 0;
     playerProps.rotation_degPerSec = 100;
     playerProps.maxVelocity = 1000;
@@ -90,17 +81,17 @@ void SDLRenderer::setupTestGame()
     playerProps.maxEnergy = 10;
     playerProps.radius_km = 1000;
 
-    auto player1 = std::make_shared<PlayerEntity>(0, playerProps, Point{ 200 * 1000, 200 * 1000 });
+    auto player1 = std::make_shared<PlayerEntity>(0, playerProps, Point{ 200 * kKilometersPerPixel, 200 * kKilometersPerPixel });
     m_engine.addEntity(player1);
 
-    auto player2 = std::make_shared<PlayerEntity>(1, playerProps, Point{ 100, 100 });
+    auto player2 = std::make_shared<PlayerEntity>(1, playerProps, Point{ 100 * kKilometersPerPixel, 100 * kKilometersPerPixel });
     m_engine.addEntity(player2);
 
     PlanetEntity::PlanetProperties planetProps = {};
-    planetProps.mass_kg = 5.9736e24 / 5000;
+    planetProps.mass_kg = 5.9736e24 / 500000;
     planetProps.radius_km = 6371;
 
-    auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 400 * 1000, 300 * 1000 });
+    auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 400 * kKilometersPerPixel, 300 * kKilometersPerPixel });
     m_engine.addEntity(planet);
 }
 
@@ -114,8 +105,8 @@ int SDLRenderer::runModal()
         SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(m_renderer);
 
-        renderEntities();
-        renderPlayerHuds();
+        SDLEntityRenderer::RenderEntities(m_engine, m_renderer, m_playfieldArea, kKilometersPerPixel);
+        SDLEntityRenderer::RenderHUD(m_engine, m_renderer, m_playerHudArea);
 
         SDL_Event event;
         if (SDL_PollEvent(&event))
@@ -156,65 +147,6 @@ int SDLRenderer::runModal()
     }
 
     return 0;
-}
-
-void SDLRenderer::renderEntities()
-{
-    for (const auto& entity : m_engine.getEntities())
-    {
-        // FIXME: Proper entity rendering
-        switch (entity->type())
-        {
-            case Entity::Type::Player:
-            {
-                const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
-
-                const int playerIndex = playerEntity->index();
-                const auto playerPos = playerEntity->position() / 1000;
-                const auto playerHeading = playerEntity->heading();
-                const auto playerRadius = playerEntity->properties().radius_km;
-
-                static const auto rotateLeft90 = RotationMatrix(-90);
-                static const auto rotateRight90 = RotationMatrix(90);
-
-                std::array<SDL_Point, 4> shipPoints;
-                shipPoints[0] = ToSDLPoint(playerPos + playerHeading * (playerRadius / kPixelsPerKm));
-                shipPoints[1] = ToSDLPoint(playerPos + rotateLeft90 * playerHeading * (playerRadius / kPixelsPerKm));
-                shipPoints[2] = ToSDLPoint(playerPos + rotateRight90 * playerHeading * (playerRadius / kPixelsPerKm));
-                shipPoints[3] = shipPoints[0];
-
-                SDL_SetRenderDrawColor(m_renderer, (playerIndex % 3 == 0) ? 255 : 0, (playerIndex % 3 == 1) ? 255 : 0, (playerIndex % 3 == 2) ? 255 : 0, SDL_ALPHA_OPAQUE);
-                SDL_RenderDrawLines(m_renderer, shipPoints.data(), shipPoints.size());
-                break;
-            }
-
-            case Entity::Type::Planet:
-            {
-                const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
-
-                const auto planetPos = planetEntity->position() / 1000;
-                const auto planetRadius = planetEntity->properties().radius_km;
-
-                SDL_SetRenderDrawColor(m_renderer, 180, 180, 180, SDL_ALPHA_OPAQUE);
-                circleRGBA(m_renderer, (int)planetPos.x, (int)planetPos.y, (int)(planetRadius / kPixelsPerKm), 128, 128, 128, 255);
-                break;
-            }
-        }
-    }
-}
-
-void SDLRenderer::renderPlayerHuds()
-{
-	SDL_SetRenderDrawColor(m_renderer, 150, 150, 150, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(m_renderer, &m_playerHudArea);
-
-#if 0
-    const auto& playerEntities = m_engine.getEntities(Entity::Type::Player);
-
-    auto playerRect = SDL_Rect{ m_playerHudArea.x, 0, m_playerHudArea.w, m_playerHudArea.w };
-    SDL_SetRenderDrawColor(m_renderer, 250, 250, 150, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(m_renderer, &playerRect);
-#endif
 }
 
 void SDLRenderer::handleMetricsUpdate(int screenWidth, int screenHeight)
