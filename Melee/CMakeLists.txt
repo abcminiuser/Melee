@@ -8,7 +8,7 @@ add_executable (Main
 )
 
 target_include_directories (Main PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries (Main PRIVATE Engine Renderer)
+target_link_libraries (Main PRIVATE Engine SFMLRenderer)
 target_compile_features (Main PUBLIC cxx_std_17)
 
 if (MSVC)
