@@ -10,6 +10,9 @@ find_package (SFML REQUIRED COMPONENTS system window graphics network audio)
 add_library (SFMLRenderer
     SFMLRenderer.cpp
     SFMLRenderer.hpp
+    SFMLEntityRenderer.cpp
+	SFMLEntityRenderer.hpp
+	SFMLUtils.hpp
 )
 
 target_include_directories (SFMLRenderer PRIVATE ../../)
