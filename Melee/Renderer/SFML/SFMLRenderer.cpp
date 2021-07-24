@@ -151,6 +151,11 @@ void SFMLRenderer::renderEntites(sf::RenderWindow& window)
         {
             case Entity::Type::Player:
             {
+                struct PlayerRenderContext
+                {
+                    sf::ConvexShape s;
+                };
+
                 const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
 
                 const int playerIndex = playerEntity->index();
@@ -158,53 +163,85 @@ void SFMLRenderer::renderEntites(sf::RenderWindow& window)
                 const auto playerPos = playerEntity->position() / currentScaleFactor();
                 const auto playerRadius = playerEntity->properties().radius_km / currentScaleFactor();
 
+                auto rendererContext = playerEntity->getRendererContext<PlayerRenderContext>();
+                if (!rendererContext)
+                {
+                    rendererContext = std::make_shared<PlayerRenderContext>();
+
+                    rendererContext->s.setFillColor(kShipColours[playerIndex % std::size(kShipColours)]);
+                    rendererContext->s.setPointCount(3);
+
+                    playerEntity->setRendererContext(rendererContext);
+                }
+
                 static const auto kRotateLeft90 = RotationMatrix(-90);
                 static const auto kRotateRight90 = RotationMatrix(90);
 
-                sf::ConvexShape s;
-                s.setFillColor(kShipColours[playerIndex % std::size(kShipColours)]);
-                s.setPointCount(3);
-                s.setPoint(0, ToSFML(playerPos + playerHeading * playerRadius));
-                s.setPoint(1, ToSFML(playerPos + kRotateLeft90 * playerHeading * playerRadius));
-                s.setPoint(2, ToSFML(playerPos + kRotateRight90 * playerHeading * playerRadius));
+                rendererContext->s.setPoint(0, ToSFML(playerPos + playerHeading * playerRadius));
+                rendererContext->s.setPoint(1, ToSFML(playerPos + kRotateLeft90 * playerHeading * playerRadius));
+                rendererContext->s.setPoint(2, ToSFML(playerPos + kRotateRight90 * playerHeading * playerRadius));
 
-                window.draw(s);
+                window.draw(rendererContext->s);
                 break;
             }
 
             case Entity::Type::Planet:
             {
+                struct PlanetRenderContext
+                {
+                    sf::CircleShape s;
+                };
+
                 const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
 
                 const auto planetPos = planetEntity->position() / currentScaleFactor();
                 const auto planetRadius = planetEntity->properties().radius_km / currentScaleFactor();
 
-                sf::CircleShape p;
-                p.setFillColor(sf::Color(100, 100, 200));
-                p.setOutlineColor(sf::Color(100, 100, 100));
-                p.setOutlineThickness(2);
-                p.setRadius(planetRadius);
-                p.setPosition(ToSFML(planetPos));
-                p.setOrigin(planetRadius, planetRadius);
+                auto rendererContext = planetEntity->getRendererContext<PlanetRenderContext>();
+                if (!rendererContext)
+                {
+                    rendererContext = std::make_shared<PlanetRenderContext>();
 
-                window.draw(p);
+                    rendererContext->s.setFillColor(sf::Color(100, 100, 200));
+                    rendererContext->s.setOutlineColor(sf::Color(100, 100, 100));
+                    rendererContext->s.setOutlineThickness(2);
+                    rendererContext->s.setRadius(planetRadius);
+                    rendererContext->s.setPosition(ToSFML(planetPos));
+                    rendererContext->s.setOrigin(planetRadius, planetRadius);
+
+                    planetEntity->setRendererContext(rendererContext);
+                }
+
+                window.draw(rendererContext->s);
                 break;
             }
 
             case Entity::Type::Exhaust:
             {
+                struct ExhaustRenderContext
+                {
+                    sf::CircleShape s;
+                };
+
                 const auto exhaustEntity = std::dynamic_pointer_cast<ExhaustEntity>(entity);
 
                 const auto exhaustPos = exhaustEntity->position() / currentScaleFactor();
                 const auto exhaustAge = exhaustEntity->age() / static_cast<float>(exhaustEntity->properties().maxAge);
 
-                sf::CircleShape p;
-                p.setFillColor(kExhaustColours[static_cast<int>(exhaustAge * std::size(kExhaustColours))]);
-                p.setRadius(1);
-                p.setPosition(ToSFML(exhaustPos));
-                p.setOrigin(1, 1);
+                auto rendererContext = exhaustEntity->getRendererContext<ExhaustRenderContext>();
+                if (!rendererContext)
+                {
+                    rendererContext = std::make_shared<ExhaustRenderContext>();
 
-                window.draw(p);
+                    rendererContext->s.setFillColor(kExhaustColours[static_cast<int>(exhaustAge * std::size(kExhaustColours))]);
+                    rendererContext->s.setRadius(1);
+                    rendererContext->s.setPosition(ToSFML(exhaustPos));
+                    rendererContext->s.setOrigin(1, 1);
+
+                    exhaustEntity->setRendererContext(rendererContext);
+                }
+
+                window.draw(rendererContext->s);
                 break;
             }
         }
