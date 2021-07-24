@@ -9,8 +9,6 @@ SFMLPlanetEntityRenderer::SFMLPlanetEntityRenderer(PlanetEntity& entity)
 	: m_entity(entity)
 {
 	m_shape.setFillColor(sf::Color(100, 100, 200));
-	m_shape.setOutlineColor(sf::Color(100, 100, 100));
-	m_shape.setOutlineThickness(2);
 }
 
 void SFMLPlanetEntityRenderer::render(sf::RenderWindow& window, uint32_t scaleFactor)
