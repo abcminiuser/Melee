@@ -18,7 +18,7 @@ namespace Melee
 
     private:
         void                handleKey(sf::Keyboard::Key key, bool down);
-        void                renderEntites(sf::RenderWindow& window);
+        void                renderEntities(sf::RenderWindow& window);
 
     private:
         Engine&             m_engine;

@@ -14,7 +14,7 @@ namespace Melee
         float s = S / 100;
         float v = V / 100;
         float C = s * v;
-        float X = C * (1 - std::abs(std::fmod(H / 60.0, 2) - 1));
+        float X = C * (1 - std::fabs(std::fmod(H / 60.0, 2) - 1));
         float m = v - C;
 
         uint8_t c = static_cast<uint8_t>((C + m) * 255);

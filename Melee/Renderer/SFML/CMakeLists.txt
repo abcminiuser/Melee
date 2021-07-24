@@ -10,8 +10,13 @@ find_package (SFML REQUIRED COMPONENTS system window graphics network audio)
 add_library (SFMLRenderer
     SFMLRenderer.cpp
     SFMLRenderer.hpp
-    SFMLEntityRenderer.cpp
-	SFMLEntityRenderer.hpp
+    SFMLExhaustEntityRenderer.cpp
+    SFMLExhaustEntityRenderer.hpp
+    SFMLPlanetEntityRenderer.cpp
+	SFMLPlanetEntityRenderer.hpp
+    SFMLPlayerEntityRenderer.cpp
+	SFMLPlayerEntityRenderer.hpp
+	SFMLRenderable.hpp
 	SFMLUtils.hpp
 )
 

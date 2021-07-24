@@ -1,5 +1,8 @@
 #include "SFMLRenderer.hpp"
-#include "SFMLEntityRenderer.hpp"
+#include "SFMLRenderable.hpp"
+#include "SFMLExhaustEntityRenderer.hpp"
+#include "SFMLPlanetEntityRenderer.hpp"
+#include "SFMLPlayerEntityRenderer.hpp"
 #include "SFMLUtils.hpp"
 
 #include "Engine/Engine.hpp"
@@ -73,7 +76,7 @@ int SFMLRenderer::runModal()
         m_engine.update(kMillisecondsPerFrame);
 
         window.clear();
-        SFMLEntityRenderer::RenderEntites(m_engine, window, currentScaleFactor());
+        renderEntities(window);
         window.display();
 
         sf::sleep(sf::milliseconds(kMillisecondsPerFrame));
@@ -91,5 +94,45 @@ void SFMLRenderer::handleKey(sf::Keyboard::Key key, bool down)
 
         if (playerKeyMap.count(key))
             playerEntity->handleKey(playerKeyMap.at(key), down);
+    }
+}
+
+void SFMLRenderer::renderEntities(sf::RenderWindow& window)
+{
+	const auto scaleFactor = currentScaleFactor();
+
+    for (const auto& entity : m_engine.getEntities())
+    {
+        auto& rendererContext = entity->rendererContext();
+
+        if (!rendererContext)
+        {
+            switch (entity->type())
+            {
+                case Entity::Type::Player:
+                {
+                    const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
+                    rendererContext = std::make_shared<SFMLPlayerEntityRenderer>(*playerEntity);
+                    break;
+                }
+
+                case Entity::Type::Planet:
+                {
+                    const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
+                    rendererContext = std::make_shared<SFMLPlanetEntityRenderer>(*planetEntity);
+                    break;
+                }
+
+                case Entity::Type::Exhaust:
+                {
+                    const auto exhaustEntity = std::dynamic_pointer_cast<ExhaustEntity>(entity);
+                    rendererContext = std::make_shared<SFMLExhaustEntityRenderer>(*exhaustEntity);
+                    break;
+                }
+            }
+        }
+
+        if (rendererContext)
+            rendererContext->render(window, scaleFactor);
     }
 }
