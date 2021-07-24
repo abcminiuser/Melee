@@ -13,14 +13,14 @@ namespace Melee
 		};
 
 	public:
-		explicit	PlanetEntity(const PlanetProperties& properties, const Point& pos);
-		virtual		~PlanetEntity() = default;
+		explicit				PlanetEntity(const PlanetProperties& properties, const Point& pos);
+		virtual					~PlanetEntity() = default;
 
-		const auto& properties() const { return m_planetProperties; }
+		const auto& 			properties() const { return m_planetProperties; }
 
 	// Entity i/f:
 	public:
-		void		update(Engine& engine, uint32_t msElapsed) override;
+		void					update(Engine& engine, uint32_t msElapsed) override;
 
 	private:
 		const PlanetProperties	m_planetProperties;

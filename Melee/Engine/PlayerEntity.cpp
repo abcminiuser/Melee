@@ -1,12 +1,13 @@
 #include "PlayerEntity.hpp"
 
-#include <algorithm>
+#include "Engine.hpp"
 
 using namespace Melee;
 
 namespace
 {
 	constexpr uint32_t kRotationIntervalMs = 10;
+	constexpr uint32_t kThrustExhaustIntervalMs = 100;
 }
 
 PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& pos)
@@ -73,12 +74,27 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
 	}
 
 	const auto thrustFlags = m_flags & (Flags::ThrustActive | Flags::ReverseThrustActive);
-	if (thrustFlags == Flags::ThrustActive)
-		m_acceleration = m_heading * m_engineAcceleration_ms2;
-	else if (thrustFlags == Flags::ReverseThrustActive)
-		m_acceleration = -m_heading * m_engineAcceleration_ms2;
+	if (thrustFlags == Flags::ThrustActive || thrustFlags == Flags::ReverseThrustActive)
+	{
+		m_thrustExhaustMsElapsed += msElapsed;
+
+		const auto thrustVector = m_heading * ((thrustFlags == Flags::ThrustActive) ? -1 : 1);
+
+		m_acceleration = -thrustVector * m_engineAcceleration_ms2;
+		
+		if (m_thrustExhaustMsElapsed > kThrustExhaustIntervalMs)
+		{
+			auto exhaustEntity = std::make_shared<ExhaustEntity>(ExhaustEntity::ExhaustProperties{}, m_position, m_velocity * thrustVector.length());
+			engine.addEntity(exhaustEntity);
+
+			m_thrustExhaustMsElapsed = 0;
+		}
+	}
 	else
+	{
 		m_acceleration = Vector2d{ 0, 0 };
+		m_thrustExhaustMsElapsed = 0;
+	}
 
 	Entity::update(engine, msElapsed);
 }
@@ -90,10 +106,13 @@ void PlayerEntity::collide(Engine& engine, Entity& otherEntity)
 		case Entity::Type::Asteroid:
 		case Entity::Type::Planet:
 		case Entity::Type::Player:
+		{
 			m_acceleration = {};
 			m_velocity = -m_velocity;
+			m_thrustExhaustMsElapsed = 0;
 
 			break;
+		}
 
 		case Entity::Type::Projectile:
 			break;

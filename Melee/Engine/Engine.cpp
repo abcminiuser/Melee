@@ -9,14 +9,22 @@ Engine::Engine()
 
 void Engine::update(uint32_t msElapsed)
 {
+	handleDeferredEntities();
+
 	// Check for collisions between entities.
 	const auto totalEntities = m_entities.size();
 	if (totalEntities >= 2)
 	{
 		for (auto e1 = m_entities.begin(); e1 != m_entities.end(); e1++)
 		{
+			if (!(*e1)->properties().collidable)
+				continue;
+
 			for (auto e2 = std::next(e1); e2 != m_entities.end(); e2++)
 			{
+				if (!(*e2)->properties().collidable)
+					continue;
+
 				const auto& entity1 = *e1;
 				const auto& entity2 = *e2;
 
@@ -44,12 +52,35 @@ void Engine::update(uint32_t msElapsed)
 
 void Engine::addEntity(const std::shared_ptr<Entity>& entity)
 {
-	m_entities.emplace_front(entity);
-	m_entifiesForType[entity->type()].emplace_front(entity);
+	m_entitiesToAdd.push_back(entity);
 }
 
 void Engine::removeEntity(const std::shared_ptr<Entity>& entity)
 {
-	m_entities.remove(entity);
-	m_entifiesForType[entity->type()].remove(entity);
+	m_entitiesToRemove.push_back(entity);
+}
+
+void Engine::handleDeferredEntities()
+{
+	if (!m_entitiesToAdd.empty())
+	{
+		for (const auto& entity : m_entitiesToAdd)
+		{
+			m_entities.emplace_front(entity);
+			m_entifiesForType[entity->type()].emplace_front(entity);
+		}
+
+		m_entitiesToAdd.clear();
+	}
+
+	if (!m_entitiesToRemove.empty())
+	{
+		for (const auto& entity : m_entitiesToRemove)
+		{
+			m_entities.remove(entity);
+			m_entifiesForType[entity->type()].remove(entity);
+		}
+
+		m_entitiesToRemove.clear();
+	}
 }

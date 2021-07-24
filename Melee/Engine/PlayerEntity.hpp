@@ -64,6 +64,7 @@ namespace Melee
 
 		uint32_t				m_flags = 0;
 		uint32_t				m_rotationMsElapsed = 0;
+		uint32_t				m_thrustExhaustMsElapsed = 0;
 
 		uint32_t				m_health = 0;
 		uint32_t				m_energy = 0;

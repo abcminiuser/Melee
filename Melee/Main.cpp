@@ -5,14 +5,16 @@ using namespace Melee;
 
 namespace
 {
-    void AddTestEntities(Engine& engine, SFMLRenderer& renderer)
+    using Renderer = SFMLRenderer;
+
+    void AddTestEntities(Engine& engine, Renderer& renderer)
     {
         const float scaleFactor = (float)renderer.currentScaleFactor();
 
         // TEST ENTITIES:
         PlayerEntity::PlayerProperties playerProps = {};
-        playerProps.mass_kg = 9.718e6;
-        playerProps.engineForce_N = 2.5e7;
+        playerProps.mass_kg = 9.718e5;
+        playerProps.engineForce_N = 2.5e6;
         playerProps.maxVelocity = 0;
         playerProps.rotation_degPerSec = 100;
         playerProps.maxVelocity = 1000;
@@ -37,8 +39,8 @@ namespace
 
 int main(int argc, char* argv[])
 {
-    Engine      engine;
-    SFMLRenderer renderer(engine);
+    Engine   engine;
+    Renderer renderer(engine);
 
     AddTestEntities(engine, renderer);
 

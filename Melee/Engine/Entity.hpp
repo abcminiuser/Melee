@@ -2,16 +2,19 @@
 
 #include "EngineTypes.hpp"
 
+#include <memory>
+
 namespace Melee
 {
-	class Entity
+	class Entity : public std::enable_shared_from_this<Entity>
 	{
 	public:
 		enum class Type
 		{
+			Asteroid,
+			Exhaust,
 			Player,
 			Planet,
-			Asteroid,
 			Projectile,
 		};
 
@@ -20,10 +23,11 @@ namespace Melee
 			float		mass_kg = 0;
 			float		radius_km = 0;
 			uint32_t	maxVelocity = 0;
+			bool		collidable = true;
 		};
 
 	public:
-		explicit		Entity(Type type, const Properties& properties, const Point& pos);
+		explicit		Entity(Type type, const Properties& properties, const Point& pos, const Point& vel = {}, const Point& acc = {});
 		virtual			~Entity() = default;
 
 		virtual void	update(Engine& engine, uint32_t msElapsed);
@@ -39,7 +43,8 @@ namespace Melee
 
 	protected:
 		const Type			m_type;
-		const Properties	m_properties;
+
+		Properties			m_properties;
 
 		float				m_maxVelocitySquared = 0;
 

@@ -11,6 +11,39 @@ using namespace Melee;
 
 namespace
 {
+    const sf::Color HSVColor(float H, float S, float V)
+    {
+        if (H > 360 || H < 0 || S>100 || S < 0 || V>100 || V < 0)
+            throw std::out_of_range("Invalid range");
+
+        float s = S / 100;
+        float v = V / 100;
+        float C = s * v;
+        float X = C * (1 - std::abs(std::fmod(H / 60.0, 2) - 1));
+        float m = v - C;
+
+        uint8_t c = static_cast<uint8_t>((C + m) * 255);
+        uint8_t x = static_cast<uint8_t>((X + m) * 255);
+
+        if (H >= 0 && H < 60)
+            return { c, x, 0 };
+        else if (H >= 60 && H < 120)
+            return { x, c, 0 };
+        else if (H >= 120 && H < 180)
+            return { 0, c, x };
+        else if (H >= 180 && H < 240)
+            return { 0, x, c };
+        else if (H >= 240 && H < 300)
+            return { x, 0, c };
+        else
+            return { c, 0, x };
+    }
+
+    sf::Vector2f ToSFML(const Vector2d& v)
+    {
+        return sf::Vector2f{ v.x, v.y };
+    }
+
     // FIXME: User key mappings
     const std::unordered_map<sf::Keyboard::Key, PlayerEntity::KeyEvent> kPlayer1Keys =
     {
@@ -34,10 +67,15 @@ namespace
         { 255,   0, 255 },
     };
 
-    sf::Vector2f ToSFML(const Vector2d& v)
-    {
-        return sf::Vector2f{ v.x, v.y };
-    }
+   const sf::Color kExhaustColours[] =
+   {
+        HSVColor(50, 100, 100),
+        HSVColor(40, 85, 80),
+        HSVColor(30, 85, 60),
+        HSVColor(20, 85, 40),
+        HSVColor(10, 85, 35),
+        HSVColor(0, 85, 20),
+   };
 }
 
 SFMLRenderer::SFMLRenderer(Engine& engine)
@@ -45,10 +83,10 @@ SFMLRenderer::SFMLRenderer(Engine& engine)
 {
     m_engine.setCollisionCallback(
         [this](const std::shared_ptr<Entity>& e1, const std::shared_ptr<Entity>& e2)
-    {
-        // TODO: Pixel/geometry accurate collision check
-        return true;
-    });
+        {
+            // TODO: Pixel/geometry accurate collision check
+            return true;
+        });
 }
 
 int SFMLRenderer::runModal()
@@ -146,7 +184,25 @@ void SFMLRenderer::renderEntites(sf::RenderWindow& window)
                 p.setOutlineColor(sf::Color(100, 100, 100));
                 p.setOutlineThickness(2);
                 p.setRadius(planetRadius);
-                p.setPosition(ToSFML(planetPos - Vector2d{ planetRadius , planetRadius }));
+                p.setPosition(ToSFML(planetPos));
+                p.setOrigin(planetRadius, planetRadius);
+
+                window.draw(p);
+                break;
+            }
+
+            case Entity::Type::Exhaust:
+            {
+                const auto exhaustEntity = std::dynamic_pointer_cast<ExhaustEntity>(entity);
+
+                const auto exhaustPos = exhaustEntity->position() / currentScaleFactor();
+                const auto exhaustAge = exhaustEntity->age() / static_cast<float>(exhaustEntity->properties().maxAge);
+
+                sf::CircleShape p;
+                p.setFillColor(kExhaustColours[static_cast<int>(exhaustAge * std::size(kExhaustColours))]);
+                p.setRadius(1);
+                p.setPosition(ToSFML(exhaustPos));
+                p.setOrigin(1, 1);
 
                 window.draw(p);
                 break;

@@ -6,6 +6,8 @@ add_library (Engine
     EngineTypes.hpp
     Entity.cpp
     Entity.hpp
+    ExhaustEntity.cpp
+    ExhaustEntity.hpp
     PlanetEntity.cpp
     PlanetEntity.hpp
     PlayerEntity.cpp
