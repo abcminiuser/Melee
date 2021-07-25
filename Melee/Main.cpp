@@ -11,7 +11,6 @@ namespace
     {
         const float scaleFactor = (float)renderer.currentScaleFactor();
 
-        // TEST ENTITIES:
         PlayerEntity::PlayerProperties playerProps = {};
         playerProps.mass_kg = 9.718e5;
         playerProps.engineForce_N = 2.5e6;

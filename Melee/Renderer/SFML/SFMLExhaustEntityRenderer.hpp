@@ -14,11 +14,9 @@ namespace Melee
 
 		// SFMLRenderable i/f:
 	public:
-		void					render(sf::RenderTarget& window, uint32_t scaleFactor) override;
+		void					render(sf::RenderTarget& renderer, uint32_t scaleFactor) override;
 
 	private:
 		const ExhaustEntity&	m_entity;
-
-		sf::CircleShape			m_shape;
 	};
 }

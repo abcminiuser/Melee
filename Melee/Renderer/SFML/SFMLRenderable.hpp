@@ -15,7 +15,7 @@ namespace Melee
 		virtual			~RenderContext() = default;
 
 	public:
-		virtual void	render(sf::RenderTarget& window, uint32_t scaleFactor) = 0;
+		virtual void	render(sf::RenderTarget& renderer, uint32_t scaleFactor) = 0;
 	};
 
 	using SFMLRenderable = RenderContext;

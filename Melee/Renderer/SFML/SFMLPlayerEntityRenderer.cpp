@@ -15,7 +15,7 @@ SFMLPlayerEntityRenderer::SFMLPlayerEntityRenderer(PlayerEntity& entity)
     m_sprite.setOrigin(sf::Vector2f{ m_shipImageSize.x / 2.0f, m_shipImageSize.y / 2.0f });
 }
 
-void SFMLPlayerEntityRenderer::render(sf::RenderTarget& window, uint32_t scaleFactor)
+void SFMLPlayerEntityRenderer::render(sf::RenderTarget& renderer, uint32_t scaleFactor)
 {
     const int playerIndex = m_entity.index();
     const auto playerHeading = m_entity.heading();
@@ -35,5 +35,5 @@ void SFMLPlayerEntityRenderer::render(sf::RenderTarget& window, uint32_t scaleFa
 
     m_sprite.setPosition(ToSFML(playerPos));
 
-    window.draw(m_sprite);
+    renderer.draw(m_sprite);
 }
