@@ -13,3 +13,5 @@ So far I'm using [SFML](https://www.sfml-dev.org/) for the rendering, and modern
 C++ for the "engine". I'm aware better solutions exist (Unity, Godot, etc.) but
 I'm using this purely as an exercise to learn how a simple game might work
 under the hood.
+
+![Example Gameplay](Game.png)
