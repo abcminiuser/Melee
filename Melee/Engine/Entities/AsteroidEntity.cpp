@@ -12,6 +12,7 @@ namespace
 AsteroidEntity::AsteroidEntity(const AsteroidProperties& properties, const Point& pos, const Vector2d& heading)
     : Entity(Entity::Type::Asteroid, properties, pos, heading)
     , m_asteroidProperties(properties)
+    , m_rotationTimer(kRotationIntervalMs)
 {
     const float rotationDegreesPerInterval = properties.rotation_degPerSec * kRotationIntervalMs / 1000;
     m_rotation = RotationMatrix(rotationDegreesPerInterval);
@@ -19,13 +20,10 @@ AsteroidEntity::AsteroidEntity(const AsteroidProperties& properties, const Point
 
 void AsteroidEntity::update(Engine& engine, uint32_t msElapsed)
 {
-    m_rotationMsElapsed += msElapsed;
+    m_rotationTimer.add(msElapsed);
 
-    while (m_rotationMsElapsed > kRotationIntervalMs)
-    {
+    while (m_rotationTimer.expired())
         m_heading = m_rotation * m_heading;
-        m_rotationMsElapsed -= std::min(kRotationIntervalMs, m_rotationMsElapsed);
-    }
 
     Entity::update(engine, msElapsed);
 }

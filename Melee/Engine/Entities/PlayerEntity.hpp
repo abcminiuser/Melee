@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Entity.hpp"
+#include "Engine/Periodic.hpp"
 
 namespace Melee
 {
@@ -25,9 +26,9 @@ namespace Melee
             uint32_t    maxHealth             = 1;
             uint32_t    maxEnergy             = 10;
 
-            uint32_t    energyRechargeRate_ms = 200;
+            uint32_t    energyRechargeRate_ms = 1000;
 
-            uint32_t    primaryFireRate_ms    = 50;
+            uint32_t    primaryFireRate_ms    = 200;
             uint32_t    primaryEnergyCost     = 1;
         };
 
@@ -35,7 +36,7 @@ namespace Melee
         explicit    PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& pos);
         virtual     ~PlayerEntity() = default;
 
-        const auto& properties() const { return m_playerProperties; }
+        const auto& properties() const  { return m_playerProperties; }
 
         int         index() const       { return m_playerIndex; }
         void        handleKey(KeyEvent key, bool down);
@@ -74,10 +75,11 @@ namespace Melee
         Matrix2x2               m_rotationalThrustRight;
 
         uint32_t                m_flags = 0;
-        uint32_t                m_energyRechargeElapsed = 0;
-        uint32_t                m_rotationMsElapsed = 0;
-        uint32_t                m_thrustExhaustMsElapsed = 0;
-        uint32_t                m_primaryFireMsElapsed = 0;
+
+        Periodic                m_energyRechargeTimer;
+        Periodic                m_rotationTimer;
+        Periodic                m_thrustExhaustTimer;
+        Periodic                m_primaryFireTimer;
 
         uint32_t                m_health = 0;
         uint32_t                m_energy = 0;

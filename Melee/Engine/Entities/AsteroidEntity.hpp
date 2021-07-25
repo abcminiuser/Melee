@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Entity.hpp"
+#include "Engine/Periodic.hpp"
 
 namespace Melee
 {
@@ -26,7 +27,7 @@ namespace Melee
     private:
         const AsteroidProperties    m_asteroidProperties;
 
-        uint32_t                    m_rotationMsElapsed = 0;
+        Periodic                    m_rotationTimer;
         Matrix2x2                   m_rotation;
     };
 }

@@ -35,7 +35,7 @@ namespace Melee
     private:
         const ProjectileProperties      m_projectileProperties;
 
-        const std::shared_ptr<Entity>&  m_ownerEntity;
+        const std::shared_ptr<Entity>   m_ownerEntity;
 
         uint32_t                        m_age = 0;
     };

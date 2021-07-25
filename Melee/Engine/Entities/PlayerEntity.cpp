@@ -16,6 +16,10 @@ PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, 
     : Entity(Entity::Type::Player, properties, pos)
     , m_playerIndex(playerIndex)
     , m_playerProperties(properties)
+    , m_energyRechargeTimer(properties.energyRechargeRate_ms)
+    , m_rotationTimer(kRotationIntervalMs)
+    , m_thrustExhaustTimer(kThrustExhaustIntervalMs, kThrustExhaustIntervalMs)
+    , m_primaryFireTimer(properties.primaryFireRate_ms, properties.primaryFireRate_ms)
 {
     m_engineAcceleration_ms2    = properties.engineForce_N / properties.mass_kg;
 
@@ -64,80 +68,52 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     }
 
     const auto rotateFlags = m_flags & (Flags::RotateLeftActive | Flags::RotateRightActive);
-    if (rotateFlags == Flags::RotateLeftActive)
+    if (rotateFlags == Flags::RotateLeftActive || rotateFlags == Flags::RotateRightActive)
     {
-        m_rotationMsElapsed += msElapsed;
+        m_rotationTimer.add(msElapsed);
 
-        while (m_rotationMsElapsed > kRotationIntervalMs)
-        {
-            m_heading = m_rotationalThrustLeft * m_heading;
-            m_rotationMsElapsed -= std::min(kRotationIntervalMs, m_rotationMsElapsed);
-        }
-    }
-    else if (rotateFlags == Flags::RotateRightActive)
-    {
-        m_rotationMsElapsed += msElapsed;
+        const auto thrustRotationVector = ((rotateFlags == Flags::RotateLeftActive) ? m_rotationalThrustLeft : m_rotationalThrustRight);
 
-        while (m_rotationMsElapsed >= kRotationIntervalMs)
-        {
-            m_heading = m_rotationalThrustRight * m_heading;
-            m_rotationMsElapsed -= std::min(kRotationIntervalMs, m_rotationMsElapsed);
-        }
+        while (m_rotationTimer.expired())
+            m_heading = thrustRotationVector * m_heading;
     }
     else
     {
-        m_rotationMsElapsed = 0;
+        m_rotationTimer.reset();
     }
 
     const auto thrustFlags = m_flags & (Flags::ThrustActive | Flags::ReverseThrustActive);
     if (thrustFlags == Flags::ThrustActive || thrustFlags == Flags::ReverseThrustActive)
     {
-        m_thrustExhaustMsElapsed += msElapsed;
-
         const auto thrustVector = m_heading * ((thrustFlags == Flags::ThrustActive) ? 1 : -1);
 
         m_acceleration = thrustVector * m_engineAcceleration_ms2;
 
-        if (m_thrustExhaustMsElapsed >= kThrustExhaustIntervalMs)
+        m_thrustExhaustTimer.add(msElapsed);
+        if (m_thrustExhaustTimer.expired())
         {
             auto exhaustEntity = std::make_shared<ExhaustEntity>(ExhaustEntity::ExhaustProperties{}, m_position, -m_acceleration);
             engine.addEntity(exhaustEntity);
-
-            m_thrustExhaustMsElapsed = 0;
         }
     }
     else
     {
         m_acceleration = Vector2d{ 0, 0 };
-        m_thrustExhaustMsElapsed = 0;
+        m_thrustExhaustTimer.reset();
     }
 
-    if (m_primaryFireMsElapsed >= m_playerProperties.primaryFireRate_ms)
+    m_primaryFireTimer.add(msElapsed);
+    if (m_flags & Flags::FirePrimaryActive && m_energy >= m_playerProperties.primaryEnergyCost && m_primaryFireTimer.expired())
     {
-        if (m_flags & Flags::FirePrimaryActive && m_energy >= m_playerProperties.primaryEnergyCost)
-        {
-            auto projectileEntity = std::make_shared<ProjectileEntity>(ProjectileEntity::ProjectileProperties{}, shared_from_this(), m_position + m_heading * (m_playerProperties.radius_km + 500), m_heading * 30);
-            engine.addEntity(projectileEntity);
+        auto projectileEntity = std::make_shared<ProjectileEntity>(ProjectileEntity::ProjectileProperties{}, shared_from_this(), m_position + m_heading * (m_playerProperties.radius_km + 500), m_heading * 30);
+        engine.addEntity(projectileEntity);
 
-            consumeEnergy(m_playerProperties.primaryEnergyCost);
-
-            m_primaryFireMsElapsed = 0;
-        }
-    }
-    else
-    {
-        m_primaryFireMsElapsed += msElapsed;
+        consumeEnergy(m_playerProperties.primaryEnergyCost);
     }
 
-    if (m_energyRechargeElapsed > m_playerProperties.energyRechargeRate_ms)
-    {
+    m_energyRechargeTimer.add(msElapsed);
+    while (m_energyRechargeTimer.expired())
         consumeEnergy(-1);
-        m_energyRechargeElapsed -= m_playerProperties.energyRechargeRate_ms;
-    }
-    else
-    {
-        m_energyRechargeElapsed += msElapsed;
-    }
 
     Entity::update(engine, msElapsed);
 }
