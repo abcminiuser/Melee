@@ -10,6 +10,8 @@ add_library (Engine
     Entities/AsteroidEntity.hpp
     Entities/ExhaustEntity.cpp
     Entities/ExhaustEntity.hpp
+    Entities/ExplosionEntity.cpp
+    Entities/ExplosionEntity.hpp
     Entities/PlanetEntity.cpp
     Entities/PlanetEntity.hpp
     Entities/PlayerEntity.cpp

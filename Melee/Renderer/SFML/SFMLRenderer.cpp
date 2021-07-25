@@ -4,6 +4,7 @@
 
 #include "Entities/SFMLAsteroidEntityRenderer.hpp"
 #include "Entities/SFMLExhaustEntityRenderer.hpp"
+#include "Entities/SFMLExplosionEntityRenderer.hpp"
 #include "Entities/SFMLPlanetEntityRenderer.hpp"
 #include "Entities/SFMLPlayerEntityRenderer.hpp"
 
@@ -119,16 +120,10 @@ std::shared_ptr<RenderContext> SFMLRenderer::createRenderContext(const std::shar
 {
     switch (entity->type())
     {
-        case Entity::Type::Player:
+        case Entity::Type::Asteroid:
         {
-            const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
-            return std::make_shared<SFMLPlayerEntityRenderer>(*playerEntity);
-        }
-
-        case Entity::Type::Planet:
-        {
-            const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
-            return std::make_shared<SFMLPlanetEntityRenderer>(*planetEntity);
+            const auto asteroidEntity = std::dynamic_pointer_cast<AsteroidEntity>(entity);
+            return std::make_shared<SFMLAsteroidEntityRenderer>(*asteroidEntity);
         }
 
         case Entity::Type::Exhaust:
@@ -137,10 +132,22 @@ std::shared_ptr<RenderContext> SFMLRenderer::createRenderContext(const std::shar
             return std::make_shared<SFMLExhaustEntityRenderer>(*exhaustEntity);
         }
 
-        case Entity::Type::Asteroid:
+        case Entity::Type::Explosion:
         {
-            const auto asteroidEntity = std::dynamic_pointer_cast<AsteroidEntity>(entity);
-            return std::make_shared<SFMLAsteroidEntityRenderer>(*asteroidEntity);
+            const auto explosionEntity = std::dynamic_pointer_cast<ExplosionEntity>(entity);
+            return std::make_shared<SFMLExplosionEntityRenderer>(*explosionEntity);
+        }
+
+        case Entity::Type::Planet:
+        {
+            const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
+            return std::make_shared<SFMLPlanetEntityRenderer>(*planetEntity);
+        }
+
+        case Entity::Type::Player:
+        {
+            const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
+            return std::make_shared<SFMLPlayerEntityRenderer>(*playerEntity);
         }
     }
 

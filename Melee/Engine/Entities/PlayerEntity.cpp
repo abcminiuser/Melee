@@ -2,6 +2,8 @@
 
 #include "Engine/Engine.hpp"
 
+#include <algorithm>
+
 using namespace Melee;
 
 namespace
@@ -47,6 +49,16 @@ void PlayerEntity::handleKey(KeyEvent key, bool down)
 
 void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
 {
+    if (!m_health)
+    {
+        engine.removeEntity(shared_from_this());
+
+        auto explosionEntity = std::make_shared<ExplosionEntity>(ExplosionEntity::ExplosionProperties{}, m_position);
+        engine.addEntity(explosionEntity);
+
+        return;
+    }
+
     const auto rotateFlags = m_flags & (Flags::RotateLeftActive | Flags::RotateRightActive);
     if (rotateFlags == Flags::RotateLeftActive)
     {
@@ -110,12 +122,17 @@ void PlayerEntity::collide(Engine& engine, const Entity& otherEntity)
             m_acceleration = {};
             m_velocity = -m_velocity;
 
+            if (otherEntity.type() == Entity::Type::Planet)
+                applyDamage(1);
+
             break;
         }
-
-        case Entity::Type::Projectile:
-            break;
     }
 
     Entity::collide(engine, otherEntity);
+}
+
+void PlayerEntity::applyDamage(int amount)
+{
+    m_health = std::clamp<int>(m_health - amount, 0, m_playerProperties.maxHealth);
 }

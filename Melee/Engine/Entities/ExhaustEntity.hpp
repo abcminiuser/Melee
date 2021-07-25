@@ -9,6 +9,11 @@ namespace Melee
     public:
         struct ExhaustProperties : public Properties
         {
+            ExhaustProperties()
+            {
+                collidable = false;
+            }
+
             uint32_t maxAge = 1000;
         };
 

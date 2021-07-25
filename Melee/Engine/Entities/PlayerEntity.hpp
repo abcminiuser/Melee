@@ -44,6 +44,9 @@ namespace Melee
         void        collide(Engine& engine, const Entity& otherEntity) override;
 
     private:
+        void        applyDamage(int amount);
+
+    private:
         struct Flags
         {
             enum Mask : uint32_t

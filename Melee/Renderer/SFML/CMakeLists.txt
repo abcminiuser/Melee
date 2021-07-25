@@ -16,6 +16,8 @@ add_library (SFMLRenderer
     Entities/SFMLAsteroidEntityRenderer.hpp
     Entities/SFMLExhaustEntityRenderer.cpp
     Entities/SFMLExhaustEntityRenderer.hpp
+	Entities/SFMLExplosionEntityRenderer.cpp
+    Entities/SFMLExplosionEntityRenderer.hpp
     Entities/SFMLPlanetEntityRenderer.cpp
 	Entities/SFMLPlanetEntityRenderer.hpp
     Entities/SFMLPlayerEntityRenderer.cpp

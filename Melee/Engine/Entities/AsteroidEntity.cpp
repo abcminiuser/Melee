@@ -43,9 +43,6 @@ void AsteroidEntity::collide(Engine& engine, const Entity& otherEntity)
 
             break;
         }
-
-        case Entity::Type::Projectile:
-            break;
     }
 
     Entity::collide(engine, otherEntity);

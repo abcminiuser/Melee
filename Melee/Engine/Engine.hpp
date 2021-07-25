@@ -5,6 +5,7 @@
 #include "Entity.hpp"
 #include "Entities/AsteroidEntity.hpp"
 #include "Entities/ExhaustEntity.hpp"
+#include "Entities/ExplosionEntity.hpp"
 #include "Entities/PlanetEntity.hpp"
 #include "Entities/PlayerEntity.hpp"
 

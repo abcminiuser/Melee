@@ -16,7 +16,7 @@ namespace
             playerProps.maxVelocity = 0;
             playerProps.rotation_degPerSec = 100;
             playerProps.maxVelocity = 1000;
-            playerProps.maxHealth = 20;
+            playerProps.maxHealth = 2;
             playerProps.maxEnergy = 10;
             playerProps.radius_km = 1000;
 

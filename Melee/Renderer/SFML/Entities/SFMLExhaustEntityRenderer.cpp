@@ -9,13 +9,13 @@ namespace
 {
 	sf::CircleShape	s_shape =
 		[]()
-	{
-		sf::CircleShape circle;
-		circle.setRadius(1);
-		circle.setOrigin(1, 1);
+		{
+			sf::CircleShape circle;
+			circle.setRadius(1);
+			circle.setOrigin(1, 1);
 
-		return circle;
-	}();
+			return circle;
+		}();
 
 	static const sf::Color kExhaustColours[] =
 	{
