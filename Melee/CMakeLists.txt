@@ -18,5 +18,5 @@ else ()
 endif ()
 
 add_custom_command(TARGET Main POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                   ${CMAKE_SOURCE_DIR}/Assets $<TARGET_FILE_DIR:Main>/Assets)
+                   COMMAND ${CMAKE_COMMAND}
+                   ARGS -E copy_directory ${CMAKE_SOURCE_DIR}/Assets $<TARGET_FILE_DIR:Main>/Assets)

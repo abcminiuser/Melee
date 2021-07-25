@@ -41,7 +41,7 @@ namespace Melee
 	// Entity i/f:
 	public:
 		void		update(Engine& engine, uint32_t msElapsed) override;
-		void		collide(Engine& engine, Entity& otherEntity) override;
+		void		collide(Engine& engine, const Entity& otherEntity) override;
 
 	private:
 		struct Flags

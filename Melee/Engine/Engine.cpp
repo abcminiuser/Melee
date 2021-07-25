@@ -81,8 +81,11 @@ void Engine::checkForEntityCollisions()
 			if (!m_collisionCallback || !m_collisionCallback(entity1, entity2))
 				continue;
 
+			// We need to copy E1 before handling the collision, as we want E2 to collide based on the original state.
+			auto entity1Copy = *entity1;
+
 			entity1->collide(*this, *entity2);
-			entity2->collide(*this, *entity1);
+			entity2->collide(*this, entity1Copy);
 		}
 	}
 }

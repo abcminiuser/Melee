@@ -30,7 +30,7 @@ void AsteroidEntity::update(Engine& engine, uint32_t msElapsed)
 	Entity::update(engine, msElapsed);
 }
 
-void AsteroidEntity::collide(Engine& engine, Entity& otherEntity)
+void AsteroidEntity::collide(Engine& engine, const Entity& otherEntity)
 {
 	switch (otherEntity.type())
 	{

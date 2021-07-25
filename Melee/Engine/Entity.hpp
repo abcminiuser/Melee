@@ -33,7 +33,7 @@ namespace Melee
 		virtual							~Entity() = default;
 
 		virtual void					update(Engine& engine, uint32_t msElapsed);
-		virtual void					collide(Engine& engine, Entity& otherEntity);
+		virtual void					collide(Engine& engine, const Entity& otherEntity);
 
 		Type							type() const { return m_type; }
 		const auto&						properties() const { return m_properties; }
