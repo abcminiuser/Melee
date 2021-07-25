@@ -18,6 +18,7 @@ namespace Melee
             Explosion,
             Planet,
             Player,
+            Projectile,
         };
 
         struct Properties

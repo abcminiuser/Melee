@@ -16,7 +16,7 @@ void ExhaustEntity::update(Engine& engine, uint32_t msElapsed)
 {
     m_age += msElapsed;
 
-    if (m_age >= m_exhaustProperties.maxAge)
+    if (m_age >= m_exhaustProperties.maxAge_ms)
         engine.removeEntity(shared_from_this());
 
     Entity::update(engine, msElapsed);

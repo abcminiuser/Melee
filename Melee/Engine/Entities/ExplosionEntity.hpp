@@ -15,7 +15,7 @@ namespace Melee
                 radius_km = 2500;
             }
 
-            uint32_t maxAge = 1000;
+            uint32_t maxAge_ms = 1000;
         };
 
     public:

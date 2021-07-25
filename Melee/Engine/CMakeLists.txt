@@ -16,6 +16,8 @@ add_library (Engine
     Entities/PlanetEntity.hpp
     Entities/PlayerEntity.cpp
     Entities/PlayerEntity.hpp
+    Entities/ProjectileEntity.cpp
+    Entities/ProjectileEntity.hpp
 )
 
 target_include_directories (Engine PRIVATE ../)

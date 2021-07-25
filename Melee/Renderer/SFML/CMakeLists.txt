@@ -22,6 +22,8 @@ add_library (SFMLRenderer
 	Entities/SFMLPlanetEntityRenderer.hpp
     Entities/SFMLPlayerEntityRenderer.cpp
 	Entities/SFMLPlayerEntityRenderer.hpp
+    Entities/SFMLProjectileEntityRenderer.cpp
+	Entities/SFMLProjectileEntityRenderer.hpp
 )
 
 target_include_directories (SFMLRenderer PRIVATE ../../)

@@ -16,7 +16,7 @@ void ExplosionEntity::update(Engine& engine, uint32_t msElapsed)
 {
     m_age += msElapsed;
 
-    if (m_age >= m_explosionProperties.maxAge)
+    if (m_age >= m_explosionProperties.maxAge_ms)
         engine.removeEntity(shared_from_this());
 
     Entity::update(engine, msElapsed);

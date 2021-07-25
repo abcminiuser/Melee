@@ -28,13 +28,13 @@ void SFMLExplosionEntityRenderer::render(sf::RenderTarget& renderer, uint32_t sc
 {
 	const auto explosionPos = m_entity.position() / scaleFactor;
 	const auto explosionAge = m_entity.age();
-	const auto explosionMaxAge = m_entity.properties().maxAge;
-	const auto explosionSize = m_entity.properties().radius_km / scaleFactor;
+	const auto explosionMaxAge = m_entity.properties().maxAge_ms;
+	const auto explosionRadius = m_entity.properties().radius_km / scaleFactor;
 
-	const auto explosionRadius = explosionAge * explosionSize / explosionMaxAge;
+	const auto currentRadius = explosionAge * explosionRadius / explosionMaxAge;
 
-	m_shape.setRadius(explosionRadius);
-	m_shape.setOrigin(explosionRadius, explosionRadius);
+	m_shape.setRadius(currentRadius);
+	m_shape.setOrigin(currentRadius, currentRadius);
 
 	m_shape.setFillColor(kExplosionColours[explosionAge * std::size(kExplosionColours) / explosionMaxAge]);
 	m_shape.setPosition(ToSFMLVector(explosionPos));

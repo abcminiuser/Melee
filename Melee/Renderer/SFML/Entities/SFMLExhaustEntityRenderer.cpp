@@ -38,7 +38,7 @@ void SFMLExhaustEntityRenderer::render(sf::RenderTarget& renderer, uint32_t scal
 {
 	const auto exhaustPos = m_entity.position() / scaleFactor;
 	const auto exhaustAge = m_entity.age();
-	const auto exhaustMaxAge = m_entity.properties().maxAge;
+	const auto exhaustMaxAge = m_entity.properties().maxAge_ms;
 
 	s_shape.setFillColor(kExhaustColours[exhaustAge * std::size(kExhaustColours) / exhaustMaxAge]);
 	s_shape.setPosition(ToSFMLVector(exhaustPos));

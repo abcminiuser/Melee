@@ -14,7 +14,7 @@ namespace Melee
                 collidable = false;
             }
 
-            uint32_t maxAge = 1000;
+            uint32_t maxAge_ms = 1000;
         };
 
     public:

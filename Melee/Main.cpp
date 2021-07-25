@@ -32,7 +32,7 @@ namespace
             planetProps.mass_kg = 3.9736e16f;
             planetProps.radius_km = 6371;
 
-            auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 400 * scaleFactor, 300 * scaleFactor });
+            auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 600 * scaleFactor, 300 * scaleFactor });
             engine.addEntity(planet);
         }
 

@@ -45,6 +45,10 @@ void PlayerEntity::handleKey(KeyEvent key, bool down)
         UpdateFlag(Flags::RotateLeftActive, down);
     else if (key == KeyEvent::RotateRight)
         UpdateFlag(Flags::RotateRightActive, down);
+    else if (key == KeyEvent::FirePrimary)
+        UpdateFlag(Flags::FirePrimaryActive, down);
+    else if (key == KeyEvent::FireSpecial)
+        UpdateFlag(Flags::FireSpecialActive, down);
 }
 
 void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
@@ -74,7 +78,7 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     {
         m_rotationMsElapsed += msElapsed;
 
-        while (m_rotationMsElapsed > kRotationIntervalMs)
+        while (m_rotationMsElapsed >= kRotationIntervalMs)
         {
             m_heading = m_rotationalThrustRight * m_heading;
             m_rotationMsElapsed -= std::min(kRotationIntervalMs, m_rotationMsElapsed);
@@ -94,7 +98,7 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
 
         m_acceleration = thrustVector * m_engineAcceleration_ms2;
 
-        if (m_thrustExhaustMsElapsed > kThrustExhaustIntervalMs)
+        if (m_thrustExhaustMsElapsed >= kThrustExhaustIntervalMs)
         {
             auto exhaustEntity = std::make_shared<ExhaustEntity>(ExhaustEntity::ExhaustProperties{}, m_position, -m_acceleration);
             engine.addEntity(exhaustEntity);
@@ -106,6 +110,33 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     {
         m_acceleration = Vector2d{ 0, 0 };
         m_thrustExhaustMsElapsed = 0;
+    }
+
+    if (m_primaryFireMsElapsed >= m_playerProperties.primaryFireRate_ms)
+    {
+        if (m_flags & Flags::FirePrimaryActive && m_energy >= m_playerProperties.primaryEnergyCost)
+        {
+            auto projectileEntity = std::make_shared<ProjectileEntity>(ProjectileEntity::ProjectileProperties{}, shared_from_this(), m_position + m_heading * (m_playerProperties.radius_km + 500), m_heading * 30);
+            engine.addEntity(projectileEntity);
+
+            consumeEnergy(m_playerProperties.primaryEnergyCost);
+
+            m_primaryFireMsElapsed = 0;
+        }
+    }
+    else
+    {
+        m_primaryFireMsElapsed += msElapsed;
+    }
+
+    if (m_energyRechargeElapsed > m_playerProperties.energyRechargeRate_ms)
+    {
+        consumeEnergy(-1);
+        m_energyRechargeElapsed -= m_playerProperties.energyRechargeRate_ms;
+    }
+    else
+    {
+        m_energyRechargeElapsed += msElapsed;
     }
 
     Entity::update(engine, msElapsed);
@@ -127,6 +158,16 @@ void PlayerEntity::collide(Engine& engine, const Entity& otherEntity)
 
             break;
         }
+
+        case Entity::Type::Projectile:
+        {
+            const auto& projectileEntity = *dynamic_cast<const ProjectileEntity*>(&otherEntity);
+
+            if (projectileEntity.ownerEntity() != shared_from_this())
+                applyDamage(projectileEntity.properties().damage);
+
+            break;
+        }
     }
 
     Entity::collide(engine, otherEntity);
@@ -135,4 +176,9 @@ void PlayerEntity::collide(Engine& engine, const Entity& otherEntity)
 void PlayerEntity::applyDamage(int amount)
 {
     m_health = std::clamp<int>(m_health - amount, 0, m_playerProperties.maxHealth);
+}
+
+void PlayerEntity::consumeEnergy(int amount)
+{
+    m_energy = std::clamp<int>(m_energy - amount, 0, m_playerProperties.maxEnergy);
 }

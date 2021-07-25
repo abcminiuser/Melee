@@ -8,6 +8,7 @@
 #include "Entities/ExplosionEntity.hpp"
 #include "Entities/PlanetEntity.hpp"
 #include "Entities/PlayerEntity.hpp"
+#include "Entities/ProjectileEntity.hpp"
 
 #include <functional>
 #include <unordered_map>

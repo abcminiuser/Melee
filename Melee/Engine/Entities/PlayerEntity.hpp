@@ -19,11 +19,16 @@ namespace Melee
 
         struct PlayerProperties : public Properties
         {
-            float       engineForce_N       = 0;
-            float       rotation_degPerSec  = 0;
+            float       engineForce_N         = 0;
+            float       rotation_degPerSec    = 0;
 
-            uint32_t    maxHealth           = 0;
-            uint32_t    maxEnergy           = 0;
+            uint32_t    maxHealth             = 1;
+            uint32_t    maxEnergy             = 10;
+
+            uint32_t    energyRechargeRate_ms = 200;
+
+            uint32_t    primaryFireRate_ms    = 50;
+            uint32_t    primaryEnergyCost     = 1;
         };
 
     public:
@@ -45,6 +50,7 @@ namespace Melee
 
     private:
         void        applyDamage(int amount);
+        void        consumeEnergy(int amount);
 
     private:
         struct Flags
@@ -55,6 +61,8 @@ namespace Melee
                 ReverseThrustActive     = 1 << 1,
                 RotateLeftActive        = 1 << 2,
                 RotateRightActive       = 1 << 3,
+                FirePrimaryActive       = 1 << 4,
+                FireSpecialActive       = 1 << 5,
             };
         };
 
@@ -66,8 +74,10 @@ namespace Melee
         Matrix2x2               m_rotationalThrustRight;
 
         uint32_t                m_flags = 0;
+        uint32_t                m_energyRechargeElapsed = 0;
         uint32_t                m_rotationMsElapsed = 0;
         uint32_t                m_thrustExhaustMsElapsed = 0;
+        uint32_t                m_primaryFireMsElapsed = 0;
 
         uint32_t                m_health = 0;
         uint32_t                m_energy = 0;

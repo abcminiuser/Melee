@@ -7,6 +7,7 @@
 #include "Entities/SFMLExplosionEntityRenderer.hpp"
 #include "Entities/SFMLPlanetEntityRenderer.hpp"
 #include "Entities/SFMLPlayerEntityRenderer.hpp"
+#include "Entities/SFMLProjectileEntityRenderer.hpp"
 
 #include "Engine/Engine.hpp"
 
@@ -148,6 +149,12 @@ std::shared_ptr<RenderContext> SFMLRenderer::createRenderContext(const std::shar
         {
             const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
             return std::make_shared<SFMLPlayerEntityRenderer>(*playerEntity);
+        }
+
+        case Entity::Type::Projectile:
+        {
+            const auto projectileEntity = std::dynamic_pointer_cast<ProjectileEntity>(entity);
+            return std::make_shared<SFMLProjectileEntityRenderer>(*projectileEntity);
         }
     }
 
