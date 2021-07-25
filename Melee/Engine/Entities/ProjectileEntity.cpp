@@ -28,10 +28,10 @@ void ProjectileEntity::collide(Engine& engine, const Entity& otherEntity)
     if (&otherEntity == m_ownerEntity.get())
         return;
 
-	engine.removeEntity(shared_from_this());
+    engine.removeEntity(shared_from_this());
 
-	ExplosionEntity::ExplosionProperties explosionProps = {};
-	explosionProps.radius_km = 10;
+    ExplosionEntity::ExplosionProperties explosionProps = {};
+    explosionProps.radius_km = 10;
 
     auto explosionEntity = std::make_shared<ExplosionEntity>(explosionProps, m_position);
     engine.addEntity(explosionEntity);

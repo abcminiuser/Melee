@@ -31,8 +31,8 @@ namespace Melee
         void        update(Engine& engine, uint32_t msElapsed) override;
 
     private:
-        const ExplosionProperties	m_explosionProperties;
+        const ExplosionProperties   m_explosionProperties;
 
-        uint32_t                	m_age = 0;
+        uint32_t                    m_age = 0;
     };
 }
