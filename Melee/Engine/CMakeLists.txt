@@ -6,6 +6,7 @@ add_library (Engine
     EngineTypes.hpp
     Entity.cpp
     Entity.hpp
+
     Entities/AsteroidEntity.cpp
     Entities/AsteroidEntity.hpp
     Entities/ExhaustEntity.cpp

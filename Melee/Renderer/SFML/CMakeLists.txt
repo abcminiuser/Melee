@@ -5,13 +5,15 @@ if (MSVC)
     set(SFML_STATIC_LIBRARIES TRUE)
 endif ()
 
-find_package (SFML REQUIRED COMPONENTS system window graphics network audio)
+find_package (SFML REQUIRED COMPONENTS window graphics network audio)
+set (SFML_LIBRARIES sfml-window sfml-graphics sfml-network sfml-audio)
 
 add_library (SFMLRenderer
     SFMLRenderer.cpp
     SFMLRenderer.hpp
 	SFMLRenderable.hpp
 	SFMLUtils.hpp
+
     Entities/SFMLAsteroidEntityRenderer.cpp
     Entities/SFMLAsteroidEntityRenderer.hpp
     Entities/SFMLExhaustEntityRenderer.cpp
@@ -28,4 +30,4 @@ add_library (SFMLRenderer
 
 target_include_directories (SFMLRenderer PRIVATE ../../)
 target_compile_features (SFMLRenderer PUBLIC cxx_std_17)
-target_link_libraries (SFMLRenderer PUBLIC sfml-system sfml-window sfml-graphics sfml-network sfml-audio Engine)
+target_link_libraries (SFMLRenderer PUBLIC ${SFML_LIBRARIES} Engine)
