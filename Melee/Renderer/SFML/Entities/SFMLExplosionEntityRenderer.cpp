@@ -9,12 +9,13 @@ namespace
 {
     const sf::Color kExplosionColours[] =
         {
-            HSVColor(50, 100, 100),
-            HSVColor(40, 85, 80),
-            HSVColor(30, 85, 60),
-            HSVColor(20, 85, 40),
-            HSVColor(10, 85, 35),
-            HSVColor(0, 85, 20),
+            HSVColor(  0,   0, 100),
+            HSVColor( 50, 100, 100),
+            HSVColor( 40,  85,  80),
+            HSVColor( 30,  85,  60),
+            HSVColor( 20,  85,  40),
+            HSVColor( 10,  85,  35),
+            HSVColor( 0 ,  85,  20),
         };
 }
 
