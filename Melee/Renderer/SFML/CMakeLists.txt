@@ -11,21 +11,21 @@ set (SFML_LIBRARIES sfml-window sfml-graphics sfml-network sfml-audio)
 add_library (SFMLRenderer
     SFMLRenderer.cpp
     SFMLRenderer.hpp
-	SFMLRenderable.hpp
-	SFMLUtils.hpp
+    SFMLRenderable.hpp
+    SFMLUtils.hpp
 
     Entities/SFMLAsteroidEntityRenderer.cpp
     Entities/SFMLAsteroidEntityRenderer.hpp
     Entities/SFMLExhaustEntityRenderer.cpp
     Entities/SFMLExhaustEntityRenderer.hpp
-	Entities/SFMLExplosionEntityRenderer.cpp
+    Entities/SFMLExplosionEntityRenderer.cpp
     Entities/SFMLExplosionEntityRenderer.hpp
     Entities/SFMLPlanetEntityRenderer.cpp
-	Entities/SFMLPlanetEntityRenderer.hpp
+    Entities/SFMLPlanetEntityRenderer.hpp
     Entities/SFMLPlayerEntityRenderer.cpp
-	Entities/SFMLPlayerEntityRenderer.hpp
+    Entities/SFMLPlayerEntityRenderer.hpp
     Entities/SFMLProjectileEntityRenderer.cpp
-	Entities/SFMLProjectileEntityRenderer.hpp
+    Entities/SFMLProjectileEntityRenderer.hpp
 )
 
 target_include_directories (SFMLRenderer PRIVATE ../../)
