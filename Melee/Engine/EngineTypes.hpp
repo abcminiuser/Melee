@@ -32,6 +32,16 @@ namespace Melee
 
 		// TODO: Cross Product
 
+		bool operator==(const Vector2d& other) const
+		{
+			return std::tie(x, y) == std::tie(other.x, other.y);
+		}
+
+		bool operator!=(const Vector2d& other) const
+		{
+			return std::tie(x, y) != std::tie(other.x, other.y);
+		}
+
 		Vector2d& operator +=(const Vector2d& other)
 		{
 			x += other.x;

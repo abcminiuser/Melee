@@ -12,7 +12,7 @@ SFMLExhaustEntityRenderer::SFMLExhaustEntityRenderer(ExhaustEntity& entity)
 	m_shape.setOrigin(1, 1);
 }
 
-void SFMLExhaustEntityRenderer::render(sf::RenderWindow& window, uint32_t scaleFactor)
+void SFMLExhaustEntityRenderer::render(sf::RenderTarget& window, uint32_t scaleFactor)
 {
 	static const sf::Color kExhaustColours[] =
 		{

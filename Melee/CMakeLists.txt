@@ -16,3 +16,7 @@ if (MSVC)
 else ()
     target_compile_options (Main PUBLIC -Wall -Wextra -Werror -Wno-unused-parameter)
 endif ()
+
+add_custom_command(TARGET Main POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   ${CMAKE_SOURCE_DIR}/Assets $<TARGET_FILE_DIR:Main>/Assets)

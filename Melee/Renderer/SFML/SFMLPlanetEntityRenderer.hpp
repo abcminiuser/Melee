@@ -14,11 +14,15 @@ namespace Melee
 
 		// SFMLRenderable i/f:
 	public:
-		void				render(sf::RenderWindow& window, uint32_t scaleFactor) override;
+		void				render(sf::RenderTarget& window, uint32_t scaleFactor) override;
 
 	private:
 		const PlanetEntity&	m_entity;
 
-		sf::CircleShape		m_shape;
+		uint32_t			m_lastScaleFactor = {};
+
+		sf::Texture			m_planetImage;
+		sf::Vector2u		m_planetImageSize;
+		sf::Sprite			m_sprite;
 	};
 }

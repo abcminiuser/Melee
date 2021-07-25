@@ -78,13 +78,13 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
 	{
 		m_thrustExhaustMsElapsed += msElapsed;
 
-		const auto thrustVector = m_heading * ((thrustFlags == Flags::ThrustActive) ? -1 : 1);
+		const auto thrustVector = m_heading * ((thrustFlags == Flags::ThrustActive) ? 1 : -1);
 
-		m_acceleration = -thrustVector * m_engineAcceleration_ms2;
+		m_acceleration = thrustVector * m_engineAcceleration_ms2;
 		
 		if (m_thrustExhaustMsElapsed > kThrustExhaustIntervalMs)
 		{
-			auto exhaustEntity = std::make_shared<ExhaustEntity>(ExhaustEntity::ExhaustProperties{}, m_position, m_velocity * thrustVector.length());
+			auto exhaustEntity = std::make_shared<ExhaustEntity>(ExhaustEntity::ExhaustProperties{}, m_position, -m_acceleration);
 			engine.addEntity(exhaustEntity);
 
 			m_thrustExhaustMsElapsed = 0;

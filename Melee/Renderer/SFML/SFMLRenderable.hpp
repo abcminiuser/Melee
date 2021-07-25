@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Engine/EngineTypes.hpp"
+
 namespace Melee
 {
 	class Entity;
@@ -13,7 +15,7 @@ namespace Melee
 		virtual			~RenderContext() = default;
 
 	public:
-		virtual void	render(sf::RenderWindow& window, uint32_t scaleFactor) = 0;
+		virtual void	render(sf::RenderTarget& window, uint32_t scaleFactor) = 0;
 	};
 
 	using SFMLRenderable = RenderContext;
