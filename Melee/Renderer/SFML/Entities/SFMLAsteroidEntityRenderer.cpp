@@ -30,7 +30,7 @@ void SFMLAsteroidEntityRenderer::render(sf::RenderTarget& renderer, uint32_t sca
 		m_sprite.setRotation(ToDegrees(asteroidHeading));
 	}
 
-	m_sprite.setPosition(ToSFML(asteroidPos));
+	m_sprite.setPosition(ToSFMLVector(asteroidPos));
 
     renderer.draw(m_sprite);
 }

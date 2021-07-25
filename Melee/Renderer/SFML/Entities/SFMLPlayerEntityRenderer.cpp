@@ -31,7 +31,7 @@ void SFMLPlayerEntityRenderer::render(sf::RenderTarget& renderer, uint32_t scale
         m_sprite.setRotation(ToDegrees(playerHeading));
     }
 
-    m_sprite.setPosition(ToSFML(playerPos));
+    m_sprite.setPosition(ToSFMLVector(playerPos));
 
     renderer.draw(m_sprite);
 }

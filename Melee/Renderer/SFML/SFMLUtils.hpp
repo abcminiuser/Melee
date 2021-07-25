@@ -37,7 +37,7 @@ namespace Melee
             return { c, 0, x };
     }
 
-	static inline sf::Vector2f ToSFML(const Vector2d& v)
+	static inline sf::Vector2f ToSFMLVector(const Vector2d& v)
     {
         return sf::Vector2f{ v.x, v.y };
     }
