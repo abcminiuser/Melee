@@ -7,137 +7,137 @@
 
 namespace Melee
 {
-	class Engine;
-	class Entity;
+    class Engine;
+    class Entity;
 
-	struct Vector2d
-	{
-		float x = 0;
-		float y = 0;
+    struct Vector2d
+    {
+        float x = 0;
+        float y = 0;
 
-		float lengthSquared() const
-		{
-			return x * x + y * y;
-		}
+        float lengthSquared() const
+        {
+            return x * x + y * y;
+        }
 
-		float length() const
-		{
-			return sqrt(x * x + y * y);
-		}
+        float length() const
+        {
+            return sqrt(x * x + y * y);
+        }
 
-		Vector2d normalised() const
-		{
-			return Vector2d{ x, y } / length();
-		}
+        Vector2d normalised() const
+        {
+            return Vector2d{ x, y } / length();
+        }
 
-		Vector2d dotProduct(const Vector2d& other) const
-		{
-			return Vector2d{ x * other.x, y * other.y };
-		}
+        Vector2d dotProduct(const Vector2d& other) const
+        {
+            return Vector2d{ x * other.x, y * other.y };
+        }
 
-		bool operator==(const Vector2d& other) const
-		{
-			return std::tie(x, y) == std::tie(other.x, other.y);
-		}
+        bool operator==(const Vector2d& other) const
+        {
+            return std::tie(x, y) == std::tie(other.x, other.y);
+        }
 
-		bool operator!=(const Vector2d& other) const
-		{
-			return std::tie(x, y) != std::tie(other.x, other.y);
-		}
+        bool operator!=(const Vector2d& other) const
+        {
+            return std::tie(x, y) != std::tie(other.x, other.y);
+        }
 
-		Vector2d& operator +=(const Vector2d& other)
-		{
-			x += other.x;
-			y += other.y;
+        Vector2d& operator +=(const Vector2d& other)
+        {
+            x += other.x;
+            y += other.y;
 
-			return *this;
-		}
+            return *this;
+        }
 
-		Vector2d& operator -=(const Vector2d& other)
-		{
-			x -= other.x;
-			y -= other.y;
+        Vector2d& operator -=(const Vector2d& other)
+        {
+            x -= other.x;
+            y -= other.y;
 
-			return *this;
-		}
+            return *this;
+        }
 
-		Vector2d& operator *=(float scaler)
-		{
-			x *= scaler;
-			y *= scaler;
+        Vector2d& operator *=(float scaler)
+        {
+            x *= scaler;
+            y *= scaler;
 
-			return *this;
-		}
+            return *this;
+        }
 
-		Vector2d& operator /=(float scaler)
-		{
-			x /= scaler;
-			y /= scaler;
+        Vector2d& operator /=(float scaler)
+        {
+            x /= scaler;
+            y /= scaler;
 
-			return *this;
-		}
+            return *this;
+        }
 
-		Vector2d operator -() const
-		{
-			return Vector2d{ -x, -y };
-		}
+        Vector2d operator -() const
+        {
+            return Vector2d{ -x, -y };
+        }
 
-		Vector2d operator +(const Vector2d& other) const
-		{
-			Vector2d v = *this;
-			v.operator+=(other);
+        Vector2d operator +(const Vector2d& other) const
+        {
+            Vector2d v = *this;
+            v.operator+=(other);
 
-			return v;
-		}
+            return v;
+        }
 
-		Vector2d operator -(const Vector2d& other) const
-		{
-			Vector2d v = *this;
-			v.operator-=(other);
+        Vector2d operator -(const Vector2d& other) const
+        {
+            Vector2d v = *this;
+            v.operator-=(other);
 
-			return v;
-		}
+            return v;
+        }
 
-		Vector2d operator *(float scaler) const
-		{
-			Vector2d v = *this;
-			v.operator*=(scaler);
+        Vector2d operator *(float scaler) const
+        {
+            Vector2d v = *this;
+            v.operator*=(scaler);
 
-			return v;
-		}
+            return v;
+        }
 
-		Vector2d operator /(float scaler) const
-		{
-			Vector2d v = *this;
-			v.operator/=(scaler);
+        Vector2d operator /(float scaler) const
+        {
+            Vector2d v = *this;
+            v.operator/=(scaler);
 
-			return v;
-		}
-	};
+            return v;
+        }
+    };
 
-	struct Matrix2x2
-	{
-		float x0y0 = 0;
-		float x1y0 = 0;
-		float x0y1 = 0;
-		float x1y1 = 0;
+    struct Matrix2x2
+    {
+        float x0y0 = 0;
+        float x1y0 = 0;
+        float x0y1 = 0;
+        float x1y1 = 0;
 
-		Vector2d operator *(const Vector2d& v) const
-		{
-			return Vector2d{ v.x * x0y0 + v.y * x1y0, v.x * x0y1 + v.y * x1y1 };
-		}
-	};
+        Vector2d operator *(const Vector2d& v) const
+        {
+            return Vector2d{ v.x * x0y0 + v.y * x1y0, v.x * x0y1 + v.y * x1y1 };
+        }
+    };
 
-	static inline Matrix2x2 RotationMatrix(float degrees)
-	{
-		const float rads = degrees * static_cast<float>(2 * M_PI / 360);
-		const float cosAng = cosf(rads);
-		const float sinAng = sinf(rads);
+    static inline Matrix2x2 RotationMatrix(float degrees)
+    {
+        const float rads = degrees * static_cast<float>(2 * M_PI / 360);
+        const float cosAng = cosf(rads);
+        const float sinAng = sinf(rads);
 
-		return Matrix2x2{ cosAng, -sinAng, sinAng, cosAng };
-	}
+        return Matrix2x2{ cosAng, -sinAng, sinAng, cosAng };
+    }
 
-	using Point = Vector2d;
+    using Point = Vector2d;
 
-	using EntityList = std::list<std::shared_ptr<Entity>>;
+    using EntityList = std::list<std::shared_ptr<Entity>>;
 }

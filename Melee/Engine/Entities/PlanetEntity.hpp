@@ -4,25 +4,25 @@
 
 namespace Melee
 {
-	class PlanetEntity : public Entity
-	{
-	public:
-		struct PlanetProperties : public Properties
-		{
-			
-		};
+    class PlanetEntity : public Entity
+    {
+    public:
+        struct PlanetProperties : public Properties
+        {
 
-	public:
-		explicit				PlanetEntity(const PlanetProperties& properties, const Point& pos);
-		virtual					~PlanetEntity() = default;
+        };
 
-		const auto& 			properties() const { return m_planetProperties; }
+    public:
+        explicit                PlanetEntity(const PlanetProperties& properties, const Point& pos);
+        virtual                 ~PlanetEntity() = default;
 
-	// Entity i/f:
-	public:
-		void					update(Engine& engine, uint32_t msElapsed) override;
+        const auto&             properties() const { return m_planetProperties; }
 
-	private:
-		const PlanetProperties	m_planetProperties;
-	};
+    // Entity i/f:
+    public:
+        void                    update(Engine& engine, uint32_t msElapsed) override;
+
+    private:
+        const PlanetProperties  m_planetProperties;
+    };
 }

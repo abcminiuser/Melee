@@ -13,39 +13,39 @@
 
 namespace Melee
 {
-	class Engine final
-	{
-	public:
-		using CollisionCallback = std::function<bool(const std::shared_ptr<Entity>&, const std::shared_ptr<Entity>&)>;
+    class Engine final
+    {
+    public:
+        using CollisionCallback = std::function<bool(const std::shared_ptr<Entity>&, const std::shared_ptr<Entity>&)>;
 
-		explicit	Engine();
-					~Engine() = default;
+        explicit    Engine();
+                    ~Engine() = default;
 
-		auto&		getEntities()										{ return m_entities; }
-		auto&		getEntities(Entity::Type type)						{ return m_entifiesForType[type]; }
+        auto&       getEntities()                                       { return m_entities; }
+        auto&       getEntities(Entity::Type type)                      { return m_entifiesForType[type]; }
 
-		void		setCollisionCallback(CollisionCallback&& callback)	{ m_collisionCallback = callback;  }
+        void        setCollisionCallback(CollisionCallback&& callback)  { m_collisionCallback = callback;  }
 
-		void		update(uint32_t msElapsed);
+        void        update(uint32_t msElapsed);
 
-		void		addEntity(const std::shared_ptr<Entity>& entity);
-		void		removeEntity(const std::shared_ptr<Entity>& entity);
+        void        addEntity(const std::shared_ptr<Entity>& entity);
+        void        removeEntity(const std::shared_ptr<Entity>& entity);
 
-	private:
-		void		handleDeferredEntityAddRemove();
-		void		checkForEntityCollisions();
+    private:
+        void        handleDeferredEntityAddRemove();
+        void        checkForEntityCollisions();
 
-	private:
-		using EntityMap = std::unordered_map<Entity::Type, EntityList>;
+    private:
+        using EntityMap = std::unordered_map<Entity::Type, EntityList>;
 
-		EntityList			m_entities;
-		EntityMap			m_entifiesForType;
+        EntityList          m_entities;
+        EntityMap           m_entifiesForType;
 
-		EntityList			m_entitiesToAdd;
-		EntityList			m_entitiesToRemove;
+        EntityList          m_entitiesToAdd;
+        EntityList          m_entitiesToRemove;
 
-		CollisionCallback	m_collisionCallback;
+        CollisionCallback   m_collisionCallback;
 
-		uint32_t			m_updateMsElapsed = 0;
-	};
+        uint32_t            m_updateMsElapsed = 0;
+    };
 }

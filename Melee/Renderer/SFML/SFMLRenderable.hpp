@@ -6,17 +6,17 @@
 
 namespace Melee
 {
-	class Entity;
+    class Entity;
 
-	class RenderContext
-	{
-	public:
-		RenderContext() = default;
-		virtual			~RenderContext() = default;
+    class RenderContext
+    {
+    public:
+        explicit        RenderContext() = default;
+        virtual         ~RenderContext() = default;
 
-	public:
-		virtual void	render(sf::RenderTarget& renderer, uint32_t scaleFactor) = 0;
-	};
+    public:
+        virtual void    render(sf::RenderTarget& renderer, uint32_t scaleFactor) = 0;
+    };
 
-	using SFMLRenderable = RenderContext;
+    using SFMLRenderable = RenderContext;
 }

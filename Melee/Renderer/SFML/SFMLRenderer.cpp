@@ -35,6 +35,9 @@ namespace
         { sf::Keyboard::Key::RControl,   PlayerEntity::KeyEvent::FirePrimary },
         { sf::Keyboard::Key::RShift,     PlayerEntity::KeyEvent::FireSpecial },
     };
+
+    constexpr auto kTargetFPS = 60;
+    constexpr auto kMillisecondsPerFrame = 1000 / kTargetFPS;
 }
 
 SFMLRenderer::SFMLRenderer(Engine& engine)
@@ -50,42 +53,45 @@ SFMLRenderer::SFMLRenderer(Engine& engine)
 
 int SFMLRenderer::runModal()
 {
-    constexpr auto kTargetFPS = 60;
-    constexpr auto kMillisecondsPerFrame = 1000 / kTargetFPS;
-
-	sf::RenderWindow window(sf::VideoMode(1024, 768), "Melee");
+    sf::RenderWindow window(sf::VideoMode(1024, 768), "Melee");
     window.setFramerateLimit(kTargetFPS);
 
-	while (window.isOpen())
+    while (window.isOpen())
     {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            switch (event.type)
-            {
-                case sf::Event::Closed:
-                {
-                    window.close();
-                    break;
-                }
-
-                case sf::Event::KeyPressed:
-                case sf::Event::KeyReleased:
-                {
-                    handleKey(event.key.code, event.type == sf::Event::KeyPressed);
-                    break;
-                }
-            }
-        }
+        window.clear();
 
         m_engine.update(kMillisecondsPerFrame);
 
-        window.clear();
+        processEvents(window);
         renderEntities(window);
+
         window.display();
     }
 
     return 0;
+}
+
+void SFMLRenderer::processEvents(sf::RenderWindow& window)
+{
+    sf::Event event;
+    while (window.pollEvent(event))
+    {
+        switch (event.type)
+        {
+            case sf::Event::Closed:
+            {
+                window.close();
+                break;
+            }
+
+            case sf::Event::KeyPressed:
+            case sf::Event::KeyReleased:
+            {
+                handleKey(event.key.code, event.type == sf::Event::KeyPressed);
+                break;
+            }
+        }
+    }
 }
 
 void SFMLRenderer::handleKey(sf::Keyboard::Key key, bool down)
@@ -102,47 +108,46 @@ void SFMLRenderer::handleKey(sf::Keyboard::Key key, bool down)
 
 void SFMLRenderer::renderEntities(sf::RenderWindow& window)
 {
-	const auto scaleFactor = currentScaleFactor();
+    const auto scaleFactor = currentScaleFactor();
 
     for (const auto& entity : m_engine.getEntities())
     {
         auto& rendererContext = entity->rendererContext();
-
         if (!rendererContext)
+            rendererContext = createRenderContext(entity);
+
+        rendererContext->render(window, scaleFactor);
+    }
+}
+
+std::shared_ptr<RenderContext> SFMLRenderer::createRenderContext(const std::shared_ptr<Entity>& entity)
+{
+    switch (entity->type())
+    {
+        case Entity::Type::Player:
         {
-            switch (entity->type())
-            {
-                case Entity::Type::Player:
-                {
-                    const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
-                    rendererContext = std::make_shared<SFMLPlayerEntityRenderer>(*playerEntity);
-                    break;
-                }
-
-                case Entity::Type::Planet:
-                {
-                    const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
-                    rendererContext = std::make_shared<SFMLPlanetEntityRenderer>(*planetEntity);
-                    break;
-                }
-
-                case Entity::Type::Exhaust:
-                {
-                    const auto exhaustEntity = std::dynamic_pointer_cast<ExhaustEntity>(entity);
-                    rendererContext = std::make_shared<SFMLExhaustEntityRenderer>(*exhaustEntity);
-                    break;
-                }
-
-                case Entity::Type::Asteroid:
-                {
-                    const auto asteroidEntity = std::dynamic_pointer_cast<AsteroidEntity>(entity);
-                    rendererContext = std::make_shared<SFMLAsteroidEntityRenderer>(*asteroidEntity);
-                    break;
-                }
-            }
+            const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
+            return std::make_shared<SFMLPlayerEntityRenderer>(*playerEntity);
         }
 
-        if (rendererContext)
-            rendererContext->render(window, scaleFactor);
+        case Entity::Type::Planet:
+        {
+            const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
+            return std::make_shared<SFMLPlanetEntityRenderer>(*planetEntity);
+        }
+
+        case Entity::Type::Exhaust:
+        {
+            const auto exhaustEntity = std::dynamic_pointer_cast<ExhaustEntity>(entity);
+            return std::make_shared<SFMLExhaustEntityRenderer>(*exhaustEntity);
+        }
+
+        case Entity::Type::Asteroid:
+        {
+            const auto asteroidEntity = std::dynamic_pointer_cast<AsteroidEntity>(entity);
+            return std::make_shared<SFMLAsteroidEntityRenderer>(*asteroidEntity);
+        }
     }
+
+    throw std::runtime_error("Failed to create render context for entity!");
 }
