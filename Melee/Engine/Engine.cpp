@@ -93,9 +93,11 @@ void Engine::checkForEntityCollisions()
             if (m_collisionCallback && !m_collisionCallback(entity1, entity2))
                 continue;
 
-            // We need to copy E1 before handling the collision, as we want E2 to collide based on the original state.
-            entity1->collide(*this, *entity2);
-            entity2->collide(*this, *entity1);
+            // We need to copy out the pre-collision kinematic states before we start processing the collisions.
+			const auto e1Precollision = entity1->preCollisionState();
+			const auto e2Precollision = entity2->preCollisionState();
+            entity1->collide(*this, *entity2, e2Precollision);
+            entity2->collide(*this, *entity1, e1Precollision);
         }
     }
 }

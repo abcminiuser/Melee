@@ -30,7 +30,7 @@ namespace Melee
         const ProjectileProperties&		properties() const override	{ return m_projectileProperties; }
 
         void        					update(Engine& engine, uint32_t msElapsed) override;
-        void        					collide(Engine& engine, const Entity& otherEntity) override;
+        void        					collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState) override;
 
     private:
         const ProjectileProperties      m_projectileProperties;

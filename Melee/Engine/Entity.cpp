@@ -27,7 +27,7 @@ void Entity::update(Engine& engine, uint32_t msElapsed)
     }
 }
 
-void Entity::collide(Engine& engine, const Entity& otherEntity)
+void Entity::collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState)
 {
 
 }

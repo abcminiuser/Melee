@@ -23,7 +23,7 @@ void ProjectileEntity::update(Engine& engine, uint32_t msElapsed)
     Entity::update(engine, msElapsed);
 }
 
-void ProjectileEntity::collide(Engine& engine, const Entity& otherEntity)
+void ProjectileEntity::collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState)
 {
     if (&otherEntity == m_ownerEntity.get())
         return;
@@ -35,4 +35,6 @@ void ProjectileEntity::collide(Engine& engine, const Entity& otherEntity)
 
     auto explosionEntity = std::make_shared<ExplosionEntity>(explosionProps, m_position);
     engine.addEntity(explosionEntity);
+
+    Entity::collide(engine, otherEntity, otherEntityState);
 }

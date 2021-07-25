@@ -47,7 +47,7 @@ namespace Melee
         const PlayerProperties&		properties() const override	{ return m_playerProperties; }
 
         void       					update(Engine& engine, uint32_t msElapsed) override;
-        void       					collide(Engine& engine, const Entity& otherEntity) override;
+        void       					collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState) override;
 
     private:
         void       					applyDamage(int amount);

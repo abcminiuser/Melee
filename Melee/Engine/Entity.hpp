@@ -29,21 +29,30 @@ namespace Melee
             bool        collidable = true;
         };
 
+        struct PreCollisionState
+        {
+        	Vector2d	heading;
+        	Vector2d	position;
+        	Vector2d	velocity;
+        };
+
     public:
         explicit                        Entity(Type type, const Properties& properties, const Point& pos, const Point& vel = {}, const Point& acc = {});
         virtual                         ~Entity() = default;
 
         virtual void                    update(Engine& engine, uint32_t msElapsed);
-        virtual void                    collide(Engine& engine, const Entity& otherEntity);
+        virtual void                    collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState);
 
-        Type                            type() const { return m_type; }
-        virtual const Properties&    	properties() const { return m_properties; }
+        Type                            type() const				{ return m_type; }
+        virtual const Properties&    	properties() const			{ return m_properties; }
 
-        Point                           position() const { return m_position; }
-        Vector2d                        heading() const { return m_heading; }
-        Vector2d                        velocity() const { return m_velocity; }
+        Point                           position() const			{ return m_position; }
+        Vector2d                        heading() const				{ return m_heading; }
+        Vector2d                        velocity() const			{ return m_velocity; }
 
-        std::shared_ptr<RenderContext>& rendererContext() { return m_rendererContext;  }
+		PreCollisionState 				preCollisionState() const	{ return { m_heading, m_position, m_velocity }; }
+
+        std::shared_ptr<RenderContext>& rendererContext()			{ return m_rendererContext;  }
 
         void                            applyExternalForce(const Vector2d& forceVector);
 
