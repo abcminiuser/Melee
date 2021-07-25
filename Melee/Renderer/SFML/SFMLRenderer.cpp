@@ -43,12 +43,7 @@ namespace
 SFMLRenderer::SFMLRenderer(Engine& engine)
     : m_engine(engine)
 {
-    m_engine.setCollisionCallback(
-        [this](const std::shared_ptr<Entity>& e1, const std::shared_ptr<Entity>& e2)
-        {
-            // TODO: Pixel/geometry accurate collision check
-            return true;
-        });
+
 }
 
 int SFMLRenderer::runModal()

@@ -90,7 +90,7 @@ void Engine::checkForEntityCollisions()
                 continue;
 
             // Ask the renderer to check for a more accurate collision based on the current assets.
-            if (!m_collisionCallback || !m_collisionCallback(entity1, entity2))
+            if (m_collisionCallback && !m_collisionCallback(entity1, entity2))
                 continue;
 
             // We need to copy E1 before handling the collision, as we want E2 to collide based on the original state.
