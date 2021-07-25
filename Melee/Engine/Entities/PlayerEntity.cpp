@@ -72,7 +72,7 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     {
         m_rotationTimer.add(msElapsed);
 
-        const auto thrustRotationVector = ((rotateFlags == Flags::RotateLeftActive) ? m_rotationalThrustLeft : m_rotationalThrustRight);
+        const auto thrustRotationVector = (rotateFlags == Flags::RotateLeftActive) ? m_rotationalThrustLeft : m_rotationalThrustRight;
 
         while (m_rotationTimer.expired())
             m_heading = thrustRotationVector * m_heading;
@@ -85,7 +85,7 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     const auto thrustFlags = m_flags & (Flags::ThrustActive | Flags::ReverseThrustActive);
     if (thrustFlags == Flags::ThrustActive || thrustFlags == Flags::ReverseThrustActive)
     {
-        const auto thrustVector = m_heading * ((thrustFlags == Flags::ThrustActive) ? 1 : -1);
+        const auto thrustVector = (thrustFlags == Flags::ThrustActive) ? m_heading : -m_heading;
 
         m_acceleration = thrustVector * m_engineAcceleration_ms2;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/Entity.hpp"
-#include "Engine/Periodic.hpp"
+#include "Engine/Util/Periodic.hpp"
 
 namespace Melee
 {

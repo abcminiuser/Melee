@@ -1,6 +1,8 @@
 #pragma once
 
-class Periodic
+#include <cstdint>
+
+class Periodic final
 {
 public:
     explicit    Periodic(uint32_t interval, uint32_t maxValue = 0)

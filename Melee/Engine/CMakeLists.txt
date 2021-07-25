@@ -19,6 +19,11 @@ add_library (Engine
     Entities/PlayerEntity.hpp
     Entities/ProjectileEntity.cpp
     Entities/ProjectileEntity.hpp
+
+    Util/EngineUtils.hpp
+    Util/VectorMath.hpp
+    Util/MatrixMath.hpp
+    Util/Periodic.hpp
 )
 
 target_include_directories (Engine PRIVATE ../)

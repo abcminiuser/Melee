@@ -2,6 +2,8 @@
 
 #include "EngineTypes.hpp"
 
+#include "Util/EngineUtils.hpp"
+
 #include "Entity.hpp"
 #include "Entities/AsteroidEntity.hpp"
 #include "Entities/ExhaustEntity.hpp"

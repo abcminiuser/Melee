@@ -61,7 +61,7 @@ namespace Melee
 
         Properties                      m_properties;
 
-        float                           m_maxVelocitySquared = 0;
+        uint32_t                        m_maxVelocitySquared = 0;
 
         Point                           m_position;
         Vector2d                        m_heading = { 1, 0 };
