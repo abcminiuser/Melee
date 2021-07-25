@@ -37,7 +37,7 @@ namespace Melee
         virtual void                    collide(Engine& engine, const Entity& otherEntity);
 
         Type                            type() const { return m_type; }
-        const auto&                     properties() const { return m_properties; }
+        virtual const Properties&    	properties() const { return m_properties; }
 
         Point                           position() const { return m_position; }
         Vector2d                        heading() const { return m_heading; }

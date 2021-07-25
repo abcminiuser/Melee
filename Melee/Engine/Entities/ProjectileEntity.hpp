@@ -19,18 +19,18 @@ namespace Melee
         };
 
     public:
-        explicit    ProjectileEntity(const ProjectileProperties& properties, const std::shared_ptr<Entity>& ownerEntity, const Point& pos, const Vector2d& heading);
-        virtual     ~ProjectileEntity() = default;
+        explicit    					ProjectileEntity(const ProjectileProperties& properties, const std::shared_ptr<Entity>& ownerEntity, const Point& pos, const Vector2d& heading);
+        virtual     					~ProjectileEntity() = default;
 
-        const auto& properties() const  { return m_projectileProperties; }
-
-        uint32_t    age() const         { return m_age; }
-        auto        ownerEntity() const { return m_ownerEntity; }
+        uint32_t    					age() const         		{ return m_age; }
+        auto        					ownerEntity() const 		{ return m_ownerEntity; }
 
     // Entity i/f:
     public:
-        void        update(Engine& engine, uint32_t msElapsed) override;
-        void        collide(Engine& engine, const Entity& otherEntity) override;
+        const ProjectileProperties&		properties() const override	{ return m_projectileProperties; }
+
+        void        					update(Engine& engine, uint32_t msElapsed) override;
+        void        					collide(Engine& engine, const Entity& otherEntity) override;
 
     private:
         const ProjectileProperties      m_projectileProperties;

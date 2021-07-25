@@ -33,25 +33,25 @@ namespace Melee
         };
 
     public:
-        explicit    PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& pos);
-        virtual     ~PlayerEntity() = default;
+        explicit    				PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& pos);
+        virtual     				~PlayerEntity() = default;
 
-        const auto& properties() const  { return m_playerProperties; }
+        int        					index() const       		{ return m_playerIndex; }
+        void       					handleKey(KeyEvent key, bool down);
 
-        int         index() const       { return m_playerIndex; }
-        void        handleKey(KeyEvent key, bool down);
-
-        uint32_t    health() const      { return m_health; }
-        uint32_t    energy() const      { return m_energy; }
+        uint32_t   					health() const      		{ return m_health; }
+        uint32_t   					energy() const      		{ return m_energy; }
 
     // Entity i/f:
     public:
-        void        update(Engine& engine, uint32_t msElapsed) override;
-        void        collide(Engine& engine, const Entity& otherEntity) override;
+        const PlayerProperties&		properties() const override	{ return m_playerProperties; }
+
+        void       					update(Engine& engine, uint32_t msElapsed) override;
+        void       					collide(Engine& engine, const Entity& otherEntity) override;
 
     private:
-        void        applyDamage(int amount);
-        void        consumeEnergy(int amount);
+        void       					applyDamage(int amount);
+        void       					consumeEnergy(int amount);
 
     private:
         struct Flags
@@ -67,21 +67,21 @@ namespace Melee
             };
         };
 
-        const int               m_playerIndex;
-        const PlayerProperties  m_playerProperties;
+        const int               	m_playerIndex;
+        const PlayerProperties  	m_playerProperties;
 
-        float                   m_engineAcceleration_ms2;
-        Matrix2x2               m_rotationalThrustLeft;
-        Matrix2x2               m_rotationalThrustRight;
+        float                   	m_engineAcceleration_ms2;
+        Matrix2x2               	m_rotationalThrustLeft;
+        Matrix2x2               	m_rotationalThrustRight;
 
-        uint32_t                m_flags = 0;
+        uint32_t                	m_flags = 0;
 
-        Periodic                m_energyRechargeTimer;
-        Periodic                m_rotationTimer;
-        Periodic                m_thrustExhaustTimer;
-        Periodic                m_primaryFireTimer;
+        Periodic                	m_energyRechargeTimer;
+        Periodic                	m_rotationTimer;
+        Periodic                	m_thrustExhaustTimer;
+        Periodic                	m_primaryFireTimer;
 
-        uint32_t                m_health = 0;
-        uint32_t                m_energy = 0;
+        uint32_t                	m_health = 0;
+        uint32_t                	m_energy = 0;
     };
 }
