@@ -1,6 +1,8 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
 add_library (Engine
+    AsteroidEntity.cpp
+    AsteroidEntity.hpp
     Engine.cpp
     Engine.hpp
     EngineTypes.hpp

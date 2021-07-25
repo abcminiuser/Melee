@@ -3,6 +3,7 @@
 #include "EngineTypes.hpp"
 
 #include "Entity.hpp"
+#include "AsteroidEntity.hpp"
 #include "ExhaustEntity.hpp"
 #include "PlanetEntity.hpp"
 #include "PlayerEntity.hpp"
@@ -31,7 +32,8 @@ namespace Melee
 		void		removeEntity(const std::shared_ptr<Entity>& entity);
 
 	private:
-		void		handleDeferredEntities();
+		void		handleDeferredEntityAddRemove();
+		void		checkForEntityCollisions();
 
 	private:
 		using EntityMap = std::unordered_map<Entity::Type, EntityList>;

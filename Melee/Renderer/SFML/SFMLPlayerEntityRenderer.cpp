@@ -22,15 +22,13 @@ void SFMLPlayerEntityRenderer::render(sf::RenderTarget& renderer, uint32_t scale
     const auto playerPos = m_entity.position() / scaleFactor;
     const auto playerRadius = m_entity.properties().radius_km / scaleFactor;
 
-    if (m_lastHeading != playerHeading|| m_lastScaleFactor != scaleFactor)
+    if (m_lastHeading != playerHeading || m_lastScaleFactor != scaleFactor)
     {
         m_lastHeading = playerHeading;
         m_lastScaleFactor = scaleFactor;
 
-        const auto angleDegrees = 90 + (180 * std::atan2(playerHeading.y, playerHeading.x) / M_PI);
-
         m_sprite.setScale(sf::Vector2f{ playerRadius * 2 / m_shipImageSize.x, playerRadius * 2 / m_shipImageSize.y });
-        m_sprite.setRotation(angleDegrees);
+        m_sprite.setRotation(ToDegrees(playerHeading));
     }
 
     m_sprite.setPosition(ToSFML(playerPos));

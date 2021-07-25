@@ -4,6 +4,8 @@
 
 #include "Engine/EngineTypes.hpp"
 
+#include <cmath>
+
 namespace Melee
 {
 	static inline const sf::Color HSVColor(float H, float S, float V)
@@ -37,5 +39,10 @@ namespace Melee
 	static inline sf::Vector2f ToSFML(const Vector2d& v)
     {
         return sf::Vector2f{ v.x, v.y };
+    }
+
+    static inline auto ToDegrees(const Vector2d& v)
+    {
+        return 90 + (180 * std::atan2(v.y, v.x) / M_PI);
     }
 }

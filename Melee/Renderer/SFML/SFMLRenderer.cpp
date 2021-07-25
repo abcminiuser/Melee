@@ -1,5 +1,6 @@
 #include "SFMLRenderer.hpp"
 #include "SFMLRenderable.hpp"
+#include "SFMLAsteroidEntityRenderer.hpp"
 #include "SFMLExhaustEntityRenderer.hpp"
 #include "SFMLPlanetEntityRenderer.hpp"
 #include "SFMLPlayerEntityRenderer.hpp"
@@ -127,6 +128,13 @@ void SFMLRenderer::renderEntities(sf::RenderWindow& window)
                 {
                     const auto exhaustEntity = std::dynamic_pointer_cast<ExhaustEntity>(entity);
                     rendererContext = std::make_shared<SFMLExhaustEntityRenderer>(*exhaustEntity);
+                    break;
+                }
+
+                case Entity::Type::Asteroid:
+                {
+                    const auto asteroidEntity = std::dynamic_pointer_cast<AsteroidEntity>(entity);
+                    rendererContext = std::make_shared<SFMLAsteroidEntityRenderer>(*asteroidEntity);
                     break;
                 }
             }

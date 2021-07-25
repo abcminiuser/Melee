@@ -11,28 +11,42 @@ namespace
     {
         const float scaleFactor = (float)renderer.currentScaleFactor();
 
-        PlayerEntity::PlayerProperties playerProps = {};
-        playerProps.mass_kg = 9.718e5;
-        playerProps.engineForce_N = 2.5e6;
-        playerProps.maxVelocity = 0;
-        playerProps.rotation_degPerSec = 100;
-        playerProps.maxVelocity = 1000;
-        playerProps.maxHealth = 20;
-        playerProps.maxEnergy = 10;
-        playerProps.radius_km = 1000;
+        {
+            PlayerEntity::PlayerProperties playerProps = {};
+            playerProps.mass_kg = 9.718e5;
+            playerProps.engineForce_N = 2.5e6;
+            playerProps.maxVelocity = 0;
+            playerProps.rotation_degPerSec = 100;
+            playerProps.maxVelocity = 1000;
+            playerProps.maxHealth = 20;
+            playerProps.maxEnergy = 10;
+            playerProps.radius_km = 1000;
 
-        auto player1 = std::make_shared<PlayerEntity>(0, playerProps, Point{ 200 * scaleFactor, 200 * scaleFactor });
-        engine.addEntity(player1);
+            auto player1 = std::make_shared<PlayerEntity>(0, playerProps, Point{ 200 * scaleFactor, 200 * scaleFactor });
+            engine.addEntity(player1);
 
-        auto player2 = std::make_shared<PlayerEntity>(1, playerProps, Point{ 100 * scaleFactor, 100 * scaleFactor });
-        engine.addEntity(player2);
+            auto player2 = std::make_shared<PlayerEntity>(1, playerProps, Point{ 100 * scaleFactor, 100 * scaleFactor });
+            engine.addEntity(player2);
+        }
 
-        PlanetEntity::PlanetProperties planetProps = {};
-        planetProps.mass_kg = 5.9736e24f / 500000;
-        planetProps.radius_km = 6371;
+        {
+            PlanetEntity::PlanetProperties planetProps = {};
+            planetProps.mass_kg = 5.9736e24f / 500000;
+            planetProps.radius_km = 6371;
 
-        auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 400 * scaleFactor, 300 * scaleFactor });
-        engine.addEntity(planet);
+            auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 400 * scaleFactor, 300 * scaleFactor });
+            engine.addEntity(planet);
+        }
+
+        {
+            AsteroidEntity::AsteroidProperties asteroidProps = {};
+            asteroidProps.radius_km = 1000;
+            asteroidProps.mass_kg = 1e5;
+            asteroidProps.rotation_degPerSec = 20;
+
+            auto asteroid = std::make_shared<AsteroidEntity>(asteroidProps, Point{ 800 * scaleFactor, 200 * scaleFactor }, Vector2d{ 10, 10 });
+            engine.addEntity(asteroid);
+        }
     }
 }
 
