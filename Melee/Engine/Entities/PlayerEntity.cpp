@@ -109,7 +109,6 @@ void PlayerEntity::collide(Engine& engine, const Entity& otherEntity)
 		{
 			m_acceleration = {};
 			m_velocity = -m_velocity;
-			m_thrustExhaustMsElapsed = 0;
 
 			break;
 		}

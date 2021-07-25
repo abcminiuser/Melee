@@ -10,6 +10,7 @@
 #include "Engine/Engine.hpp"
 
 #include <unordered_map>
+#include <chrono>
 
 using namespace Melee;
 
@@ -49,10 +50,11 @@ SFMLRenderer::SFMLRenderer(Engine& engine)
 
 int SFMLRenderer::runModal()
 {
-	sf::RenderWindow window(sf::VideoMode(1024, 768), "Melee");
-
     constexpr auto kTargetFPS = 60;
     constexpr auto kMillisecondsPerFrame = 1000 / kTargetFPS;
+
+	sf::RenderWindow window(sf::VideoMode(1024, 768), "Melee");
+    window.setFramerateLimit(kTargetFPS);
 
 	while (window.isOpen())
     {
@@ -81,8 +83,6 @@ int SFMLRenderer::runModal()
         window.clear();
         renderEntities(window);
         window.display();
-
-        sf::sleep(sf::milliseconds(kMillisecondsPerFrame));
     }
 
     return 0;

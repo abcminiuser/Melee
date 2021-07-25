@@ -45,5 +45,7 @@ namespace Melee
 		EntityList			m_entitiesToRemove;
 
 		CollisionCallback	m_collisionCallback;
+
+		uint32_t			m_updateMsElapsed = 0;
 	};
 }

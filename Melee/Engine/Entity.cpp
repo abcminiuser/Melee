@@ -14,8 +14,8 @@ Entity::Entity(Type type, const Properties& properties, const Point& pos, const 
 
 void Entity::update(Engine& engine, uint32_t msElapsed)
 {
-	m_position += m_velocity;
-	m_velocity += m_acceleration + m_externalAcceleration;
+	m_position += m_velocity * msElapsed;
+	m_velocity += (m_acceleration + m_externalAcceleration) * msElapsed;
 
 	m_externalAcceleration = {};
 

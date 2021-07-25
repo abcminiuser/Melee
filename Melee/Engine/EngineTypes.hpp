@@ -30,7 +30,10 @@ namespace Melee
 			return Vector2d{ x, y } / length();
 		}
 
-		// TODO: Cross Product
+		Vector2d dotProduct(const Vector2d& other) const
+		{
+			return Vector2d{ x * other.x, y * other.y };
+		}
 
 		bool operator==(const Vector2d& other) const
 		{

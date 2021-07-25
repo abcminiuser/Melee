@@ -12,7 +12,7 @@ namespace
         {
             PlayerEntity::PlayerProperties playerProps = {};
             playerProps.mass_kg = 9.718e5;
-            playerProps.engineForce_N = 2.5e6;
+            playerProps.engineForce_N = 8e3;
             playerProps.maxVelocity = 0;
             playerProps.rotation_degPerSec = 100;
             playerProps.maxVelocity = 1000;
@@ -29,7 +29,7 @@ namespace
 
         {
             PlanetEntity::PlanetProperties planetProps = {};
-            planetProps.mass_kg = 5.9736e24f / 1000000;
+            planetProps.mass_kg = 3.9736e16f;
             planetProps.radius_km = 6371;
 
             auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 400 * scaleFactor, 300 * scaleFactor });

@@ -2,6 +2,11 @@
 
 using namespace Melee;
 
+namespace
+{
+	constexpr auto kMaxUpdateTimestepMs = 8;
+}
+
 Engine::Engine()
 {
 
@@ -9,11 +14,18 @@ Engine::Engine()
 
 void Engine::update(uint32_t msElapsed)
 {
-	handleDeferredEntityAddRemove();
-	checkForEntityCollisions();
+	m_updateMsElapsed += msElapsed;
 
-	for (const auto& entity : m_entities)
-		entity->update(*this, msElapsed);
+	while (m_updateMsElapsed >= kMaxUpdateTimestepMs)
+	{
+		handleDeferredEntityAddRemove();
+		checkForEntityCollisions();
+
+		for (const auto& entity : m_entities)
+			entity->update(*this, kMaxUpdateTimestepMs);
+
+		m_updateMsElapsed -= kMaxUpdateTimestepMs;
+	}
 }
 
 void Engine::addEntity(const std::shared_ptr<Entity>& entity)
