@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SFMLRenderable.hpp"
+#include "Renderer/SFML/SFMLRenderable.hpp"
 
 namespace Melee
 {

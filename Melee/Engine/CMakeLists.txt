@@ -1,19 +1,19 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
 add_library (Engine
-    AsteroidEntity.cpp
-    AsteroidEntity.hpp
     Engine.cpp
     Engine.hpp
     EngineTypes.hpp
     Entity.cpp
     Entity.hpp
-    ExhaustEntity.cpp
-    ExhaustEntity.hpp
-    PlanetEntity.cpp
-    PlanetEntity.hpp
-    PlayerEntity.cpp
-    PlayerEntity.hpp
+    Entities/AsteroidEntity.cpp
+    Entities/AsteroidEntity.hpp
+    Entities/ExhaustEntity.cpp
+    Entities/ExhaustEntity.hpp
+    Entities/PlanetEntity.cpp
+    Entities/PlanetEntity.hpp
+    Entities/PlayerEntity.cpp
+    Entities/PlayerEntity.hpp
 )
 
 target_include_directories (Engine PRIVATE ../)

@@ -23,4 +23,6 @@ namespace Melee
     private:
         Engine&             m_engine;
 	};
+
+    using Renderer = SFMLRenderer;
 }

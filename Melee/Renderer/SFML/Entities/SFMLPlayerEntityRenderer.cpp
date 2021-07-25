@@ -1,6 +1,6 @@
 #include "SFMLPlayerEntityRenderer.hpp"
-#include "SFMLUtils.hpp"
 
+#include "Renderer/SFML/SFMLUtils.hpp"
 #include "Engine/Engine.hpp"
 
 using namespace Melee;

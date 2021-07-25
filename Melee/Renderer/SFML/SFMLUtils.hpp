@@ -5,12 +5,13 @@
 #include "Engine/EngineTypes.hpp"
 
 #include <cmath>
+#include <algorithm>
 
 namespace Melee
 {
 	static inline const sf::Color HSVColor(float H, float S, float V)
     {
-        if (H > 360 || H < 0 || S>100 || S < 0 || V>100 || V < 0)
+        if (std::clamp<float>(H, 0, 360) != H || std::clamp<float>(S, 0, 100) != S || std::clamp<float>(V, 0, 100) != V)
             throw std::out_of_range("Invalid range");
 
         float s = S / 100;
@@ -41,8 +42,8 @@ namespace Melee
         return sf::Vector2f{ v.x, v.y };
     }
 
-    static inline auto ToDegrees(const Vector2d& v)
+    static inline float ToDegrees(const Vector2d& v)
     {
-        return 90 + (180 * std::atan2(v.y, v.x) / M_PI);
+        return 90 + (180 * std::atan2(v.y, v.x) / static_cast<float>(M_PI));
     }
 }

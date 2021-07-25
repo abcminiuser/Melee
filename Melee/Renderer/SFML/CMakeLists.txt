@@ -10,16 +10,16 @@ find_package (SFML REQUIRED COMPONENTS system window graphics network audio)
 add_library (SFMLRenderer
     SFMLRenderer.cpp
     SFMLRenderer.hpp
-    SFMLAsteroidEntityRenderer.cpp
-    SFMLAsteroidEntityRenderer.hpp
-    SFMLExhaustEntityRenderer.cpp
-    SFMLExhaustEntityRenderer.hpp
-    SFMLPlanetEntityRenderer.cpp
-	SFMLPlanetEntityRenderer.hpp
-    SFMLPlayerEntityRenderer.cpp
-	SFMLPlayerEntityRenderer.hpp
 	SFMLRenderable.hpp
 	SFMLUtils.hpp
+    Entities/SFMLAsteroidEntityRenderer.cpp
+    Entities/SFMLAsteroidEntityRenderer.hpp
+    Entities/SFMLExhaustEntityRenderer.cpp
+    Entities/SFMLExhaustEntityRenderer.hpp
+    Entities/SFMLPlanetEntityRenderer.cpp
+	Entities/SFMLPlanetEntityRenderer.hpp
+    Entities/SFMLPlayerEntityRenderer.cpp
+	Entities/SFMLPlayerEntityRenderer.hpp
 )
 
 target_include_directories (SFMLRenderer PRIVATE ../../)

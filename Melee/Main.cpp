@@ -5,8 +5,6 @@ using namespace Melee;
 
 namespace
 {
-    using Renderer = SFMLRenderer;
-
     void AddTestEntities(Engine& engine, Renderer& renderer)
     {
         const float scaleFactor = (float)renderer.currentScaleFactor();
@@ -31,7 +29,7 @@ namespace
 
         {
             PlanetEntity::PlanetProperties planetProps = {};
-            planetProps.mass_kg = 5.9736e24f / 500000;
+            planetProps.mass_kg = 5.9736e24f / 1000000;
             planetProps.radius_km = 6371;
 
             auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 400 * scaleFactor, 300 * scaleFactor });

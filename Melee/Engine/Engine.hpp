@@ -3,10 +3,10 @@
 #include "EngineTypes.hpp"
 
 #include "Entity.hpp"
-#include "AsteroidEntity.hpp"
-#include "ExhaustEntity.hpp"
-#include "PlanetEntity.hpp"
-#include "PlayerEntity.hpp"
+#include "Entities/AsteroidEntity.hpp"
+#include "Entities/ExhaustEntity.hpp"
+#include "Entities/PlanetEntity.hpp"
+#include "Entities/PlayerEntity.hpp"
 
 #include <functional>
 #include <unordered_map>

@@ -1,17 +1,15 @@
 #include "SFMLRenderer.hpp"
 #include "SFMLRenderable.hpp"
-#include "SFMLAsteroidEntityRenderer.hpp"
-#include "SFMLExhaustEntityRenderer.hpp"
-#include "SFMLPlanetEntityRenderer.hpp"
-#include "SFMLPlayerEntityRenderer.hpp"
 #include "SFMLUtils.hpp"
+
+#include "Entities/SFMLAsteroidEntityRenderer.hpp"
+#include "Entities/SFMLExhaustEntityRenderer.hpp"
+#include "Entities/SFMLPlanetEntityRenderer.hpp"
+#include "Entities/SFMLPlayerEntityRenderer.hpp"
 
 #include "Engine/Engine.hpp"
 
-#include <array>
-#include <algorithm>
 #include <unordered_map>
-#include <utility>
 
 using namespace Melee;
 
@@ -20,17 +18,21 @@ namespace
     // FIXME: User key mappings
     const std::unordered_map<sf::Keyboard::Key, PlayerEntity::KeyEvent> kPlayer1Keys =
     {
-        { sf::Keyboard::Key::W,       PlayerEntity::KeyEvent::Thrust },
-        { sf::Keyboard::Key::A,       PlayerEntity::KeyEvent::RotateLeft },
-        { sf::Keyboard::Key::S,       PlayerEntity::KeyEvent::ReverseThrust },
-        { sf::Keyboard::Key::D,       PlayerEntity::KeyEvent::RotateRight },
+        { sf::Keyboard::Key::W,          PlayerEntity::KeyEvent::Thrust },
+        { sf::Keyboard::Key::A,          PlayerEntity::KeyEvent::RotateLeft },
+        { sf::Keyboard::Key::S,          PlayerEntity::KeyEvent::ReverseThrust },
+        { sf::Keyboard::Key::D,          PlayerEntity::KeyEvent::RotateRight },
+        { sf::Keyboard::Key::Tilde,      PlayerEntity::KeyEvent::FirePrimary },
+        { sf::Keyboard::Key::Tab,        PlayerEntity::KeyEvent::FireSpecial },
     };
     const std::unordered_map<sf::Keyboard::Key, PlayerEntity::KeyEvent> kPlayer2Keys =
     {
-        { sf::Keyboard::Key::Up,      PlayerEntity::KeyEvent::Thrust },
-        { sf::Keyboard::Key::Left,    PlayerEntity::KeyEvent::RotateLeft },
-        { sf::Keyboard::Key::Down,    PlayerEntity::KeyEvent::ReverseThrust },
-        { sf::Keyboard::Key::Right,   PlayerEntity::KeyEvent::RotateRight },
+        { sf::Keyboard::Key::Up,         PlayerEntity::KeyEvent::Thrust },
+        { sf::Keyboard::Key::Left,       PlayerEntity::KeyEvent::RotateLeft },
+        { sf::Keyboard::Key::Down,       PlayerEntity::KeyEvent::ReverseThrust },
+        { sf::Keyboard::Key::Right,      PlayerEntity::KeyEvent::RotateRight },
+        { sf::Keyboard::Key::RControl,   PlayerEntity::KeyEvent::FirePrimary },
+        { sf::Keyboard::Key::RShift,     PlayerEntity::KeyEvent::FireSpecial },
     };
 }
 
