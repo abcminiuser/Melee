@@ -4,7 +4,6 @@
 
 using namespace Melee;
 
-
 ProjectileEntity::ProjectileEntity(const ProjectileProperties& properties, const std::shared_ptr<Entity>& ownerEntity, const Point& pos, const Vector2d& heading)
     : Entity(Entity::Type::Projectile, properties, pos, heading)
     , m_ownerEntity(ownerEntity)

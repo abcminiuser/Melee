@@ -7,11 +7,6 @@ namespace
     constexpr auto kMaxUpdateTimestepMs = 8;
 }
 
-Engine::Engine()
-{
-
-}
-
 void Engine::update(uint32_t msElapsed)
 {
     m_updateMsElapsed += msElapsed;
@@ -71,16 +66,17 @@ void Engine::checkForEntityCollisions()
 
     for (auto e1 = m_entities.begin(); e1 != m_entities.end(); e1++)
     {
-        if (!(*e1)->properties().collidable)
+        const auto& entity1 = *e1;
+
+        if (!entity1->properties().collidable)
             continue;
 
         for (auto e2 = std::next(e1); e2 != m_entities.end(); e2++)
         {
-            if (!(*e2)->properties().collidable)
-                continue;
-
-            const auto& entity1 = *e1;
             const auto& entity2 = *e2;
+
+            if (!entity2->properties().collidable)
+                continue;
 
             const auto distanceBetweenEntitiesSquared = (entity1->position() - entity2->position()).lengthSquared();
             const auto minCollisionRadius = entity1->properties().radius_km + entity2->properties().radius_km;
@@ -94,8 +90,10 @@ void Engine::checkForEntityCollisions()
                 continue;
 
             // We need to copy out the pre-collision kinematic states before we start processing the collisions.
-			const auto e1Precollision = entity1->preCollisionState();
-			const auto e2Precollision = entity2->preCollisionState();
+            const auto e1Precollision = entity1->preCollisionState();
+            const auto e2Precollision = entity2->preCollisionState();
+
+            // Now process the collision on each object.
             entity1->collide(*this, *entity2, e2Precollision);
             entity2->collide(*this, *entity1, e1Precollision);
         }

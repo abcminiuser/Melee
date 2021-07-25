@@ -4,7 +4,6 @@
 
 using namespace Melee;
 
-
 ExplosionEntity::ExplosionEntity(const ExplosionProperties& properties, const Point& pos)
     : Entity(Entity::Type::Explosion, properties, pos)
     , m_explosionProperties(properties)

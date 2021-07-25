@@ -20,7 +20,7 @@ namespace Melee
     public:
         using CollisionCallback = std::function<bool(const std::shared_ptr<Entity>&, const std::shared_ptr<Entity>&)>;
 
-        explicit    Engine();
+        explicit    Engine() = default;
                     ~Engine() = default;
 
         auto&       getEntities()                                       { return m_entities; }
