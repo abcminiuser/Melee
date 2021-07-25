@@ -18,7 +18,7 @@ namespace Melee
 
         float length() const
         {
-            return std::sqrt(x * x + y * y);
+            return sqrtf(x * x + y * y);
         }
 
         Vector2d normalised() const

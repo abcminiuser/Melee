@@ -21,8 +21,8 @@ namespace Melee
     inline Matrix2x2 RotationMatrix(float degrees)
     {
         const float rads = degrees * static_cast<float>(2 * M_PI / 360);
-        const float cosAng = std::cosf(rads);
-        const float sinAng = std::sinf(rads);
+        const float cosAng = cosf(rads);
+        const float sinAng = sinf(rads);
 
         return Matrix2x2{ cosAng, -sinAng, sinAng, cosAng };
     }
