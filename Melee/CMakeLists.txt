@@ -14,7 +14,7 @@ target_compile_features (Melee PUBLIC cxx_std_17)
 if (MSVC)
     target_compile_options (Melee PUBLIC /W3 /WX)
 else ()
-    target_compile_options (Melee PUBLIC -Wall -Wextra -Werror -Wno-unused-parameter)
+    target_compile_options (Melee PUBLIC -Wall -Wextra -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion)
 endif ()
 
 add_custom_command(TARGET Melee POST_BUILD
