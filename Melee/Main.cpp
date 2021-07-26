@@ -5,9 +5,9 @@ using namespace Melee;
 
 namespace
 {
-    void AddTestEntities(Engine& engine, Renderer& renderer)
+    void AddTestEntities(Engine& engine)
     {
-        const auto playFieldSize = renderer.getPlayfieldSize();
+        const auto playFieldSize = engine.getPlayfieldSize();
 
         {
             PlayerEntity::PlayerProperties playerProps = {};
@@ -50,10 +50,10 @@ namespace
 
 int main(int argc, char* argv[])
 {
-    Engine   engine;
+    Engine   engine(Vector2d{ 120000, 120000 });
     Renderer renderer(engine);
 
-    AddTestEntities(engine, renderer);
+    AddTestEntities(engine);
 
     return renderer.runModal();
 }

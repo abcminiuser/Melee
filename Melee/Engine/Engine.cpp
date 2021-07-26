@@ -7,6 +7,38 @@ namespace
     constexpr auto kMaxUpdateTimestepMs = 8;
 }
 
+Engine::Engine(const Vector2d& playfieldSize)
+    : m_playfieldSize(playfieldSize)
+{
+
+}
+
+Vector2d Engine::getPlayfieldSize() const
+{
+    return m_playfieldSize;
+}
+
+Rectangle Engine::getPlayersBoundingBox()
+{
+    float minX = m_playfieldSize.x;
+    float minY = m_playfieldSize.y;
+    float maxX = 0;
+    float maxY = 0;
+
+    for (const auto& entity : m_entitiesForType[Entity::Type::Player])
+    {
+        const auto pos = entity->position();
+        const auto radius = entity->properties().radius_km;
+
+        minX = std::min(minX, pos.x - radius);
+        maxX = std::max(maxX, pos.x + radius);
+        minY = std::min(minY, pos.y - radius);
+        maxY = std::max(maxY, pos.y + radius);
+    }
+
+    return { { minX, minY}, {maxX - minX, maxY - minY } };
+}
+
 void Engine::update(uint32_t msElapsed)
 {
     m_updateMsElapsed += msElapsed;
@@ -40,7 +72,7 @@ void Engine::handleDeferredEntityAddRemove()
         for (const auto& entity : m_entitiesToAdd)
         {
             m_entities.emplace_front(entity);
-            m_entifiesForType[entity->type()].emplace_front(entity);
+            m_entitiesForType[entity->type()].emplace_front(entity);
         }
 
         m_entitiesToAdd.clear();
@@ -51,7 +83,7 @@ void Engine::handleDeferredEntityAddRemove()
         for (const auto& entity : m_entitiesToRemove)
         {
             m_entities.remove(entity);
-            m_entifiesForType[entity->type()].remove(entity);
+            m_entitiesForType[entity->type()].remove(entity);
         }
 
         m_entitiesToRemove.clear();

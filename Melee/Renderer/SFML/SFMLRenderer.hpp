@@ -16,9 +16,8 @@ namespace Melee
 
         int                             runModal();
 
-        Vector2d                        getPlayfieldSize() const;
-
     private:
+        void                            updatePlayfieldViewport();
         void                            processEvents(sf::RenderWindow& window);
         void                            handleKey(sf::Keyboard::Key key, bool down);
         void                            renderEntities(sf::RenderTarget& target);

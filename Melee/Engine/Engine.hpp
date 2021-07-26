@@ -22,11 +22,14 @@ namespace Melee
     public:
         using CollisionCallback = std::function<bool(const std::shared_ptr<Entity>&, const std::shared_ptr<Entity>&)>;
 
-        explicit    Engine() = default;
+        explicit    Engine(const Vector2d& playfieldSize);
                     ~Engine() = default;
 
         auto&       getEntities()                                       { return m_entities; }
-        auto&       getEntities(Entity::Type type)                      { return m_entifiesForType[type]; }
+        auto&       getEntities(Entity::Type type)                      { return m_entitiesForType[type]; }
+
+        Vector2d    getPlayfieldSize() const;
+        Rectangle   getPlayersBoundingBox();
 
         void        setCollisionCallback(CollisionCallback&& callback)  { m_collisionCallback = callback;  }
 
@@ -42,8 +45,10 @@ namespace Melee
     private:
         using EntityMap = std::unordered_map<Entity::Type, EntityList>;
 
+        const Vector2d      m_playfieldSize;
+
         EntityList          m_entities;
-        EntityMap           m_entifiesForType;
+        EntityMap           m_entitiesForType;
 
         EntityList          m_entitiesToAdd;
         EntityList          m_entitiesToRemove;

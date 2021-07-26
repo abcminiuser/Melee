@@ -39,20 +39,12 @@ namespace
 
     constexpr auto kTargetFPS = 60;
     constexpr auto kMillisecondsPerFrame = 1000 / kTargetFPS;
-
-    constexpr auto kPlayfieldSize_km = 120000;
 }
 
 SFMLRenderer::SFMLRenderer(Engine& engine)
     : m_engine(engine)
-    , m_playfieldView(sf::Vector2f(kPlayfieldSize_km / 2, kPlayfieldSize_km / 2), sf::Vector2f(kPlayfieldSize_km, kPlayfieldSize_km))
 {
 
-}
-
-Vector2d SFMLRenderer::getPlayfieldSize() const
-{
-    return { kPlayfieldSize_km, kPlayfieldSize_km };
 }
 
 int SFMLRenderer::runModal()
@@ -66,15 +58,37 @@ int SFMLRenderer::runModal()
 
         m_engine.update(kMillisecondsPerFrame);
 
-        processEvents(window);
-
+        updatePlayfieldViewport();
         window.setView(m_playfieldView);
+
         renderEntities(window);
+        processEvents(window);
 
         window.display();
     }
 
     return 0;
+}
+
+void SFMLRenderer::updatePlayfieldViewport()
+{
+    const auto playfieldSize = m_engine.getPlayfieldSize();
+
+    const auto minViewportSize = std::min(playfieldSize.x, playfieldSize.y) / 2;
+    const auto viewportPadding = Vector2d{ playfieldSize.x * .1f, playfieldSize.y * .1f };
+
+    auto playerBoundingBox = m_engine.getPlayersBoundingBox();
+
+    // We want some padding around the players, so they aren't at the extreme edges of the view.
+    playerBoundingBox.inflate(viewportPadding);
+
+    // We want a rectangular viewport that's at least as large as the minimum size, but the larger
+    // of the two bounding box axis.
+    auto viewportSize = std::max(playerBoundingBox.size.x, playerBoundingBox.size.y);
+    viewportSize = std::max(viewportSize, minViewportSize);
+
+    m_playfieldView.setCenter(playerBoundingBox.origin.x + (playerBoundingBox.size.x / 2), playerBoundingBox.origin.y + (playerBoundingBox.size.y / 2));
+    m_playfieldView.setSize(viewportSize, viewportSize);
 }
 
 void SFMLRenderer::processEvents(sf::RenderWindow& window)
