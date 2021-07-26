@@ -132,51 +132,33 @@ void SFMLRenderer::renderEntities(sf::RenderTarget& target)
     {
         auto& rendererContext = entity->rendererContext();
         if (!rendererContext)
-            rendererContext = createRenderContext(entity);
+            rendererContext = createEntityRenderContext(entity);
 
         rendererContext->render(target);
     }
 }
 
-std::shared_ptr<RenderContext> SFMLRenderer::createRenderContext(const std::shared_ptr<Entity>& entity)
+std::shared_ptr<RenderContext> SFMLRenderer::createEntityRenderContext(const std::shared_ptr<Entity>& entity)
 {
     switch (entity->type())
     {
         case Entity::Type::Asteroid:
-        {
-            const auto asteroidEntity = std::dynamic_pointer_cast<AsteroidEntity>(entity);
-            return std::make_shared<SFMLAsteroidEntityRenderer>(*asteroidEntity);
-        }
+            return CreateEntityRenderContext<AsteroidEntity, SFMLAsteroidEntityRenderer>(entity);
 
         case Entity::Type::Exhaust:
-        {
-            const auto exhaustEntity = std::dynamic_pointer_cast<ExhaustEntity>(entity);
-            return std::make_shared<SFMLExhaustEntityRenderer>(*exhaustEntity);
-        }
+            return CreateEntityRenderContext<ExhaustEntity, SFMLExhaustEntityRenderer>(entity);
 
         case Entity::Type::Explosion:
-        {
-            const auto explosionEntity = std::dynamic_pointer_cast<ExplosionEntity>(entity);
-            return std::make_shared<SFMLExplosionEntityRenderer>(*explosionEntity);
-        }
+            return CreateEntityRenderContext<ExplosionEntity, SFMLExplosionEntityRenderer>(entity);
 
         case Entity::Type::Planet:
-        {
-            const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
-            return std::make_shared<SFMLPlanetEntityRenderer>(*planetEntity);
-        }
+            return CreateEntityRenderContext<PlanetEntity, SFMLPlanetEntityRenderer>(entity);
 
         case Entity::Type::Player:
-        {
-            const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
-            return std::make_shared<SFMLPlayerEntityRenderer>(*playerEntity);
-        }
+            return CreateEntityRenderContext<PlayerEntity, SFMLPlayerEntityRenderer>(entity);
 
         case Entity::Type::Projectile:
-        {
-            const auto projectileEntity = std::dynamic_pointer_cast<ProjectileEntity>(entity);
-            return std::make_shared<SFMLProjectileEntityRenderer>(*projectileEntity);
-        }
+            return CreateEntityRenderContext<ProjectileEntity, SFMLProjectileEntityRenderer>(entity);
     }
 
     throw std::runtime_error("Failed to create render context for entity!");

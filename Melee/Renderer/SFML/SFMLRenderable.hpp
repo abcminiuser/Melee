@@ -19,4 +19,11 @@ namespace Melee
     };
 
     using SFMLRenderable = RenderContext;
+
+    template <typename EntityType, typename RenderContextType>
+    inline auto CreateEntityRenderContext(const std::shared_ptr<Entity>& entity)
+    {
+        const auto specificEntity = std::dynamic_pointer_cast<EntityType>(entity);
+        return std::make_shared<RenderContextType>(*specificEntity);
+    }
 }

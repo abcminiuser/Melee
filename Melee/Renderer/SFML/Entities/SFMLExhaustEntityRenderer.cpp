@@ -11,8 +11,8 @@ namespace
         []()
         {
             sf::CircleShape circle;
-            circle.setRadius(200);
-            circle.setOrigin(200, 200);
+            circle.setRadius(120);
+            circle.setOrigin(120, 120);
 
             return circle;
         }();
