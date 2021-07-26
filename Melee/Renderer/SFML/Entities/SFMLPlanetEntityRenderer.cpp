@@ -15,18 +15,12 @@ SFMLPlanetEntityRenderer::SFMLPlanetEntityRenderer(PlanetEntity& entity)
     m_sprite.setOrigin(sf::Vector2f{ m_planetImageSize.x / 2.0f, m_planetImageSize.y / 2.0f });
 }
 
-void SFMLPlanetEntityRenderer::render(sf::RenderTarget& renderer, uint32_t scaleFactor)
+void SFMLPlanetEntityRenderer::render(sf::RenderTarget& renderer)
 {
-    const auto planetRadius = m_entity.properties().radius_km / scaleFactor;
-    const auto planetPos = m_entity.position() / scaleFactor;
+    const auto planetRadius = m_entity.properties().radius_km;
+    const auto planetPos = m_entity.position();
 
-    if (m_lastScaleFactor != scaleFactor)
-    {
-        m_lastScaleFactor = scaleFactor;
-
-        m_sprite.setScale(sf::Vector2f{ planetRadius * 2 / m_planetImageSize.x, planetRadius * 2 / m_planetImageSize.y });
-    }
-
+    m_sprite.setScale(sf::Vector2f{ planetRadius * 2 / m_planetImageSize.x, planetRadius * 2 / m_planetImageSize.y });
     m_sprite.setPosition(ToSFMLVector(planetPos));
 
     renderer.draw(m_sprite);

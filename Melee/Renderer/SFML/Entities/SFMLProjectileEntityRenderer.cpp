@@ -11,10 +11,10 @@ SFMLProjectileEntityRenderer::SFMLProjectileEntityRenderer(ProjectileEntity& ent
 
 }
 
-void SFMLProjectileEntityRenderer::render(sf::RenderTarget& renderer, uint32_t scaleFactor)
+void SFMLProjectileEntityRenderer::render(sf::RenderTarget& renderer)
 {
-    const auto projectilePos = m_entity.position() / scaleFactor;
-    const auto projectileRadius = m_entity.properties().radius_km / scaleFactor;
+    const auto projectilePos = m_entity.position();
+    const auto projectileRadius = m_entity.properties().radius_km;
 
     m_shape.setRadius(projectileRadius);
     m_shape.setOrigin(projectileRadius, projectileRadius);

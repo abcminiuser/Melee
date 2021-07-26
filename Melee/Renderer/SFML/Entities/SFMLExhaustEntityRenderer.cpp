@@ -35,9 +35,9 @@ SFMLExhaustEntityRenderer::SFMLExhaustEntityRenderer(ExhaustEntity& entity)
 
 }
 
-void SFMLExhaustEntityRenderer::render(sf::RenderTarget& renderer, uint32_t scaleFactor)
+void SFMLExhaustEntityRenderer::render(sf::RenderTarget& renderer)
 {
-    const auto exhaustPos = m_entity.position() / scaleFactor;
+    const auto exhaustPos = m_entity.position();
     const auto exhaustAge = m_entity.age();
     const float exhaustMaxAge = m_entity.properties().maxAge_ms;
 

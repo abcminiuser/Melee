@@ -25,12 +25,12 @@ SFMLExplosionEntityRenderer::SFMLExplosionEntityRenderer(ExplosionEntity& entity
 
 }
 
-void SFMLExplosionEntityRenderer::render(sf::RenderTarget& renderer, uint32_t scaleFactor)
+void SFMLExplosionEntityRenderer::render(sf::RenderTarget& renderer)
 {
-    const auto explosionPos = m_entity.position() / scaleFactor;
+    const auto explosionPos = m_entity.position();
     const auto explosionAge = m_entity.age();
     const float explosionMaxAge = m_entity.properties().maxAge_ms;
-    const float explosionRadius = m_entity.properties().radius_km / scaleFactor;
+    const float explosionRadius = m_entity.properties().radius_km;
 
     const auto currentRadius = LinearInterpolate(0.0f, explosionRadius, explosionAge / explosionMaxAge);
     const auto explosionColour = kExplosionColours[LinearInterpolateIndex(kExplosionColours, explosionAge / explosionMaxAge)];

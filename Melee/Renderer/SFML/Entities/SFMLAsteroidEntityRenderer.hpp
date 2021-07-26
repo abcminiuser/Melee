@@ -14,13 +14,12 @@ namespace Melee
 
         // SFMLRenderable i/f:
     public:
-        void                render(sf::RenderTarget& renderer, uint32_t scaleFactor) override;
+        void                render(sf::RenderTarget& renderer) override;
 
     private:
         const AsteroidEntity&   m_entity;
 
         Vector2d                m_lastHeading = {};
-        uint32_t                m_lastScaleFactor = {};
 
         sf::Texture             m_asteroidImage;
         sf::Vector2u            m_asteroidImageSize;

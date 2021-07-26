@@ -7,7 +7,7 @@ namespace
 {
     void AddTestEntities(Engine& engine, Renderer& renderer)
     {
-        const float scaleFactor = (float)renderer.currentScaleFactor();
+        const auto playFieldSize = renderer.getPlayfieldSize();
 
         {
             PlayerEntity::PlayerProperties playerProps = {};
@@ -20,10 +20,10 @@ namespace
             playerProps.maxEnergy = 10;
             playerProps.radius_km = 1000;
 
-            auto player1 = std::make_shared<PlayerEntity>(0, playerProps, Point{ 200 * scaleFactor, 200 * scaleFactor });
+            auto player1 = std::make_shared<PlayerEntity>(0, playerProps, Point{ playFieldSize.x * .2f, playFieldSize.y * .2f });
             engine.addEntity(player1);
 
-            auto player2 = std::make_shared<PlayerEntity>(1, playerProps, Point{ 100 * scaleFactor, 100 * scaleFactor });
+            auto player2 = std::make_shared<PlayerEntity>(1, playerProps, Point{ playFieldSize.x * .1f, playFieldSize.y * .1f });
             engine.addEntity(player2);
         }
 
@@ -32,7 +32,7 @@ namespace
             planetProps.mass_kg = 3.9736e16f;
             planetProps.radius_km = 6371;
 
-            auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ 600 * scaleFactor, 300 * scaleFactor });
+            auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ playFieldSize.x * .6f, playFieldSize.y * .3f });
             engine.addEntity(planet);
         }
 
@@ -42,7 +42,7 @@ namespace
             asteroidProps.mass_kg = 1e5;
             asteroidProps.rotation_degPerSec = 20;
 
-            auto asteroid = std::make_shared<AsteroidEntity>(asteroidProps, Point{ 800 * scaleFactor, 200 * scaleFactor }, Vector2d{ 10, 10 });
+            auto asteroid = std::make_shared<AsteroidEntity>(asteroidProps, Point{ playFieldSize.x * .8f, playFieldSize.y * .2f }, Vector2d{ 10, 10 });
             engine.addEntity(asteroid);
         }
     }

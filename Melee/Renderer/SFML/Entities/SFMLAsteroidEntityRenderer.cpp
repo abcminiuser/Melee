@@ -15,21 +15,14 @@ SFMLAsteroidEntityRenderer::SFMLAsteroidEntityRenderer(AsteroidEntity& entity)
     m_sprite.setOrigin(sf::Vector2f{ m_asteroidImageSize.x / 2.0f, m_asteroidImageSize.y / 2.0f });
 }
 
-void SFMLAsteroidEntityRenderer::render(sf::RenderTarget& renderer, uint32_t scaleFactor)
+void SFMLAsteroidEntityRenderer::render(sf::RenderTarget& renderer)
 {
-    const auto asteroidRadius = m_entity.properties().radius_km / scaleFactor;
+    const auto asteroidRadius = m_entity.properties().radius_km;
     const auto asteroidHeading = m_entity.heading();
-    const auto asteroidPos = m_entity.position() / scaleFactor;
+    const auto asteroidPos = m_entity.position();
 
-    if (m_lastHeading != asteroidHeading || m_lastScaleFactor != scaleFactor)
-    {
-        m_lastHeading = asteroidHeading;
-        m_lastScaleFactor = scaleFactor;
-
-        m_sprite.setScale(sf::Vector2f{ asteroidRadius * 2 / m_asteroidImageSize.x, asteroidRadius * 2 / m_asteroidImageSize.y });
-        m_sprite.setRotation(ToDegrees(asteroidHeading));
-    }
-
+    m_sprite.setRotation(ToDegrees(asteroidHeading));
+    m_sprite.setScale(sf::Vector2f{ asteroidRadius * 2 / m_asteroidImageSize.x, asteroidRadius * 2 / m_asteroidImageSize.y });
     m_sprite.setPosition(ToSFMLVector(asteroidPos));
 
     renderer.draw(m_sprite);

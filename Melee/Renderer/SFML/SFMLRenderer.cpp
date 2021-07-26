@@ -39,17 +39,25 @@ namespace
 
     constexpr auto kTargetFPS = 60;
     constexpr auto kMillisecondsPerFrame = 1000 / kTargetFPS;
+
+    constexpr auto kPlayfieldSize_km = 120000;
 }
 
 SFMLRenderer::SFMLRenderer(Engine& engine)
     : m_engine(engine)
+    , m_playfieldView(sf::Vector2f(kPlayfieldSize_km / 2, kPlayfieldSize_km / 2), sf::Vector2f(kPlayfieldSize_km, kPlayfieldSize_km))
 {
 
 }
 
+Vector2d SFMLRenderer::getPlayfieldSize() const
+{
+    return { kPlayfieldSize_km, kPlayfieldSize_km };
+}
+
 int SFMLRenderer::runModal()
 {
-    sf::RenderWindow window(sf::VideoMode(1024, 768), "Melee");
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Melee");
     window.setFramerateLimit(kTargetFPS);
 
     while (window.isOpen())
@@ -59,6 +67,8 @@ int SFMLRenderer::runModal()
         m_engine.update(kMillisecondsPerFrame);
 
         processEvents(window);
+
+        window.setView(m_playfieldView);
         renderEntities(window);
 
         window.display();
@@ -102,17 +112,15 @@ void SFMLRenderer::handleKey(sf::Keyboard::Key key, bool down)
     }
 }
 
-void SFMLRenderer::renderEntities(sf::RenderWindow& window)
+void SFMLRenderer::renderEntities(sf::RenderTarget& target)
 {
-    const auto scaleFactor = currentScaleFactor();
-
     for (const auto& entity : m_engine.getEntities())
     {
         auto& rendererContext = entity->rendererContext();
         if (!rendererContext)
             rendererContext = createRenderContext(entity);
 
-        rendererContext->render(window, scaleFactor);
+        rendererContext->render(target);
     }
 }
 

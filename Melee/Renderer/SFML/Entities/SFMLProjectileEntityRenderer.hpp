@@ -14,7 +14,7 @@ namespace Melee
 
         // SFMLRenderable i/f:
     public:
-        void                    render(sf::RenderTarget& renderer, uint32_t scaleFactor) override;
+        void                    render(sf::RenderTarget& renderer) override;
 
     private:
         const ProjectileEntity& m_entity;

@@ -16,17 +16,19 @@ namespace Melee
 
         int                             runModal();
 
-        uint32_t                        currentScaleFactor() const { return 100; } // FIXME: Dynamic view scaling to fit the players
+        Vector2d                        getPlayfieldSize() const;
 
     private:
         void                            processEvents(sf::RenderWindow& window);
         void                            handleKey(sf::Keyboard::Key key, bool down);
-        void                            renderEntities(sf::RenderWindow& window);
+        void                            renderEntities(sf::RenderTarget& target);
 
         std::shared_ptr<RenderContext>  createRenderContext(const std::shared_ptr<Entity>& entity);
 
     private:
         Engine&                         m_engine;
+
+        sf::View                        m_playfieldView;
     };
 
     using Renderer = SFMLRenderer;
