@@ -54,6 +54,7 @@ namespace Melee
 
         std::shared_ptr<RenderContext>& rendererContext()			{ return m_rendererContext;  }
 
+        void                            moveTo(const Vector2d& newPosition);
         void                            applyExternalForce(const Vector2d& forceVector);
 
     protected:

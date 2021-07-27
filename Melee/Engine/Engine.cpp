@@ -38,6 +38,7 @@ void Engine::update(uint32_t msElapsed)
 {
     m_updateMsElapsed += msElapsed;
 
+
     while (m_updateMsElapsed >= kMaxUpdateTimestepMs)
     {
         handleDeferredEntityAddRemove();
