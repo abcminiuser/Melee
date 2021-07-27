@@ -35,11 +35,11 @@ namespace Melee
 
         void        update(uint32_t msElapsed);
 
-        void        addEntity(const std::shared_ptr<Entity>& entity);
-        void        removeEntity(const std::shared_ptr<Entity>& entity);
+        void        addEntity(const std::shared_ptr<Entity>& entity) noexcept;
+        void        removeEntity(const std::shared_ptr<Entity>& entity) noexcept;
 
     private:
-        void        handleDeferredEntityAddRemove();
+        void        handleDeferredEntityAddRemove() noexcept;
         void        checkForEntityCollisions();
 
     private:

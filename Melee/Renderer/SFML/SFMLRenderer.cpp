@@ -59,6 +59,7 @@ SFMLRenderer::SFMLRenderer(Engine& engine)
 int SFMLRenderer::runModal()
 {
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Melee");
+
     window.setFramerateLimit(kTargetFPS);
     window.setVerticalSyncEnabled(true);
 
@@ -90,8 +91,7 @@ void SFMLRenderer::updatePlayfieldViewport()
 
     // We want a rectangular viewport that's at least as large as the minimum size, but the larger of the two bounding box axis.
     const auto newViewSize = std::clamp<float>(std::max(playfieldView.size.x, playfieldView.size.y), kMinViewportAxisSize_km, playfieldSize);
-    playfieldView.size.x = newViewSize;
-    playfieldView.size.y = newViewSize;
+    playfieldView.size = { newViewSize, newViewSize };
 
     // Don't allow the camera to go outside the playfield area
     if (playfieldView.origin.x < 0)

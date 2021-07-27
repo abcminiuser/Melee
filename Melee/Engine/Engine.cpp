@@ -51,17 +51,17 @@ void Engine::update(uint32_t msElapsed)
     }
 }
 
-void Engine::addEntity(const std::shared_ptr<Entity>& entity)
+void Engine::addEntity(const std::shared_ptr<Entity>& entity) noexcept
 {
-    m_entitiesToAdd.push_back(entity);
+    m_entitiesToAdd.emplace_back(entity);
 }
 
-void Engine::removeEntity(const std::shared_ptr<Entity>& entity)
+void Engine::removeEntity(const std::shared_ptr<Entity>& entity) noexcept
 {
-    m_entitiesToRemove.push_back(entity);
+    m_entitiesToRemove.emplace_back(entity);
 }
 
-void Engine::handleDeferredEntityAddRemove()
+void Engine::handleDeferredEntityAddRemove() noexcept
 {
     if (!m_entitiesToAdd.empty())
     {

@@ -6,7 +6,7 @@
 namespace Melee
 {
 	template <typename T>
-	constexpr inline T		LinearInterpolate(T min, T max, float val)
+	constexpr inline T		LinearInterpolate(T min, T max, float val) noexcept
 	{
 		if (val <= 0.0f)
 			return min;
@@ -16,13 +16,13 @@ namespace Melee
 			return static_cast<T>(min + (val * (max - min)));
 	}
 
-	constexpr inline auto	LinearInterpolateIndex(size_t size, float val)
+	constexpr inline auto	LinearInterpolateIndex(size_t size, float val) noexcept
 	{
 		return LinearInterpolate<size_t>(0, size - 1, val);
 	}
 
 	template<typename T>
-	constexpr inline auto	LinearInterpolateIndex(const T& container, float val)
+	constexpr inline auto	LinearInterpolateIndex(const T& container, float val) noexcept
 	{
 		return LinearInterpolateIndex(std::size(container), val);
 	}

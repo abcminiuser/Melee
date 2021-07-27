@@ -11,37 +11,37 @@ namespace Melee
         float x = 0;
         float y = 0;
 
-        float lengthSquared() const
-        {
-            return x * x + y * y;
-        }
-
-        float length() const
-        {
-            return sqrtf(x * x + y * y);
-        }
-
-        Vector2d normalised() const
+        Vector2d normalised() const noexcept
         {
             return Vector2d{ x, y } / length();
         }
 
-        Vector2d dotProduct(const Vector2d& other) const
+        float length() const noexcept
+        {
+            return sqrtf(x * x + y * y);
+        }
+
+        constexpr float lengthSquared() const noexcept
+        {
+            return x * x + y * y;
+        }
+
+        constexpr Vector2d dotProduct(const Vector2d& other) const noexcept
         {
             return Vector2d{ x * other.x, y * other.y };
         }
 
-        bool operator==(const Vector2d& other) const
+        constexpr bool operator==(const Vector2d& other) const noexcept
         {
             return std::tie(x, y) == std::tie(other.x, other.y);
         }
 
-        bool operator!=(const Vector2d& other) const
+        constexpr bool operator!=(const Vector2d& other) const noexcept
         {
             return std::tie(x, y) != std::tie(other.x, other.y);
         }
 
-        Vector2d& operator +=(const Vector2d& other)
+        constexpr  Vector2d& operator +=(const Vector2d& other) noexcept
         {
             x += other.x;
             y += other.y;
@@ -49,7 +49,7 @@ namespace Melee
             return *this;
         }
 
-        Vector2d& operator -=(const Vector2d& other)
+        constexpr Vector2d& operator -=(const Vector2d& other) noexcept
         {
             x -= other.x;
             y -= other.y;
@@ -57,7 +57,7 @@ namespace Melee
             return *this;
         }
 
-        Vector2d& operator *=(float scaler)
+        constexpr Vector2d& operator *=(float scaler) noexcept
         {
             x *= scaler;
             y *= scaler;
@@ -65,7 +65,7 @@ namespace Melee
             return *this;
         }
 
-        Vector2d& operator /=(float scaler)
+        constexpr Vector2d& operator /=(float scaler) noexcept
         {
             x /= scaler;
             y /= scaler;
@@ -73,12 +73,12 @@ namespace Melee
             return *this;
         }
 
-        Vector2d operator -() const
+        constexpr Vector2d operator -() const noexcept
         {
             return Vector2d{ -x, -y };
         }
 
-        Vector2d operator +(const Vector2d& other) const
+        constexpr Vector2d operator +(const Vector2d& other) const noexcept
         {
             Vector2d v = *this;
             v.operator+=(other);
@@ -86,7 +86,7 @@ namespace Melee
             return v;
         }
 
-        Vector2d operator -(const Vector2d& other) const
+        constexpr Vector2d operator -(const Vector2d& other) const noexcept
         {
             Vector2d v = *this;
             v.operator-=(other);
@@ -94,7 +94,7 @@ namespace Melee
             return v;
         }
 
-        Vector2d operator *(float scaler) const
+        constexpr Vector2d operator *(float scaler) const noexcept
         {
             Vector2d v = *this;
             v.operator*=(scaler);
@@ -102,7 +102,7 @@ namespace Melee
             return v;
         }
 
-        Vector2d operator /(float scaler) const
+        constexpr Vector2d operator /(float scaler) const noexcept
         {
             Vector2d v = *this;
             v.operator/=(scaler);
