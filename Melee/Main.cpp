@@ -20,10 +20,10 @@ namespace
             playerProps.maxEnergy = 10;
             playerProps.radius_km = 1000;
 
-            auto player1 = std::make_shared<PlayerEntity>(0, playerProps, Point{ playFieldSize.x * .2f, playFieldSize.y * .2f });
+            auto player1 = std::make_shared<PlayerEntity>(0, playerProps, Point{ playFieldSize * .2f, playFieldSize * .2f });
             engine.addEntity(player1);
 
-            auto player2 = std::make_shared<PlayerEntity>(1, playerProps, Point{ playFieldSize.x * .1f, playFieldSize.y * .1f });
+            auto player2 = std::make_shared<PlayerEntity>(1, playerProps, Point{ playFieldSize * .1f, playFieldSize * .1f });
             engine.addEntity(player2);
         }
 
@@ -32,7 +32,7 @@ namespace
             planetProps.mass_kg = 3.9736e16f;
             planetProps.radius_km = 6371;
 
-            auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ playFieldSize.x * .6f, playFieldSize.y * .3f });
+            auto planet = std::make_shared<PlanetEntity>(planetProps, Point{ playFieldSize * .6f, playFieldSize * .3f });
             engine.addEntity(planet);
         }
 
@@ -42,7 +42,7 @@ namespace
             asteroidProps.mass_kg = 1e5;
             asteroidProps.rotation_degPerSec = 20;
 
-            auto asteroid = std::make_shared<AsteroidEntity>(asteroidProps, Point{ playFieldSize.x * .8f, playFieldSize.y * .2f }, Vector2d{ 10, 10 });
+            auto asteroid = std::make_shared<AsteroidEntity>(asteroidProps, Point{ playFieldSize * .8f, playFieldSize * .2f }, Vector2d{ 10, 10 });
             engine.addEntity(asteroid);
         }
     }
@@ -50,7 +50,7 @@ namespace
 
 int main(int argc, char* argv[])
 {
-    Engine   engine(Vector2d{ 120000, 120000 });
+    Engine   engine(200000);
     Renderer renderer(engine);
 
     AddTestEntities(engine);

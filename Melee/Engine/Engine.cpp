@@ -7,21 +7,16 @@ namespace
     constexpr auto kMaxUpdateTimestepMs = 8;
 }
 
-Engine::Engine(const Vector2d& playfieldSize)
+Engine::Engine(const uint32_t playfieldSize)
     : m_playfieldSize(playfieldSize)
 {
 
 }
 
-Vector2d Engine::getPlayfieldSize() const
-{
-    return m_playfieldSize;
-}
-
 Rectangle Engine::getPlayersBoundingBox()
 {
-    float minX = m_playfieldSize.x;
-    float minY = m_playfieldSize.y;
+    float minX = m_playfieldSize;
+    float minY = m_playfieldSize;
     float maxX = 0;
     float maxY = 0;
 

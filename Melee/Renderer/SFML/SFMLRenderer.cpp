@@ -39,31 +39,40 @@ namespace
 
     constexpr auto kTargetFPS = 60;
     constexpr auto kMillisecondsPerFrame = 1000 / kTargetFPS;
+
+    constexpr auto kViewportPadding_km = 10000.0f;
+    constexpr auto kMinViewportAxisSize_km = 50000.0f;
 }
 
 SFMLRenderer::SFMLRenderer(Engine& engine)
     : m_engine(engine)
 {
+    m_backgroundTexture.loadFromFile("Assets\\Background.png");
 
+    const auto backgroundSize = m_backgroundTexture.getSize();
+    const auto playfieldSize = m_engine.getPlayfieldSize();
+
+    m_backgroundSprite.setTexture(m_backgroundTexture);
+    m_backgroundSprite.setScale(sf::Vector2f{ (float)playfieldSize / backgroundSize.x, (float)playfieldSize / backgroundSize.y });
 }
 
 int SFMLRenderer::runModal()
 {
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Melee");
     window.setFramerateLimit(kTargetFPS);
+    window.setVerticalSyncEnabled(true);
 
     while (window.isOpen())
     {
-        window.clear();
+        processEvents(window);
 
         m_engine.update(kMillisecondsPerFrame);
 
         updatePlayfieldViewport();
+
         window.setView(m_playfieldView);
-
-        renderEntities(window);
-        processEvents(window);
-
+        window.clear();
+        renderPlayfield(window);
         window.display();
     }
 
@@ -74,21 +83,32 @@ void SFMLRenderer::updatePlayfieldViewport()
 {
     const auto playfieldSize = m_engine.getPlayfieldSize();
 
-    const auto minViewportSize = std::min(playfieldSize.x, playfieldSize.y) / 2;
-    const auto viewportPadding = Vector2d{ playfieldSize.x * .1f, playfieldSize.y * .1f };
+    auto playfieldView = m_engine.getPlayersBoundingBox();
 
-    auto playerBoundingBox = m_engine.getPlayersBoundingBox();
+    // We want some padding around the players, so they aren't at the extreme edges of the resuling view unless unavoidable.
+    playfieldView.inflate(Vector2d{ kViewportPadding_km, kViewportPadding_km });
 
-    // We want some padding around the players, so they aren't at the extreme edges of the view.
-    playerBoundingBox.inflate(viewportPadding);
+    // We want a rectangular viewport that's at least as large as the minimum size, but the larger of the two bounding box axis.
+    const auto newViewSize = std::clamp<float>(std::max(playfieldView.size.x, playfieldView.size.y), kMinViewportAxisSize_km, playfieldSize);
+    playfieldView.size.x = newViewSize;
+    playfieldView.size.y = newViewSize;
 
-    // We want a rectangular viewport that's at least as large as the minimum size, but the larger
-    // of the two bounding box axis.
-    auto viewportSize = std::max(playerBoundingBox.size.x, playerBoundingBox.size.y);
-    viewportSize = std::max(viewportSize, minViewportSize);
+    // Don't allow the camera to go outside the playfield area
+    if (playfieldView.origin.x < 0)
+        playfieldView.origin.x = 0;
 
-    m_playfieldView.setCenter(playerBoundingBox.origin.x + (playerBoundingBox.size.x / 2), playerBoundingBox.origin.y + (playerBoundingBox.size.y / 2));
-    m_playfieldView.setSize(viewportSize, viewportSize);
+    if (playfieldView.origin.x + playfieldView.size.x > playfieldSize)
+        playfieldView.origin.x = playfieldSize - playfieldView.size.x;
+
+    if (playfieldView.origin.y < 0)
+        playfieldView.origin.y = 0;
+
+    if (playfieldView.origin.y + playfieldView.size.y > playfieldSize)
+        playfieldView.origin.y = playfieldSize - playfieldView.size.y;
+
+    // Update the playfield view with the new calculated viewport
+    m_playfieldView.setCenter(playfieldView.origin.x + (playfieldView.size.x / 2), playfieldView.origin.y + (playfieldView.size.y / 2));
+    m_playfieldView.setSize(playfieldView.size.x, playfieldView.size.y);
 }
 
 void SFMLRenderer::processEvents(sf::RenderWindow& window)
@@ -126,8 +146,10 @@ void SFMLRenderer::handleKey(sf::Keyboard::Key key, bool down)
     }
 }
 
-void SFMLRenderer::renderEntities(sf::RenderTarget& target)
+void SFMLRenderer::renderPlayfield(sf::RenderTarget& target)
 {
+    target.draw(m_backgroundSprite);
+
     for (const auto& entity : m_engine.getEntities())
     {
         auto& rendererContext = entity->rendererContext();
