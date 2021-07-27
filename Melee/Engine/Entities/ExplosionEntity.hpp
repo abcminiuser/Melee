@@ -12,6 +12,7 @@ namespace Melee
             ExplosionProperties()
             {
                 collidable = false;
+                wrappable = false;
                 radius_km = 2500;
             }
 

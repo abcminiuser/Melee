@@ -12,6 +12,7 @@ namespace Melee
             ExhaustProperties()
             {
                 collidable = false;
+                wrappable = false;
             }
 
             uint32_t maxAge_ms = 1000;

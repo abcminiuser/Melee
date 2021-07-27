@@ -27,17 +27,20 @@ void Entity::update(Engine& engine, uint32_t msElapsed)
             m_velocity *= m_maxVelocitySquared / newVelocitySquared;
     }
 
-    const auto maxPos = engine.getPlayfieldSize();
+    if (m_properties.wrappable)
+    {
+        const auto maxPos = engine.getPlayfieldSize();
 
-    if (m_position.x < 0)
-        m_position.y += maxPos;
-    else if (m_position.x > maxPos)
-        m_position.x -= maxPos;
+        if (m_position.x < 0)
+            m_position.y += maxPos;
+        else if (m_position.x > maxPos)
+            m_position.x -= maxPos;
 
-    if (m_position.y < 0)
-        m_position.y += maxPos;
-    else if (m_position.y > maxPos)
-        m_position.y -= maxPos;
+        if (m_position.y < 0)
+            m_position.y += maxPos;
+        else if (m_position.y > maxPos)
+            m_position.y -= maxPos;
+    }
 }
 
 void Entity::collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState)

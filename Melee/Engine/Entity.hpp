@@ -27,6 +27,7 @@ namespace Melee
             float       radius_km = 0;
             uint32_t    maxVelocity = 0;
             bool        collidable = true;
+            bool        wrappable = true;
         };
 
         struct PreCollisionState

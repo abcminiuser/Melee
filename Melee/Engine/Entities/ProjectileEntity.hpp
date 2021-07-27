@@ -11,6 +11,7 @@ namespace Melee
         {
             ProjectileProperties()
             {
+                wrappable = false;
                 radius_km = 200;
             }
 

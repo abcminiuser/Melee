@@ -105,7 +105,7 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     m_primaryFireTimer.add(msElapsed);
     if (m_flags & Flags::FirePrimaryActive && m_energy >= m_playerProperties.primaryEnergyCost && m_primaryFireTimer.expired())
     {
-        auto projectileEntity = std::make_shared<ProjectileEntity>(ProjectileEntity::ProjectileProperties{}, shared_from_this(), m_position + m_heading * (m_playerProperties.radius_km + 500), m_heading * 30);
+        auto projectileEntity = std::make_shared<ProjectileEntity>(ProjectileEntity::ProjectileProperties{}, shared_from_this(), m_position + m_heading * (m_playerProperties.radius_km + 500), m_heading * (m_velocity.length() + 20));
         engine.addEntity(projectileEntity);
 
         consumeEnergy(m_playerProperties.primaryEnergyCost);
