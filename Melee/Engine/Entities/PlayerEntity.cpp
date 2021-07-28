@@ -144,6 +144,10 @@ void PlayerEntity::collide(Engine& engine, const Entity& otherEntity, const PreC
 
             break;
         }
+
+        case Entity::Type::Exhaust:
+        case Entity::Type::Explosion:
+            break;
     }
 
     Entity::collide(engine, otherEntity, otherEntityState);

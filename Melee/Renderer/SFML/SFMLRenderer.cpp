@@ -130,6 +130,9 @@ void SFMLRenderer::processEvents(sf::RenderWindow& window)
                 handleKey(event.key.code, event.type == sf::Event::KeyPressed);
                 break;
             }
+
+            default:
+                break;
         }
     }
 }
