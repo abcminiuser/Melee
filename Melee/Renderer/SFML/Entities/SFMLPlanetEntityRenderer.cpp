@@ -8,7 +8,7 @@ using namespace Melee;
 SFMLPlanetEntityRenderer::SFMLPlanetEntityRenderer(PlanetEntity& entity)
     : m_entity(entity)
 {
-    m_planetImage.loadFromFile("Assets\\Planet.png");
+    m_planetImage.loadFromFile("Assets/Images/Planet.png");
     m_planetImageSize = m_planetImage.getSize();
 
     m_sprite.setTexture(m_planetImage);

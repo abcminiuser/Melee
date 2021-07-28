@@ -9,6 +9,8 @@
 #include "Entities/SFMLPlayerEntityRenderer.hpp"
 #include "Entities/SFMLProjectileEntityRenderer.hpp"
 
+#include "UI/SFMLPlayerHudTileRenderer.hpp"
+
 #include "Engine/Engine.hpp"
 
 #include <unordered_map>
@@ -38,16 +40,18 @@ namespace
     };
 
     constexpr auto kTargetFPS = 60;
-    constexpr auto kMillisecondsPerFrame = 1000 / kTargetFPS;
 
     constexpr auto kViewportPadding_km = 10000.0f;
     constexpr auto kMinViewportAxisSize_km = 50000.0f;
+
+    constexpr auto kWindowHeight = 1000;
+    constexpr auto kWindowWidthMultiplierForHud = 1.2f;
 }
 
 SFMLRenderer::SFMLRenderer(Engine& engine)
     : m_engine(engine)
 {
-    m_backgroundTexture.loadFromFile("Assets\\Background.png");
+    m_backgroundTexture.loadFromFile("Assets/Images/Background.png");
 
     const auto backgroundSize = m_backgroundTexture.getSize();
     const auto playfieldSize = m_engine.getPlayfieldSize();
@@ -58,7 +62,16 @@ SFMLRenderer::SFMLRenderer(Engine& engine)
 
 int SFMLRenderer::runModal()
 {
-    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Melee");
+    sf::RenderWindow window(sf::VideoMode(kWindowHeight * kWindowWidthMultiplierForHud, kWindowHeight), "Melee");
+
+    constexpr auto kMillisecondsPerFrame = 1000 / kTargetFPS;
+    constexpr auto kWidthForPlayfield = 1.0f / kWindowWidthMultiplierForHud;
+
+    m_playfieldView.setViewport(sf::FloatRect(0, 0, kWidthForPlayfield, 1));
+    m_playerHudView.setViewport(sf::FloatRect(kWidthForPlayfield, 0, 1 - kWidthForPlayfield, 1));
+
+    m_playerHudView.setSize(250, 1000);
+    m_playerHudView.setCenter(250 / 2, 1000 / 2);
 
     window.setFramerateLimit(kTargetFPS);
     window.setVerticalSyncEnabled(true);
@@ -71,9 +84,14 @@ int SFMLRenderer::runModal()
 
         updatePlayfieldViewport();
 
-        window.setView(m_playfieldView);
         window.clear();
+
+        window.setView(m_playfieldView);
         renderPlayfield(window);
+
+        window.setView(m_playerHudView);
+        renderPlayerHud(window);
+
         window.display();
     }
 
@@ -159,32 +177,88 @@ void SFMLRenderer::renderPlayfield(sf::RenderTarget& target)
         if (!rendererContext)
             rendererContext = createEntityRenderContext(entity);
 
-        rendererContext->render(target);
+        if (rendererContext->playfieldRenderer)
+            rendererContext->playfieldRenderer->render(target);
+    }
+}
+
+void SFMLRenderer::renderPlayerHud(sf::RenderTarget& target)
+{
+    sf::RectangleShape r;
+    r.setFillColor(sf::Color(100, 100, 100));
+    r.setSize(sf::Vector2f{ 250, 1000 });
+    target.draw(r);
+
+    const auto playerEntities = m_engine.getEntities(Entity::Type::Player);
+
+    for (const auto entity : playerEntities)
+    {
+        auto& rendererContext = entity->rendererContext();
+        if (!rendererContext)
+            rendererContext = createEntityRenderContext(entity);
+
+        if (rendererContext->uiRenderer)
+            rendererContext->uiRenderer->render(target);
     }
 }
 
 std::shared_ptr<RenderContext> SFMLRenderer::createEntityRenderContext(const std::shared_ptr<Entity>& entity)
 {
+    auto renderContext = std::make_shared<RenderContext>();
+
     switch (entity->type())
     {
         case Entity::Type::Asteroid:
-            return CreateEntityRenderContext<AsteroidEntity, SFMLAsteroidEntityRenderer>(entity);
+        {
+            const auto asteroidEntity = std::dynamic_pointer_cast<AsteroidEntity>(entity);
+
+            renderContext->playfieldRenderer = std::make_shared<SFMLAsteroidEntityRenderer>(*asteroidEntity);
+            break;
+        }
 
         case Entity::Type::Exhaust:
-            return CreateEntityRenderContext<ExhaustEntity, SFMLExhaustEntityRenderer>(entity);
+        {
+            const auto exhaustEntity = std::dynamic_pointer_cast<ExhaustEntity>(entity);
+
+            renderContext->playfieldRenderer = std::make_shared<SFMLExhaustEntityRenderer>(*exhaustEntity);
+            break;
+        }
 
         case Entity::Type::Explosion:
-            return CreateEntityRenderContext<ExplosionEntity, SFMLExplosionEntityRenderer>(entity);
+        {
+            const auto explosionEntity = std::dynamic_pointer_cast<ExplosionEntity>(entity);
+
+            renderContext->playfieldRenderer = std::make_shared<SFMLExplosionEntityRenderer>(*explosionEntity);
+            break;
+        }
 
         case Entity::Type::Planet:
-            return CreateEntityRenderContext<PlanetEntity, SFMLPlanetEntityRenderer>(entity);
+        {
+            const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
+
+            renderContext->playfieldRenderer = std::make_shared<SFMLPlanetEntityRenderer>(*planetEntity);
+            break;
+        }
 
         case Entity::Type::Player:
-            return CreateEntityRenderContext<PlayerEntity, SFMLPlayerEntityRenderer>(entity);
+        {
+            const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
+
+            sf::FloatRect tileArea(0, 1000 * playerEntity->index() / 4.0f, 250, 1000 / 4.0f);
+
+            renderContext->playfieldRenderer = std::make_shared<SFMLPlayerEntityRenderer>(*playerEntity);
+            renderContext->uiRenderer = std::make_shared<SFMLPlayerHudTileRenderer>(*playerEntity, tileArea);
+            break;
+        }
 
         case Entity::Type::Projectile:
-            return CreateEntityRenderContext<ProjectileEntity, SFMLProjectileEntityRenderer>(entity);
+        {
+            const auto projectileEntity = std::dynamic_pointer_cast<ProjectileEntity>(entity);
+
+            renderContext->playfieldRenderer = std::make_shared<SFMLProjectileEntityRenderer>(*projectileEntity);
+            break;
+        }
     }
 
-    throw std::runtime_error("Failed to create render context for entity!");
+    return renderContext;
 }

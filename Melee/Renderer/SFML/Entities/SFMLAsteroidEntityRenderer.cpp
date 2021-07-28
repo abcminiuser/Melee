@@ -8,7 +8,7 @@ using namespace Melee;
 SFMLAsteroidEntityRenderer::SFMLAsteroidEntityRenderer(AsteroidEntity& entity)
     : m_entity(entity)
 {
-    m_asteroidImage.loadFromFile("Assets\\Asteroid.png");
+    m_asteroidImage.loadFromFile("Assets/Images/Asteroid.png");
     m_asteroidImageSize = m_asteroidImage.getSize();
 
     m_sprite.setTexture(m_asteroidImage);

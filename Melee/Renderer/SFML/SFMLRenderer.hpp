@@ -21,6 +21,7 @@ namespace Melee
         void                            processEvents(sf::RenderWindow& window);
         void                            handleKey(sf::Keyboard::Key key, bool down);
         void                            renderPlayfield(sf::RenderTarget& target);
+        void                            renderPlayerHud(sf::RenderTarget& target);
 
         std::shared_ptr<RenderContext>  createEntityRenderContext(const std::shared_ptr<Entity>& entity);
 
@@ -31,6 +32,7 @@ namespace Melee
         sf::Sprite                      m_backgroundSprite;
 
         sf::View                        m_playfieldView;
+        sf::View                        m_playerHudView;
     };
 
     using Renderer = SFMLRenderer;

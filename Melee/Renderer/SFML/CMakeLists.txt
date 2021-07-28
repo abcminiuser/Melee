@@ -26,6 +26,9 @@ add_library (SFMLRenderer
     Entities/SFMLPlayerEntityRenderer.hpp
     Entities/SFMLProjectileEntityRenderer.cpp
     Entities/SFMLProjectileEntityRenderer.hpp
+
+    UI/SFMLPlayerHudTileRenderer.cpp
+    UI/SFMLPlayerHudTileRenderer.hpp
 )
 
 target_include_directories (SFMLRenderer PRIVATE ../../)

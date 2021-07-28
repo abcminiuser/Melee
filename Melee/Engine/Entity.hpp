@@ -6,7 +6,7 @@
 
 namespace Melee
 {
-    class RenderContext;
+    struct RenderContext;
 
     class Entity : public std::enable_shared_from_this<Entity>
     {

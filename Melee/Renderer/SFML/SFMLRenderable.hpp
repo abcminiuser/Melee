@@ -8,22 +8,19 @@ namespace Melee
 {
     class Entity;
 
-    class RenderContext
+    class SFMLRenderable
     {
     public:
-        explicit        RenderContext() = default;
-        virtual         ~RenderContext() = default;
+        explicit        SFMLRenderable() = default;
+        virtual         ~SFMLRenderable() = default;
 
     public:
         virtual void    render(sf::RenderTarget& renderer) = 0;
     };
 
-    using SFMLRenderable = RenderContext;
-
-    template <typename EntityType, typename RenderContextType>
-    inline auto CreateEntityRenderContext(const std::shared_ptr<Entity>& entity)
+    struct RenderContext
     {
-        const auto specificEntity = std::dynamic_pointer_cast<EntityType>(entity);
-        return std::make_shared<RenderContextType>(*specificEntity);
-    }
+        std::shared_ptr<SFMLRenderable> playfieldRenderer;
+        std::shared_ptr<SFMLRenderable> uiRenderer;
+    };
 }

@@ -8,7 +8,7 @@ using namespace Melee;
 SFMLPlayerEntityRenderer::SFMLPlayerEntityRenderer(PlayerEntity& entity)
     : m_entity(entity)
 {
-    m_shipImage.loadFromFile("Assets\\Ship.png");
+    m_shipImage.loadFromFile("Assets/Images/Ship.png");
     m_shipImageSize = m_shipImage.getSize();
 
     m_sprite.setTexture(m_shipImage);
