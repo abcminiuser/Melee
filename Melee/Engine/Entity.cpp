@@ -32,7 +32,7 @@ void Entity::update(Engine& engine, uint32_t msElapsed)
         const auto maxPos = engine.getPlayfieldSize();
 
         if (m_position.x < 0)
-            m_position.y += maxPos;
+            m_position.x += maxPos;
         else if (m_position.x > maxPos)
             m_position.x -= maxPos;
 
