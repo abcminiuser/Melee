@@ -9,7 +9,7 @@
 
 namespace Melee
 {
-    static inline const sf::Color HSVColor(float H, float S, float V)
+    static inline sf::Color HSVColor(float H, float S, float V)
     {
         if (std::clamp<float>(H, 0, 360) != H || std::clamp<float>(S, 0, 100) != S || std::clamp<float>(V, 0, 100) != V)
             throw std::out_of_range("Invalid range");

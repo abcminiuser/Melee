@@ -17,6 +17,9 @@ namespace Melee
 	    void                    render(sf::RenderTarget& renderer) override;
 
 	private:
+		void					drawVerticalBarGraph(sf::RenderTarget& renderer, sf::FloatRect area, sf::Color inactiveColour, sf::Color activeColour, float valueNormalized);
+
+	private:
 		const PlayerEntity&		m_entity;
 		const sf::FloatRect		m_renderArea;
 

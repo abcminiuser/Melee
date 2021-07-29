@@ -5,6 +5,15 @@
 
 using namespace Melee;
 
+namespace
+{
+    static const auto kLifeBarInactiveFillColour = HSVColor(0, 100, 40);
+    static const auto kLifeBarActiveFillColour = HSVColor(0, 100, 90);
+
+    static const auto kEnergyBarInactiveFillColour = HSVColor(240, 100, 40);
+    static const auto kEnergyBarActiveFillColour = HSVColor(240, 100, 90);
+}
+
 SFMLPlayerHudTileRenderer::SFMLPlayerHudTileRenderer(PlayerEntity& entity, const sf::FloatRect& renderArea)
 	: m_entity(entity)
     , m_renderArea(renderArea)
@@ -14,9 +23,6 @@ SFMLPlayerHudTileRenderer::SFMLPlayerHudTileRenderer(PlayerEntity& entity, const
 
 void SFMLPlayerHudTileRenderer::render(sf::RenderTarget& renderer)
 {
-	const float lifeNormalized = m_entity.health() / (float)m_entity.properties().maxHealth;
-    const float energyNormalized = m_entity.energy() / (float)m_entity.properties().maxEnergy;
-
     sf::RectangleShape r;
     r.setFillColor(sf::Color(150, 150, 150));
     r.setPosition(m_renderArea.left, m_renderArea.top);
@@ -31,53 +37,50 @@ void SFMLPlayerHudTileRenderer::render(sf::RenderTarget& renderer)
     text.setCharacterSize(24);
     renderer.draw(text);
 
-    {
-        sf::RectangleShape r;
-        r.setFillColor(sf::Color::Black);
-        r.setPosition(m_renderArea.left + 30, m_renderArea.top + 40);
-        r.setSize(sf::Vector2f{ 20, 100 });
-        renderer.draw(r);
+    const float healthNormalized = m_entity.health() / (float)m_entity.properties().maxHealth;
+    drawVerticalBarGraph(renderer, sf::FloatRect{ m_renderArea.left + 30, m_renderArea.top + 40, 20, 100 }, kLifeBarInactiveFillColour, kLifeBarActiveFillColour, healthNormalized);
 
-    }
-    {
-        sf::RectangleShape r;
-        r.setFillColor(sf::Color(180, 0, 0));
-        r.setPosition(m_renderArea.left + 30, m_renderArea.top + 40 + (1 - lifeNormalized) * 100);
-        r.setSize(sf::Vector2f{ 20, lifeNormalized * 100 });
-        renderer.draw(r);
-    }
     {
         sf::Text text;
         text.setString("Health");
-        text.setPosition(m_renderArea.left + 10, m_renderArea.top + 140);
+        text.setPosition(m_renderArea.left + 15, m_renderArea.top + 140);
         text.setFillColor(sf::Color::Black);
         text.setFont(m_font);
         text.setCharacterSize(16);
         renderer.draw(text);
     }
 
-    {
-        sf::RectangleShape r;
-        r.setFillColor(sf::Color(0, 0, 80));
-        r.setPosition(m_renderArea.left + 200, m_renderArea.top + 40);
-        r.setSize(sf::Vector2f{ 20, 100 });
-        renderer.draw(r);
+    const float energyNormalized = m_entity.energy() / (float)m_entity.properties().maxEnergy;
+    drawVerticalBarGraph(renderer, sf::FloatRect{ m_renderArea.left + m_renderArea.width - 30 - 20, m_renderArea.top + 40, 20, 100 }, kEnergyBarInactiveFillColour, kEnergyBarActiveFillColour, energyNormalized);
 
-    }
-    {
-        sf::RectangleShape r;
-        r.setFillColor(sf::Color(50, 50, 255));
-        r.setPosition(m_renderArea.left + 200, m_renderArea.top + 40 + (1 - energyNormalized) * 100);
-        r.setSize(sf::Vector2f{ 20, energyNormalized * 100 });
-        renderer.draw(r);
-    }
     {
         sf::Text text;
         text.setString("Energy");
-        text.setPosition(m_renderArea.left + 180, m_renderArea.top + 140);
+        text.setPosition(m_renderArea.left + 175, m_renderArea.top + 140);
         text.setFillColor(sf::Color::Black);
         text.setFont(m_font);
         text.setCharacterSize(16);
         renderer.draw(text);
+    }
+}
+
+void SFMLPlayerHudTileRenderer::drawVerticalBarGraph(sf::RenderTarget& renderer, sf::FloatRect area, sf::Color inactiveColour, sf::Color activeColour, float valueNormalized)
+{
+    // Background fill
+    {
+        sf::RectangleShape bg;
+        bg.setFillColor(inactiveColour);
+        bg.setPosition(area.left, area.top);
+        bg.setSize(sf::Vector2f{ area.width, area.height });
+        renderer.draw(bg);
+    }
+
+    // Foreground fill
+    {
+        sf::RectangleShape fg;
+        fg.setFillColor(activeColour);
+        fg.setPosition(area.left, area.top + area.height * (1 - valueNormalized));
+        fg.setSize(sf::Vector2f{ area.width, area.height * valueNormalized });
+        renderer.draw(fg);
     }
 }
