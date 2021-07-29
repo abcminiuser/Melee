@@ -108,7 +108,10 @@ void SFMLRenderer::updatePlayfieldViewport()
     playfieldView.inflate(Vector2d{ kViewportPadding_km, kViewportPadding_km });
 
     // We want a rectangular viewport that's at least as large as the minimum size, but the larger of the two bounding box axis.
-    const auto newViewSize = std::clamp<float>(std::max(playfieldView.size.x, playfieldView.size.y), kMinViewportAxisSize_km, playfieldSize);
+    const auto currentViewSize = std::max(playfieldView.size.x, playfieldView.size.y);
+    const auto newViewSize = std::clamp<float>(currentViewSize, kMinViewportAxisSize_km, playfieldSize);
+    playfieldView.origin.x -= (newViewSize - playfieldView.size.x) / 2;
+    playfieldView.origin.y -= (newViewSize - playfieldView.size.y) / 2;
     playfieldView.size = { newViewSize, newViewSize };
 
     // Don't allow the camera to go outside the playfield area

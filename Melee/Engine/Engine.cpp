@@ -31,7 +31,7 @@ Rectangle Engine::getPlayersBoundingBox()
         maxY = std::max(maxY, pos.y + radius);
     }
 
-    return { { minX, minY}, {maxX - minX, maxY - minY } };
+    return Rectangle{ { minX, minY}, {maxX - minX, maxY - minY } };
 }
 
 void Engine::update(uint32_t msElapsed)
