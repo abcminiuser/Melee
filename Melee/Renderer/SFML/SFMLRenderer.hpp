@@ -23,7 +23,7 @@ namespace Melee
         void                            renderPlayfield(sf::RenderTarget& target);
         void                            renderPlayerHud(sf::RenderTarget& target);
 
-        std::shared_ptr<RenderContext>  createEntityRenderContext(const std::shared_ptr<Entity>& entity);
+        std::shared_ptr<RenderContext>  getEntityRenderContext(const std::shared_ptr<Entity>& entity);
 
     private:
         Engine&                         m_engine;

@@ -4,6 +4,8 @@
 
 #include "Engine/EngineTypes.hpp"
 
+#include <memory>
+
 namespace Melee
 {
     class Entity;
@@ -20,7 +22,7 @@ namespace Melee
 
     struct RenderContext
     {
-        std::shared_ptr<SFMLRenderable> playfieldRenderer;
-        std::shared_ptr<SFMLRenderable> uiRenderer;
+        std::unique_ptr<SFMLRenderable> playfieldRenderer;
+        std::unique_ptr<SFMLRenderable> uiRenderer;
     };
 }

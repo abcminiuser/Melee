@@ -164,9 +164,7 @@ void SFMLRenderer::renderPlayfield(sf::RenderTarget& target)
 
     for (const auto& entity : m_engine.getEntities())
     {
-        auto& rendererContext = entity->rendererContext();
-        if (!rendererContext)
-            rendererContext = createEntityRenderContext(entity);
+        const auto& rendererContext = getEntityRenderContext(entity);
 
         if (rendererContext->playfieldRenderer)
             rendererContext->playfieldRenderer->render(target);
@@ -182,20 +180,22 @@ void SFMLRenderer::renderPlayerHud(sf::RenderTarget& target)
 
     const auto playerEntities = m_engine.getEntities(Entity::Type::Player);
 
-    for (const auto entity : playerEntities)
+    for (const auto& entity : playerEntities)
     {
-        auto& rendererContext = entity->rendererContext();
-        if (!rendererContext)
-            rendererContext = createEntityRenderContext(entity);
+        const auto& rendererContext = getEntityRenderContext(entity);
 
         if (rendererContext->uiRenderer)
             rendererContext->uiRenderer->render(target);
     }
 }
 
-std::shared_ptr<RenderContext> SFMLRenderer::createEntityRenderContext(const std::shared_ptr<Entity>& entity)
+std::shared_ptr<RenderContext> SFMLRenderer::getEntityRenderContext(const std::shared_ptr<Entity>& entity)
 {
-    auto renderContext = std::make_shared<RenderContext>();
+    auto& rendererContext = entity->rendererContext();
+    if (rendererContext)
+        return rendererContext;
+
+    rendererContext = std::make_shared<RenderContext>();
 
     switch (entity->type())
     {
@@ -203,7 +203,7 @@ std::shared_ptr<RenderContext> SFMLRenderer::createEntityRenderContext(const std
         {
             const auto asteroidEntity = std::dynamic_pointer_cast<AsteroidEntity>(entity);
 
-            renderContext->playfieldRenderer = std::make_shared<SFMLAsteroidEntityRenderer>(*asteroidEntity);
+            rendererContext->playfieldRenderer = std::make_unique<SFMLAsteroidEntityRenderer>(*asteroidEntity);
             break;
         }
 
@@ -211,7 +211,7 @@ std::shared_ptr<RenderContext> SFMLRenderer::createEntityRenderContext(const std
         {
             const auto exhaustEntity = std::dynamic_pointer_cast<ExhaustEntity>(entity);
 
-            renderContext->playfieldRenderer = std::make_shared<SFMLExhaustEntityRenderer>(*exhaustEntity);
+            rendererContext->playfieldRenderer = std::make_unique<SFMLExhaustEntityRenderer>(*exhaustEntity);
             break;
         }
 
@@ -219,7 +219,7 @@ std::shared_ptr<RenderContext> SFMLRenderer::createEntityRenderContext(const std
         {
             const auto explosionEntity = std::dynamic_pointer_cast<ExplosionEntity>(entity);
 
-            renderContext->playfieldRenderer = std::make_shared<SFMLExplosionEntityRenderer>(*explosionEntity);
+            rendererContext->playfieldRenderer = std::make_unique<SFMLExplosionEntityRenderer>(*explosionEntity);
             break;
         }
 
@@ -227,7 +227,7 @@ std::shared_ptr<RenderContext> SFMLRenderer::createEntityRenderContext(const std
         {
             const auto planetEntity = std::dynamic_pointer_cast<PlanetEntity>(entity);
 
-            renderContext->playfieldRenderer = std::make_shared<SFMLPlanetEntityRenderer>(*planetEntity);
+            rendererContext->playfieldRenderer = std::make_unique<SFMLPlanetEntityRenderer>(*planetEntity);
             break;
         }
 
@@ -237,8 +237,8 @@ std::shared_ptr<RenderContext> SFMLRenderer::createEntityRenderContext(const std
 
             sf::FloatRect tileArea(0, 1000 * playerEntity->index() / 4.0f, 250, 1000 / 4.0f);
 
-            renderContext->playfieldRenderer = std::make_shared<SFMLPlayerEntityRenderer>(*playerEntity);
-            renderContext->uiRenderer = std::make_shared<SFMLPlayerHudTileRenderer>(*playerEntity, tileArea);
+            rendererContext->playfieldRenderer = std::make_unique<SFMLPlayerEntityRenderer>(*playerEntity);
+            rendererContext->uiRenderer = std::make_unique<SFMLPlayerHudTileRenderer>(*playerEntity, tileArea);
             break;
         }
 
@@ -246,10 +246,10 @@ std::shared_ptr<RenderContext> SFMLRenderer::createEntityRenderContext(const std
         {
             const auto projectileEntity = std::dynamic_pointer_cast<ProjectileEntity>(entity);
 
-            renderContext->playfieldRenderer = std::make_shared<SFMLProjectileEntityRenderer>(*projectileEntity);
+            rendererContext->playfieldRenderer = std::make_unique<SFMLProjectileEntityRenderer>(*projectileEntity);
             break;
         }
     }
 
-    return renderContext;
+    return rendererContext;
 }

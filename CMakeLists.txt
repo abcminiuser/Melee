@@ -10,6 +10,7 @@ if (CMAKE_CXX_CPPCHECK)
         "--force"
         "--inline-suppr"
         "--quiet"
+        "--std=c++17"
     )
 endif()
 
