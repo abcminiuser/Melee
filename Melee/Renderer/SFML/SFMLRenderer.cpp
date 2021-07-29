@@ -112,17 +112,8 @@ void SFMLRenderer::updatePlayfieldViewport()
     playfieldView.size = { newViewSize, newViewSize };
 
     // Don't allow the camera to go outside the playfield area
-    if (playfieldView.origin.x < 0)
-        playfieldView.origin.x = 0;
-
-    if (playfieldView.origin.x + playfieldView.size.x > playfieldSize)
-        playfieldView.origin.x = playfieldSize - playfieldView.size.x;
-
-    if (playfieldView.origin.y < 0)
-        playfieldView.origin.y = 0;
-
-    if (playfieldView.origin.y + playfieldView.size.y > playfieldSize)
-        playfieldView.origin.y = playfieldSize - playfieldView.size.y;
+    playfieldView.origin.x = std::clamp<float>(playfieldView.origin.x, 0, playfieldSize - playfieldView.size.x);
+    playfieldView.origin.y = std::clamp<float>(playfieldView.origin.y, 0, playfieldSize - playfieldView.size.y);
 
     // Update the playfield view with the new calculated viewport
     m_playfieldView.setCenter(playfieldView.origin.x + (playfieldView.size.x / 2), playfieldView.origin.y + (playfieldView.size.y / 2));
