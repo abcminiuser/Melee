@@ -6,7 +6,7 @@ using namespace Melee;
 
 namespace
 {
-    constexpr auto kGravitationalConstant = 6.674e-11;
+    constexpr auto kGravitationalConstant = 6.674e-11f;
 }
 
 PlanetEntity::PlanetEntity(const PlanetProperties& properties, const Point& pos)

@@ -57,12 +57,14 @@ SFMLRenderer::SFMLRenderer(Engine& engine)
     const auto playfieldSize = m_engine.getPlayfieldSize();
 
     m_backgroundSprite.setTexture(m_backgroundTexture);
-    m_backgroundSprite.setScale(sf::Vector2f{ (float)playfieldSize / backgroundSize.x, (float)playfieldSize / backgroundSize.y });
+    m_backgroundSprite.setScale(sf::Vector2f{ playfieldSize / backgroundSize.x, playfieldSize / backgroundSize.y });
 }
 
 int SFMLRenderer::runModal()
 {
-    sf::RenderWindow window(sf::VideoMode(kWindowHeight * kWindowWidthMultiplierForHud, kWindowHeight), "Melee");
+    constexpr auto kWindowWidth = static_cast<int>(kWindowHeight * kWindowWidthMultiplierForHud);
+
+    sf::RenderWindow window(sf::VideoMode(kWindowWidth, kWindowHeight), "Melee");
 
     constexpr auto kMillisecondsPerFrame = 1000 / kTargetFPS;
     constexpr auto kWidthForPlayfield = 1.0f / kWindowWidthMultiplierForHud;

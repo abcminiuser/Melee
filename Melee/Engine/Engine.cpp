@@ -7,7 +7,7 @@ namespace
     constexpr auto kMaxUpdateTimestepMs = 8;
 }
 
-Engine::Engine(const uint32_t playfieldSize)
+Engine::Engine(float playfieldSize)
     : m_playfieldSize(playfieldSize)
 {
 

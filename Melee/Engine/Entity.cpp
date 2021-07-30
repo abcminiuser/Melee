@@ -16,8 +16,8 @@ Entity::Entity(Type type, const std::shared_ptr<Entity>& parent, const Propertie
 
 void Entity::update(Engine& engine, uint32_t msElapsed)
 {
-    m_position += m_velocity * msElapsed;
-    m_velocity += (m_acceleration + m_externalAcceleration) * msElapsed;
+    m_position += m_velocity * static_cast<float>(msElapsed);
+    m_velocity += (m_acceleration + m_externalAcceleration) * static_cast<float>(msElapsed);
 
     m_externalAcceleration = {};
 

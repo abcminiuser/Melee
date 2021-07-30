@@ -39,9 +39,11 @@ void SFMLExhaustEntityRenderer::render(sf::RenderTarget& renderer)
 {
     const auto exhaustPos = m_entity.position();
     const auto exhaustAge = m_entity.age();
-    const float exhaustMaxAge = m_entity.properties().maxAge_ms;
+    const auto exhaustMaxAge = m_entity.properties().maxAge_ms;
 
-    const auto exhaustColour = kExhaustColours[LinearInterpolateIndex(kExhaustColours, exhaustAge / exhaustMaxAge)];
+    const auto ageNormalized = exhaustAge / static_cast<float>(exhaustMaxAge);
+
+    const auto exhaustColour = kExhaustColours[LinearInterpolateIndex(kExhaustColours, ageNormalized)];
 
     s_shape.setFillColor(exhaustColour);
     s_shape.setPosition(ToSFMLVector(exhaustPos));
