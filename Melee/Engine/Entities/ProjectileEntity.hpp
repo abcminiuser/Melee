@@ -13,14 +13,16 @@ namespace Melee
             {
                 wrappable = false;
                 radius_km = 200;
+                mass_kg = 1000;
             }
 
+            uint32_t firingForce_N = 20000;
             uint32_t maxAge_ms = 2000;
             uint8_t  damage = 1;
         };
 
     public:
-        explicit    					ProjectileEntity(const std::shared_ptr<Entity>& parent, const ProjectileProperties& properties, const Point& pos, const Vector2d& heading);
+        explicit    					ProjectileEntity(const std::shared_ptr<Entity>& parent, const ProjectileProperties& properties, const Point& position, const Vector2d& velocity);
         virtual     					~ProjectileEntity() = default;
 
         uint32_t    					age() const         		{ return m_age; }
@@ -34,8 +36,6 @@ namespace Melee
 
     private:
         const ProjectileProperties      m_projectileProperties;
-
-        const std::shared_ptr<Entity>   m_ownerEntity;
 
         uint32_t                        m_age = 0;
     };

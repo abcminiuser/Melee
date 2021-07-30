@@ -9,8 +9,8 @@ namespace
     constexpr uint32_t kRotationIntervalMs = 10;
 }
 
-AsteroidEntity::AsteroidEntity(const AsteroidProperties& properties, const Point& pos, const Vector2d& heading)
-    : Entity(Entity::Type::Asteroid, nullptr, properties, pos, heading)
+AsteroidEntity::AsteroidEntity(const AsteroidProperties& properties, const Point& position, const Vector2d& velocity)
+    : Entity(Entity::Type::Asteroid, nullptr, properties, position, velocity)
     , m_asteroidProperties(properties)
     , m_rotationTimer(kRotationIntervalMs)
 {

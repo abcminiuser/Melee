@@ -4,11 +4,11 @@
 
 using namespace Melee;
 
-ProjectileEntity::ProjectileEntity(const std::shared_ptr<Entity>& parent,const ProjectileProperties& properties, const Point& pos, const Vector2d& heading)
-    : Entity(Entity::Type::Projectile, parent, properties, pos, heading)
+ProjectileEntity::ProjectileEntity(const std::shared_ptr<Entity>& parent,const ProjectileProperties& properties, const Point& position, const Vector2d& velocity)
+    : Entity(Entity::Type::Projectile, parent, properties, position, velocity)
     , m_projectileProperties(properties)
 {
-
+    m_velocity += velocity.normalised() * (properties.firingForce_N / properties.mass_kg);
 }
 
 void ProjectileEntity::update(Engine& engine, uint32_t msElapsed)
@@ -23,7 +23,7 @@ void ProjectileEntity::update(Engine& engine, uint32_t msElapsed)
 
 void ProjectileEntity::collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState)
 {
-    if (&otherEntity == m_ownerEntity.get())
+    if (&otherEntity == m_parentEntity.get())
         return;
 
     engine.removeEntity(shared_from_this());
