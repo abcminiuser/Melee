@@ -33,7 +33,6 @@ void AsteroidEntity::collide(Engine& engine, const Entity& otherEntity, const Pr
     switch (otherEntity.type())
     {
         case Entity::Type::Asteroid:
-        case Entity::Type::Planet:
         case Entity::Type::Player:
         {
             m_acceleration = {};
@@ -42,9 +41,16 @@ void AsteroidEntity::collide(Engine& engine, const Entity& otherEntity, const Pr
             break;
         }
 
-        case Entity::Type::Exhaust:
+        case Entity::Type::Planet:
         case Entity::Type::Explosion:
         case Entity::Type::Projectile:
+        {
+            engine.removeEntity(shared_from_this());
+
+            break;
+        }
+
+        case Entity::Type::Exhaust:
             break;
     }
 
