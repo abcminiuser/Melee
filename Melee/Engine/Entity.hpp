@@ -25,7 +25,7 @@ namespace Melee
         {
             float       mass_kg = 0;
             float       radius_km = 0;
-            uint32_t    maxVelocity = 0;
+            uint32_t    maxVelocity_km_s = 0;
             bool        collidable = true;
             bool        wrappable = true;
         };
@@ -65,8 +65,6 @@ namespace Melee
 
         std::shared_ptr<Entity>			m_parentEntity;
         Properties                      m_properties;
-
-        uint32_t                        m_maxVelocitySquared = 0;
 
         Point                           m_position;
         Vector2d                        m_heading = { 1, 0 };

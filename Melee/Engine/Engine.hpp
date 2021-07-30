@@ -12,7 +12,7 @@
 #include "Entities/PlayerEntity.hpp"
 #include "Entities/ProjectileEntity.hpp"
 
-#include <functional>
+#include <forward_list>
 #include <unordered_map>
 
 namespace Melee
@@ -20,10 +20,13 @@ namespace Melee
     class Engine final
     {
     public:
-        using CollisionCallback = std::function<bool(const std::shared_ptr<Entity>&, const std::shared_ptr<Entity>&)>;
+        class Observer;
 
         explicit    Engine(float playfieldSize);
                     ~Engine() = default;
+
+        void        addObserver(Observer* observer)                     { m_observers.push_front(observer); }
+        void        removeObserver(Observer* observer)                  { m_observers.remove(observer); }
 
         auto&       getEntities()                                       { return m_entities; }
         auto&       getEntities(Entity::Type type)                      { return m_entitiesForType[type]; }
@@ -38,22 +41,22 @@ namespace Melee
         float       getPlayfieldSize() const							{ return m_playfieldSize; }
         Rectangle   getPlayersBoundingBox();
 
-        void        setCollisionCallback(CollisionCallback&& callback)  { m_collisionCallback = callback;  }
-
         void        update(uint32_t msElapsed);
 
         void        addEntity(const std::shared_ptr<Entity>& entity) noexcept;
         void        removeEntity(const std::shared_ptr<Entity>& entity) noexcept;
 
     private:
-        void        handleDeferredEntityAddRemove() noexcept;
+        bool        handleDeferredEntityAddRemove() noexcept;
         void        checkForEntityCollisions();
 
     private:
         template <typename K>
         using EntityMap = std::unordered_map<K, EntityList>;
 
-        const float		                m_playfieldSize;
+        const float		                    m_playfieldSize;
+
+        std::forward_list<Observer*>        m_observers;
 
         EntityList                          m_entities;
         EntityMap<Entity::Type>             m_entitiesForType;
@@ -62,8 +65,15 @@ namespace Melee
         EntityList                          m_entitiesToAdd;
         EntityList                          m_entitiesToRemove;
 
-        CollisionCallback                   m_collisionCallback;
-
         uint32_t                            m_updateMsElapsed = 0;
+    };
+
+    class Engine::Observer
+    {
+    public:
+        virtual         ~Observer() = default;
+
+        virtual void    entitiesAdjusted(Engine& engine)                {}
+        virtual void    update(Engine& engine, uint32_t msElapsed)      {}
     };
 }

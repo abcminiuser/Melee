@@ -40,13 +40,21 @@ void Engine::update(uint32_t msElapsed)
 
     while (m_updateMsElapsed >= kMaxUpdateTimestepMs)
     {
-        handleDeferredEntityAddRemove();
+        if (handleDeferredEntityAddRemove())
+        {
+            for (auto* observer : m_observers)
+                observer->entitiesAdjusted(*this);
+        }
+
         checkForEntityCollisions();
 
         for (const auto& entity : m_entities)
             entity->update(*this, kMaxUpdateTimestepMs);
 
         m_updateMsElapsed -= kMaxUpdateTimestepMs;
+
+        for (auto* observer : m_observers)
+            observer->update(*this, kMaxUpdateTimestepMs);
     }
 }
 
@@ -60,8 +68,10 @@ void Engine::removeEntity(const std::shared_ptr<Entity>& entity) noexcept
     m_entitiesToRemove.emplace_back(entity);
 }
 
-void Engine::handleDeferredEntityAddRemove() noexcept
+bool Engine::handleDeferredEntityAddRemove() noexcept
 {
+    bool didUpdateEntityList = false;
+
     if (!m_entitiesToAdd.empty())
     {
         for (const auto& entity : m_entitiesToAdd)
@@ -75,6 +85,8 @@ void Engine::handleDeferredEntityAddRemove() noexcept
         }
 
         m_entitiesToAdd.clear();
+
+        didUpdateEntityList = true;
     }
 
     if (!m_entitiesToRemove.empty())
@@ -97,7 +109,11 @@ void Engine::handleDeferredEntityAddRemove() noexcept
         }
 
         m_entitiesToRemove.clear();
+
+        didUpdateEntityList = true;
     }
+
+    return didUpdateEntityList;
 }
 
 void Engine::checkForEntityCollisions()
@@ -123,12 +139,8 @@ void Engine::checkForEntityCollisions()
             const auto distanceBetweenEntitiesSquared = (entity1->position() - entity2->position()).lengthSquared();
             const auto minCollisionRadius = entity1->properties().radius_km + entity2->properties().radius_km;
 
-            // Crude radius check first, which we can do in the engine without the renderer.
+            // Crude radius check, which we can do in the engine without the renderer.
             if (distanceBetweenEntitiesSquared > (minCollisionRadius * minCollisionRadius))
-                continue;
-
-            // Ask the renderer to check for a more accurate collision based on the current assets.
-            if (m_collisionCallback && !m_collisionCallback(entity1, entity2))
                 continue;
 
             // We need to copy out the pre-collision kinematic states before we start processing the collisions.

@@ -11,7 +11,7 @@ Entity::Entity(Type type, const std::shared_ptr<Entity>& parent, const Propertie
     , m_velocity(vel)
     , m_acceleration(acc)
 {
-    m_maxVelocitySquared = properties.maxVelocity * properties.maxVelocity;
+
 }
 
 void Entity::update(Engine& engine, uint32_t msElapsed)
@@ -21,11 +21,11 @@ void Entity::update(Engine& engine, uint32_t msElapsed)
 
     m_externalAcceleration = {};
 
-    if (m_maxVelocitySquared)
+    if (const auto maxVelocitySquared = m_properties.maxVelocity_km_s * m_properties.maxVelocity_km_s)
     {
         const auto newVelocitySquared = m_velocity.lengthSquared();
-        if (newVelocitySquared > m_maxVelocitySquared)
-            m_velocity *= m_maxVelocitySquared / newVelocitySquared;
+        if (newVelocitySquared > maxVelocitySquared)
+            m_velocity *= maxVelocitySquared / newVelocitySquared;
     }
 
     if (m_properties.wrappable)
