@@ -4,8 +4,8 @@
 
 using namespace Melee;
 
-ExhaustEntity::ExhaustEntity(const ExhaustProperties& properties, const Point& pos, const Vector2d& heading)
-    : Entity(Entity::Type::Exhaust, properties, pos, heading)
+ExhaustEntity::ExhaustEntity(const std::shared_ptr<Entity>& parent, const ExhaustProperties& properties, const Point& pos, const Vector2d& heading)
+    : Entity(Entity::Type::Exhaust, parent, properties, pos, heading)
     , m_exhaustProperties(properties)
 {
 

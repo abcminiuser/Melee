@@ -68,6 +68,10 @@ void Engine::handleDeferredEntityAddRemove() noexcept
         {
             m_entities.emplace_front(entity);
             m_entitiesForType[entity->type()].emplace_front(entity);
+
+            // Add this entity to the list of entities owned by its parent.
+            if (const auto& parentEntity = entity->parentEntity())
+                m_entitiesForParent[parentEntity].emplace_front(entity);
         }
 
         m_entitiesToAdd.clear();
@@ -79,6 +83,17 @@ void Engine::handleDeferredEntityAddRemove() noexcept
         {
             m_entities.remove(entity);
             m_entitiesForType[entity->type()].remove(entity);
+
+            // Remove this entity from the list of entities owned by its parent.
+            if (const auto& parentEntity = entity->parentEntity())
+                m_entitiesForParent[parentEntity].remove(entity);
+
+            // Remove all entities owned by this entity (on the next update loop).
+            for (const auto& e : m_entitiesForParent[entity])
+                removeEntity(e);
+
+            // Also remove the list of entities owned by this entity, so we reclaim some memory.
+            m_entitiesForParent.erase(entity);
         }
 
         m_entitiesToRemove.clear();

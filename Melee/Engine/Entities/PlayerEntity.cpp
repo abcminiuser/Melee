@@ -13,7 +13,7 @@ namespace
 }
 
 PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& pos)
-    : Entity(Entity::Type::Player, properties, pos)
+    : Entity(Entity::Type::Player, nullptr, properties, pos)
     , m_playerIndex(playerIndex)
     , m_playerProperties(properties)
     , m_energyRechargeTimer(properties.energyRechargeRate_ms)
@@ -92,7 +92,7 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
         m_thrustExhaustTimer.add(msElapsed);
         if (m_thrustExhaustTimer.expired())
         {
-            auto exhaustEntity = std::make_shared<ExhaustEntity>(ExhaustEntity::ExhaustProperties{}, m_position, -m_acceleration);
+            auto exhaustEntity = std::make_shared<ExhaustEntity>(shared_from_this(), ExhaustEntity::ExhaustProperties{}, m_position, -m_acceleration);
             engine.addEntity(exhaustEntity);
         }
     }
@@ -105,7 +105,7 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     m_primaryFireTimer.add(msElapsed);
     if (m_flags & Flags::FirePrimaryActive && m_energy >= m_playerProperties.primaryEnergyCost && m_primaryFireTimer.expired())
     {
-        auto projectileEntity = std::make_shared<ProjectileEntity>(ProjectileEntity::ProjectileProperties{}, shared_from_this(), m_position + m_heading * (m_playerProperties.radius_km + 500), m_heading * (m_velocity.length() + 20));
+        auto projectileEntity = std::make_shared<ProjectileEntity>(shared_from_this(), ProjectileEntity::ProjectileProperties{}, m_position + m_heading * (m_playerProperties.radius_km + 500), m_heading * (m_velocity.length() + 20));
         engine.addEntity(projectileEntity);
 
         consumeEnergy(m_playerProperties.primaryEnergyCost);
@@ -139,7 +139,7 @@ void PlayerEntity::collide(Engine& engine, const Entity& otherEntity, const PreC
         {
             const auto& projectileEntity = *dynamic_cast<const ProjectileEntity*>(&otherEntity);
 
-            if (projectileEntity.ownerEntity() != shared_from_this())
+            if (projectileEntity.parentEntity() != shared_from_this())
                 applyDamage(projectileEntity.properties().damage);
 
             break;

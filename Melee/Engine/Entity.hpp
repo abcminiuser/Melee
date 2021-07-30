@@ -38,8 +38,10 @@ namespace Melee
         };
 
     public:
-        explicit                        Entity(Type type, const Properties& properties, const Point& pos, const Point& vel = {}, const Point& acc = {});
+        explicit                        Entity(Type type, const std::shared_ptr<Entity>& parent, const Properties& properties, const Point& pos, const Point& vel = {}, const Point& acc = {});
         virtual                         ~Entity() = default;
+
+        auto        					parentEntity() const 		{ return m_parentEntity; }
 
         virtual void                    update(Engine& engine, uint32_t msElapsed);
         virtual void                    collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState);
@@ -61,6 +63,7 @@ namespace Melee
     protected:
         const Type                      m_type;
 
+        std::shared_ptr<Entity>			m_parentEntity;
         Properties                      m_properties;
 
         uint32_t                        m_maxVelocitySquared = 0;

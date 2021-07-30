@@ -27,6 +27,13 @@ namespace Melee
 
         auto&       getEntities()                                       { return m_entities; }
         auto&       getEntities(Entity::Type type)                      { return m_entitiesForType[type]; }
+        auto        getEntities(const std::shared_ptr<Entity>& parent)
+        {
+            if (const auto foundList = m_entitiesForParent.find(parent); foundList != m_entitiesForParent.end())
+                return foundList->second;
+
+            return EntityList{};
+        }
 
         uint32_t    getPlayfieldSize() const							{ return m_playfieldSize; }
         Rectangle   getPlayersBoundingBox();
@@ -43,18 +50,20 @@ namespace Melee
         void        checkForEntityCollisions();
 
     private:
-        using EntityMap = std::unordered_map<Entity::Type, EntityList>;
+        template <typename K>
+        using EntityMap = std::unordered_map<K, EntityList>;
 
-        const uint32_t		m_playfieldSize;
+        const uint32_t		                m_playfieldSize;
 
-        EntityList          m_entities;
-        EntityMap           m_entitiesForType;
+        EntityList                          m_entities;
+        EntityMap<Entity::Type>             m_entitiesForType;
+        EntityMap<std::shared_ptr<Entity>>  m_entitiesForParent;
 
-        EntityList          m_entitiesToAdd;
-        EntityList          m_entitiesToRemove;
+        EntityList                          m_entitiesToAdd;
+        EntityList                          m_entitiesToRemove;
 
-        CollisionCallback   m_collisionCallback;
+        CollisionCallback                   m_collisionCallback;
 
-        uint32_t            m_updateMsElapsed = 0;
+        uint32_t                            m_updateMsElapsed = 0;
     };
 }

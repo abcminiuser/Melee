@@ -10,7 +10,7 @@ namespace
 }
 
 PlanetEntity::PlanetEntity(const PlanetProperties& properties, const Point& pos)
-    : Entity(Entity::Type::Planet, properties, pos)
+    : Entity(Entity::Type::Planet, nullptr, properties, pos)
     , m_planetProperties(properties)
 {
 

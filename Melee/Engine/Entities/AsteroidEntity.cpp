@@ -10,7 +10,7 @@ namespace
 }
 
 AsteroidEntity::AsteroidEntity(const AsteroidProperties& properties, const Point& pos, const Vector2d& heading)
-    : Entity(Entity::Type::Asteroid, properties, pos, heading)
+    : Entity(Entity::Type::Asteroid, nullptr, properties, pos, heading)
     , m_asteroidProperties(properties)
     , m_rotationTimer(kRotationIntervalMs)
 {
