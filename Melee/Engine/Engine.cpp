@@ -13,27 +13,6 @@ Engine::Engine(float playfieldSize)
 
 }
 
-Rectangle Engine::getPlayersBoundingBox()
-{
-    float minX = m_playfieldSize;
-    float minY = m_playfieldSize;
-    float maxX = 0;
-    float maxY = 0;
-
-    for (const auto& entity : m_entitiesForType[Entity::Type::Player])
-    {
-        const auto pos = entity->position();
-        const auto radius = entity->properties().radius_km;
-
-        minX = std::min(minX, pos.x - radius);
-        maxX = std::max(maxX, pos.x + radius);
-        minY = std::min(minY, pos.y - radius);
-        maxY = std::max(maxY, pos.y + radius);
-    }
-
-    return Rectangle{ { minX, minY}, {maxX - minX, maxY - minY } };
-}
-
 void Engine::update(uint32_t msElapsed)
 {
     m_updateMsElapsed += msElapsed;
@@ -42,14 +21,15 @@ void Engine::update(uint32_t msElapsed)
     {
         handleDeferredEntityAddRemove();
         checkForEntityCollisions();
+        updatePlayersBoundingBox();
 
         for (const auto& entity : m_entities)
             entity->update(*this, kMaxUpdateTimestepMs);
 
-        m_updateMsElapsed -= kMaxUpdateTimestepMs;
-
         for (auto* observer : m_observers)
             observer->updated(*this, kMaxUpdateTimestepMs);
+
+        m_updateMsElapsed -= kMaxUpdateTimestepMs;
     }
 }
 
@@ -63,7 +43,7 @@ void Engine::removeEntity(const std::shared_ptr<Entity>& entity) noexcept
     m_entitiesToRemove.emplace_back(entity);
 }
 
-void Engine::handleDeferredEntityAddRemove() noexcept
+void Engine::handleDeferredEntityAddRemove()
 {
     if (!m_entitiesToAdd.empty())
     {
@@ -148,4 +128,25 @@ void Engine::checkForEntityCollisions()
                 observer->collision(*this, entity1, entity2);
         }
     }
+}
+
+void Engine::updatePlayersBoundingBox()
+{
+    float minX = m_playfieldSize;
+    float minY = m_playfieldSize;
+    float maxX = 0;
+    float maxY = 0;
+
+    for (const auto& entity : m_entitiesForType[Entity::Type::Player])
+    {
+        const auto pos = entity->position();
+        const auto radius = entity->properties().radius_km;
+
+        minX = std::min(minX, pos.x - radius);
+        maxX = std::max(maxX, pos.x + radius);
+        minY = std::min(minY, pos.y - radius);
+        maxY = std::max(maxY, pos.y + radius);
+    }
+
+    m_playersBoundingBox = Rectangle{ { minX, minY}, {maxX - minX, maxY - minY } };
 }

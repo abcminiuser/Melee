@@ -27,7 +27,8 @@ namespace Melee
         void            collision(Engine& engine, const std::shared_ptr<Entity>& entity1, const std::shared_ptr<Entity>& entity2) override;
 
     private:
-        void            playSoundEffect(const sf::SoundBuffer& sound);
+        float           attenuateFromPlayerBoundingBox(Engine& engine, const std::shared_ptr<Entity>& entity) const;
+        void            playSoundEffect(const sf::SoundBuffer& sound, Point position);
 
     private:
         using SoundList = std::array<sf::Sound, kMaxSimultaneousSounds>;

@@ -37,13 +37,13 @@ void SFMLAudio::entityAdded(Engine& engine, const std::shared_ptr<Entity>& entit
     {
         case Entity::Type::Explosion:
         {
-            playSoundEffect(m_explosionSound);
+            playSoundEffect(m_explosionSound, entity->position());
             break;
         }
 
         case Entity::Type::Projectile:
         {
-            playSoundEffect(m_projectileSound);
+            playSoundEffect(m_projectileSound, entity->position());
             break;
         }
 
@@ -61,19 +61,21 @@ void SFMLAudio::collision(Engine& engine, const std::shared_ptr<Entity>& entity1
         };
 
     if (AreEntitiesOfType(Entity::Type::Player, Entity::Type::Player))
-        playSoundEffect(m_collisionSound);
+        playSoundEffect(m_collisionSound, entity1->position());
     else if (AreEntitiesOfType(Entity::Type::Player, Entity::Type::Planet))
-        playSoundEffect(m_collisionSound);
+        playSoundEffect(m_collisionSound, entity1->position());
     else if (AreEntitiesOfType(Entity::Type::Player, Entity::Type::Asteroid))
-        playSoundEffect(m_collisionSound);
+        playSoundEffect(m_collisionSound, entity1->position());
 }
 
-void SFMLAudio::playSoundEffect(const sf::SoundBuffer& sound)
+void SFMLAudio::playSoundEffect(const sf::SoundBuffer& sound, Point position)
 {
     const auto freeSoundEffect = std::find_if(m_sounds.begin(), m_sounds.end(), [](const auto& s) { return s.getStatus() == sf::Sound::Stopped; });
     if (freeSoundEffect == m_sounds.end())
         return;
 
     freeSoundEffect->setBuffer(sound);
+    freeSoundEffect->setPosition(position.x, position.y, 0);
+    freeSoundEffect->setMinDistance(std::max(1.0f, m_engine.getPlayersBoundingBox().size.lengthSquared()));
     freeSoundEffect->play();
 }

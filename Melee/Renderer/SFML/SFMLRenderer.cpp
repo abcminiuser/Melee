@@ -128,8 +128,8 @@ void SFMLRenderer::updatePlayfieldViewport()
     playfieldView.origin.y = std::clamp<float>(playfieldView.origin.y, 0, playfieldSize - playfieldView.size.y);
 
     // Update the playfield view with the new calculated viewport
-    m_playfieldView.setCenter(playfieldView.origin.x + (playfieldView.size.x / 2), playfieldView.origin.y + (playfieldView.size.y / 2));
-    m_playfieldView.setSize(playfieldView.size.x, playfieldView.size.y);
+    m_playfieldView.setCenter(ToSFMLVector(playfieldView.center()));
+    m_playfieldView.setSize(ToSFMLVector(playfieldView.size));
 }
 
 void SFMLRenderer::processEvents(sf::RenderWindow& window)

@@ -39,7 +39,7 @@ namespace Melee
         }
 
         float       getPlayfieldSize() const                            { return m_playfieldSize; }
-        Rectangle   getPlayersBoundingBox();
+        Rectangle   getPlayersBoundingBox()                             { return m_playersBoundingBox; }
 
         void        update(uint32_t msElapsed);
 
@@ -47,8 +47,9 @@ namespace Melee
         void        removeEntity(const std::shared_ptr<Entity>& entity) noexcept;
 
     private:
-        void        handleDeferredEntityAddRemove() noexcept;
+        void        handleDeferredEntityAddRemove();
         void        checkForEntityCollisions();
+        void        updatePlayersBoundingBox();
 
     private:
         template <typename K>
@@ -64,6 +65,8 @@ namespace Melee
 
         EntityList                          m_entitiesToAdd;
         EntityList                          m_entitiesToRemove;
+
+        Rectangle                           m_playersBoundingBox;
 
         uint32_t                            m_updateMsElapsed = 0;
     };
