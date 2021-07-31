@@ -50,16 +50,15 @@ namespace
 
 SFMLRenderer::SFMLRenderer(Engine& engine)
     : m_engine(engine)
+    , m_backgroundTexture(SFMLAssetLoader::Instance().getTexture("background"))
 {
 	m_engine.addObserver(this);
 
-    m_backgroundTexture.loadFromFile("Assets/Images/Background.png");
-
-    const auto backgroundSize = m_backgroundTexture.getSize();
     const auto playfieldSize = m_engine.getPlayfieldSize();
 
-    m_backgroundSprite.setTexture(m_backgroundTexture);
-    m_backgroundSprite.setScale(sf::Vector2f{ playfieldSize / backgroundSize.x, playfieldSize / backgroundSize.y });
+    m_backgroundSprite.setTexture(*m_backgroundTexture.texture);
+    m_backgroundSprite.setTextureRect(m_backgroundTexture.region);
+    m_backgroundSprite.setScale(sf::Vector2f{ playfieldSize / m_backgroundTexture.region.width, playfieldSize / m_backgroundTexture.region.height });
 }
 
 SFMLRenderer::~SFMLRenderer()

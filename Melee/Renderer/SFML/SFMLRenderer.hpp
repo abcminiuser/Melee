@@ -4,6 +4,7 @@
 
 #include "Engine/Engine.hpp"
 
+#include "SFMLAssetLoader.hpp"
 #include "SFMLRenderable.hpp"
 
 namespace Melee
@@ -30,7 +31,7 @@ namespace Melee
     private:
         Engine&                         m_engine;
 
-        sf::Texture                     m_backgroundTexture;
+        SFMLAssetLoader::CachedTexture  m_backgroundTexture;
         sf::Sprite                      m_backgroundSprite;
 
         sf::View                        m_playfieldView;
