@@ -3,7 +3,7 @@
 add_subdirectory ("Audio")
 add_subdirectory ("Engine")
 add_subdirectory ("Renderer")
-add_subdirectory ("Assets/SpritePacker")
+add_subdirectory ("SpritePacker")
 
 add_executable (Melee
     Main.cpp
