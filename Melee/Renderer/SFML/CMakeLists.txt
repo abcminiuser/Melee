@@ -1,14 +1,15 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
 if (MSVC)
-    list (APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../Vendor)
+    list (APPEND CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/Vendor)
     set(SFML_STATIC_LIBRARIES TRUE)
 endif ()
 
-find_package (SFML REQUIRED COMPONENTS window graphics network audio)
-set (SFML_LIBRARIES sfml-window sfml-graphics sfml-network sfml-audio)
+find_package (SFML REQUIRED COMPONENTS window graphics)
 
 add_library (SFMLRenderer
+    SFMLAssetLoader.cpp
+    SFMLAssetLoader.hpp
     SFMLRenderer.cpp
     SFMLRenderer.hpp
     SFMLRenderable.hpp
@@ -33,4 +34,4 @@ add_library (SFMLRenderer
 
 target_include_directories (SFMLRenderer PRIVATE ../../)
 target_compile_features (SFMLRenderer PUBLIC cxx_std_17)
-target_link_libraries (SFMLRenderer PUBLIC ${SFML_LIBRARIES} Engine)
+target_link_libraries (SFMLRenderer PUBLIC sfml-window sfml-graphics Engine)

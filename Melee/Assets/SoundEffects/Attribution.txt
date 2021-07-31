@@ -1,0 +1,7 @@
+"Explosion 1"
+"Laser Shot 3"
+"Robot Footstep 1"
+
+Sound Effects by Eric Matyas
+
+www.soundimage.org

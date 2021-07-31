@@ -4,6 +4,8 @@
 
 #include "Engine/Engine.hpp"
 
+#include "SFMLAudioAssetLoader.hpp"
+
 #include <array>
 
 namespace Melee
@@ -28,19 +30,15 @@ namespace Melee
 
     private:
         float           attenuateFromPlayerBoundingBox(Engine& engine, const std::shared_ptr<Entity>& entity) const;
-        void            playSoundEffect(const sf::SoundBuffer& sound, Point position);
+        void            playSoundEffect(const std::string& name, Point position);
 
     private:
         using SoundList = std::array<sf::Sound, kMaxSimultaneousSounds>;
 
-        Engine&         m_engine;
+        Engine&                             m_engine;
 
-        sf::Music       m_music;
+        SFMLAudioAssetLoader::CachedMusic   m_music;
 
-        sf::SoundBuffer m_explosionSound;
-        sf::SoundBuffer m_projectileSound;
-        sf::SoundBuffer m_collisionSound;
-
-        SoundList       m_sounds;
+        SoundList                           m_sounds;
     };
 }

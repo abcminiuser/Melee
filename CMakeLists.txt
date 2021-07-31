@@ -1,4 +1,4 @@
-﻿cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.8)
 
 set (CMAKE_CONFIGURATION_TYPES Debug Release)
 
@@ -15,6 +15,10 @@ if (CMAKE_CXX_CPPCHECK)
 
     message ("Using cppcheck configuration: ${CMAKE_CXX_CPPCHECK}")
 endif()
+
+if (MSVC)
+    list (APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Vendor)
+endif ()
 
 project ("Melee")
 

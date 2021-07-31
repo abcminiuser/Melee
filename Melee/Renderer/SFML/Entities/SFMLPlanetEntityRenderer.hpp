@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer/SFML/SFMLRenderable.hpp"
+#include "Renderer/SFML/SFMLAssetLoader.hpp"
 
 namespace Melee
 {
@@ -9,20 +10,19 @@ namespace Melee
     class SFMLPlanetEntityRenderer : public SFMLRenderable
     {
     public:
-        explicit            SFMLPlanetEntityRenderer(PlanetEntity& entity);
-        virtual             ~SFMLPlanetEntityRenderer() = default;
+        explicit                        SFMLPlanetEntityRenderer(PlanetEntity& entity);
+        virtual                         ~SFMLPlanetEntityRenderer() = default;
 
         // SFMLRenderable i/f:
     public:
-        void                render(sf::RenderTarget& renderer) override;
+        void                            render(sf::RenderTarget& renderer) override;
 
     private:
-        const PlanetEntity& m_entity;
+        const PlanetEntity&             m_entity;
 
-        uint32_t            m_lastScaleFactor = {};
+        uint32_t                        m_lastScaleFactor = {};
 
-        sf::Texture         m_planetImage;
-        sf::Vector2u        m_planetImageSize;
-        sf::Sprite          m_sprite;
+        SFMLAssetLoader::CachedTexture  m_planetImage;
+        sf::Sprite                      m_sprite;
     };
 }

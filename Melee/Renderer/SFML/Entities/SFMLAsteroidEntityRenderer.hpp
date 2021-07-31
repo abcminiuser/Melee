@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer/SFML/SFMLRenderable.hpp"
+#include "Renderer/SFML/SFMLAssetLoader.hpp"
 
 namespace Melee
 {
@@ -9,20 +10,19 @@ namespace Melee
     class SFMLAsteroidEntityRenderer : public SFMLRenderable
     {
     public:
-        explicit            SFMLAsteroidEntityRenderer(AsteroidEntity& entity);
-        virtual             ~SFMLAsteroidEntityRenderer() = default;
+        explicit                        SFMLAsteroidEntityRenderer(AsteroidEntity& entity);
+        virtual                         ~SFMLAsteroidEntityRenderer() = default;
 
         // SFMLRenderable i/f:
     public:
-        void                render(sf::RenderTarget& renderer) override;
+        void                            render(sf::RenderTarget& renderer) override;
 
     private:
-        const AsteroidEntity&   m_entity;
+        const AsteroidEntity&           m_entity;
 
-        Vector2d                m_lastHeading = {};
+        Vector2d                        m_lastHeading = {};
 
-        sf::Texture             m_asteroidImage;
-        sf::Vector2u            m_asteroidImageSize;
-        sf::Sprite              m_sprite;
+        SFMLAssetLoader::CachedTexture  m_asteroidImage;
+        sf::Sprite                      m_sprite;
     };
 }

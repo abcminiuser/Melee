@@ -3,6 +3,7 @@
 add_subdirectory ("Audio")
 add_subdirectory ("Engine")
 add_subdirectory ("Renderer")
+add_subdirectory ("Assets/SpritePacker")
 
 add_executable (Melee
     Main.cpp
@@ -18,7 +19,24 @@ else ()
     target_compile_options (Melee PUBLIC -Wall -Wextra -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion)
 endif ()
 
+add_dependencies(Melee SpritePacker)
+
+add_custom_command(TARGET Melee PRE_BUILD
+                   COMMAND "$<TARGET_FILE_DIR:SpritePacker>/SpritePacker"
+                   ARGS "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Images" "$<TARGET_FILE_DIR:Melee>/Assets/Images"
+                   COMMENT "Packing image assets...")
+
 add_custom_command(TARGET Melee POST_BUILD
                    COMMAND ${CMAKE_COMMAND}
-                   ARGS -E copy_directory ${CMAKE_SOURCE_DIR}/Assets $<TARGET_FILE_DIR:Melee>/Assets
-                   COMMENT "Copying assets...")
+                   ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Music" "$<TARGET_FILE_DIR:Melee>/Assets/Music"
+                   COMMENT "Copying music assets...")
+
+add_custom_command(TARGET Melee POST_BUILD
+                   COMMAND ${CMAKE_COMMAND}
+                   ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Assets/SoundEffects" "$<TARGET_FILE_DIR:Melee>/Assets/SoundEffects"
+                   COMMENT "Copying sound effect assets...")
+
+add_custom_command(TARGET Melee POST_BUILD
+                   COMMAND ${CMAKE_COMMAND}
+                   ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Fonts" "$<TARGET_FILE_DIR:Melee>/Assets/Fonts"
+                   COMMENT "Copying font assets...")

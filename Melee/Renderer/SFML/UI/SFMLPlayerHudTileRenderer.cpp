@@ -17,8 +17,9 @@ namespace
 SFMLPlayerHudTileRenderer::SFMLPlayerHudTileRenderer(PlayerEntity& entity, const sf::FloatRect& renderArea)
 	: m_entity(entity)
     , m_renderArea(renderArea)
+    , m_font(SFMLAssetLoader::Instance().getFont("8bitoperatorplus8-bold"))
 {
-    m_font.loadFromFile("Assets/Fonts/8bitOperatorPlus8-Bold.ttf");
+
 }
 
 void SFMLPlayerHudTileRenderer::render(sf::RenderTarget& renderer)
@@ -33,7 +34,7 @@ void SFMLPlayerHudTileRenderer::render(sf::RenderTarget& renderer)
     text.setString("Player " + std::to_string(m_entity.index() + 1));
     text.setPosition(m_renderArea.left + 60, m_renderArea.top);
     text.setFillColor(sf::Color::Black);
-    text.setFont(m_font);
+    text.setFont(*m_font);
     text.setCharacterSize(24);
     renderer.draw(text);
 
@@ -45,7 +46,7 @@ void SFMLPlayerHudTileRenderer::render(sf::RenderTarget& renderer)
         text.setString("Health");
         text.setPosition(m_renderArea.left + 15, m_renderArea.top + 140);
         text.setFillColor(sf::Color::Black);
-        text.setFont(m_font);
+        text.setFont(*m_font);
         text.setCharacterSize(16);
         renderer.draw(text);
     }
@@ -58,7 +59,7 @@ void SFMLPlayerHudTileRenderer::render(sf::RenderTarget& renderer)
         text.setString("Energy");
         text.setPosition(m_renderArea.left + 175, m_renderArea.top + 140);
         text.setFillColor(sf::Color::Black);
-        text.setFont(m_font);
+        text.setFont(*m_font);
         text.setCharacterSize(16);
         renderer.draw(text);
     }
