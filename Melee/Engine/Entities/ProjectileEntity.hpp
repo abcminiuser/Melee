@@ -22,7 +22,7 @@ namespace Melee
         };
 
     public:
-        explicit    					ProjectileEntity(const std::shared_ptr<Entity>& parent, const ProjectileProperties& properties, const Point& position, const Vector2d& velocity);
+        explicit    					ProjectileEntity(const std::shared_ptr<Entity>& parent, const ProjectileProperties& properties, const Point& position, const Vector2d& velocity, const Vector2d& heading);
         virtual     					~ProjectileEntity() = default;
 
         uint32_t    					age() const         		{ return m_age; }
