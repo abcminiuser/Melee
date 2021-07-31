@@ -42,6 +42,4 @@ namespace Melee
 
         SoundList       m_sounds;
     };
-
-    using Audio = SFMLAudio;
 }

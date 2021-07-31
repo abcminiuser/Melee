@@ -20,4 +20,5 @@ endif ()
 
 add_custom_command(TARGET Melee POST_BUILD
                    COMMAND ${CMAKE_COMMAND}
-                   ARGS -E copy_directory ${CMAKE_SOURCE_DIR}/Assets $<TARGET_FILE_DIR:Melee>/Assets)
+                   ARGS -E copy_directory ${CMAKE_SOURCE_DIR}/Assets $<TARGET_FILE_DIR:Melee>/Assets
+                   COMMENT "Copying assets...")

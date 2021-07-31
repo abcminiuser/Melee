@@ -108,9 +108,9 @@ namespace
 
 int main(int argc, char* argv[])
 {
-    Engine   engine(200000);
-    Renderer renderer(engine);
-    Audio    audio(engine);
+    Engine            engine(200000);
+    SFMLRenderer      renderer(engine);
+    SFMLAudio         audio(engine);
     AsteroidGenerator asteroidGenerator(engine, 2, 10, 20, 1000, 1200);
 
     audio.setVolume(30);

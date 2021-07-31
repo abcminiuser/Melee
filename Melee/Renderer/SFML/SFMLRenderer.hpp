@@ -36,6 +36,4 @@ namespace Melee
         sf::View                        m_playfieldView;
         sf::View                        m_playerHudView;
     };
-
-    using Renderer = SFMLRenderer;
 }

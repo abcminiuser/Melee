@@ -2,9 +2,9 @@
 
 set (CMAKE_CONFIGURATION_TYPES Debug Release)
 
-find_program(CMAKE_CXX_CPPCHECK NAMES cppcheck)
+find_program (CMAKE_CXX_CPPCHECK NAMES cppcheck)
 if (CMAKE_CXX_CPPCHECK)
-    list(APPEND CMAKE_CXX_CPPCHECK
+    list (APPEND CMAKE_CXX_CPPCHECK
         "--enable=warning"
         "--inconclusive"
         "--force"
@@ -12,6 +12,8 @@ if (CMAKE_CXX_CPPCHECK)
         "--quiet"
         "--std=c++17"
     )
+
+    message ("Using cppcheck configuration: ${CMAKE_CXX_CPPCHECK}")
 endif()
 
 project ("Melee")
