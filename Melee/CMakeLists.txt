@@ -1,5 +1,6 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
+add_subdirectory ("Audio")
 add_subdirectory ("Engine")
 add_subdirectory ("Renderer")
 
@@ -8,7 +9,7 @@ add_executable (Melee
 )
 
 target_include_directories (Melee PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries (Melee PRIVATE Engine SFMLRenderer)
+target_link_libraries (Melee PRIVATE Engine SFMLAudio SFMLRenderer)
 target_compile_features (Melee PUBLIC cxx_std_17)
 
 if (MSVC)

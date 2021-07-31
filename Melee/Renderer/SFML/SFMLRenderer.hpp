@@ -2,17 +2,19 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Engine/Engine.hpp"
+
 #include "SFMLRenderable.hpp"
 
 namespace Melee
 {
     class Engine;
 
-    class SFMLRenderer final
+    class SFMLRenderer : public Engine::Observer
     {
     public:
         explicit                        SFMLRenderer(Engine& engine);
-                                        ~SFMLRenderer() = default;
+        virtual		                    ~SFMLRenderer();
 
         int                             runModal();
 

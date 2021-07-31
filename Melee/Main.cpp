@@ -1,4 +1,5 @@
 ﻿#include "Engine/Engine.hpp"
+#include "Audio/SFML/SFMLAudio.hpp"
 #include "Renderer/SFML/SFMLRenderer.hpp"
 
 using namespace Melee;
@@ -10,19 +11,25 @@ namespace
     public:
         static inline constexpr auto kMinAsteroidGenerationIntervalMs = 5000;
 
-        explicit    AsteroidGenerator(uint8_t maxAsteroids, float minVelocity_km_s, float maxVelocity_km_s, float minRadius_km, float maxRadius_km)
-            : m_maxAsteroids(maxAsteroids)
+        explicit    AsteroidGenerator(Engine& engine, uint8_t maxAsteroids, float minVelocity_km_s, float maxVelocity_km_s, float minRadius_km, float maxRadius_km)
+            : m_engine(engine)
+            , m_maxAsteroids(maxAsteroids)
             , m_minVelocity_km_s(minVelocity_km_s)
             , m_maxVelocity_km_s(maxVelocity_km_s)
             , m_minRadius_km(minRadius_km)
             , m_maxRadius_km(maxRadius_km)
             , m_generatorTimer(kMinAsteroidGenerationIntervalMs, kMinAsteroidGenerationIntervalMs, true)
         {
-
+            m_engine.addObserver(this);
         }
 
-        virtual     ~AsteroidGenerator() = default;
+        virtual     ~AsteroidGenerator()
+        {
+            m_engine.removeObserver(this);
+        }
 
+    // Engine::Observer i.f:
+    public:
         void        updated(Engine& engine, uint32_t msElapsed) override
         {
             m_generatorTimer.add(msElapsed);
@@ -53,6 +60,8 @@ namespace
         }
 
     private:
+        Engine&         m_engine;
+
         const uint8_t   m_maxAsteroids = 0;
 
         const float     m_minVelocity_km_s = 0;
@@ -101,9 +110,10 @@ int main(int argc, char* argv[])
 {
     Engine   engine(200000);
     Renderer renderer(engine);
+    Audio    audio(engine);
+    AsteroidGenerator asteroidGenerator(engine, 2, 10, 20, 1000, 1200);
 
-    AsteroidGenerator asteroidGenerator(2, 10, 20, 1000, 1200);
-    engine.addObserver(&asteroidGenerator);
+    audio.setVolume(30);
 
     AddTestEntities(engine);
 
