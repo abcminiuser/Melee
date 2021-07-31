@@ -18,8 +18,8 @@ PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, 
     , m_playerProperties(properties)
     , m_energyRechargeTimer(properties.energyRechargeRate_ms)
     , m_rotationTimer(kRotationIntervalMs)
-    , m_thrustExhaustTimer(kThrustExhaustIntervalMs, kThrustExhaustIntervalMs)
-    , m_primaryFireTimer(properties.primaryFireRate_ms, properties.primaryFireRate_ms)
+    , m_thrustExhaustTimer(kThrustExhaustIntervalMs, kThrustExhaustIntervalMs, true)
+    , m_primaryFireTimer(properties.primaryFireRate_ms, properties.primaryFireRate_ms, true)
 {
     m_engineAcceleration_ms2    = properties.engineForce_N / properties.mass_kg;
 

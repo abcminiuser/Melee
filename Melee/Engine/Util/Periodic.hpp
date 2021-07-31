@@ -5,9 +5,10 @@
 class Periodic final
 {
 public:
-    explicit    Periodic(uint32_t interval, uint32_t maxValue = 0) noexcept
+    explicit    Periodic(uint32_t interval, uint32_t maxValue = 0, bool startReady = false) noexcept
         : m_interval(interval)
         , m_maxValue(maxValue)
+        , m_elapsed(startReady ? interval : 0)
     {}
 
     void        setInterval(uint32_t interval) noexcept

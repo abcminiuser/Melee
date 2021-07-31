@@ -16,7 +16,7 @@ namespace
             , m_maxVelocity_km_s(maxVelocity_km_s)
             , m_minRadius_km(minRadius_km)
             , m_maxRadius_km(maxRadius_km)
-            , m_generatorTimer(kMinAsteroidGenerationIntervalMs, kMinAsteroidGenerationIntervalMs)
+            , m_generatorTimer(kMinAsteroidGenerationIntervalMs, kMinAsteroidGenerationIntervalMs, true)
         {
 
         }
