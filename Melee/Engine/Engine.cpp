@@ -40,12 +40,7 @@ void Engine::update(uint32_t msElapsed)
 
     while (m_updateMsElapsed >= kMaxUpdateTimestepMs)
     {
-        if (handleDeferredEntityAddRemove())
-        {
-            for (auto* observer : m_observers)
-                observer->entitiesAdjusted(*this);
-        }
-
+        handleDeferredEntityAddRemove();
         checkForEntityCollisions();
 
         for (const auto& entity : m_entities)
@@ -54,7 +49,7 @@ void Engine::update(uint32_t msElapsed)
         m_updateMsElapsed -= kMaxUpdateTimestepMs;
 
         for (auto* observer : m_observers)
-            observer->update(*this, kMaxUpdateTimestepMs);
+            observer->updated(*this, kMaxUpdateTimestepMs);
     }
 }
 
@@ -68,10 +63,8 @@ void Engine::removeEntity(const std::shared_ptr<Entity>& entity) noexcept
     m_entitiesToRemove.emplace_back(entity);
 }
 
-bool Engine::handleDeferredEntityAddRemove() noexcept
+void Engine::handleDeferredEntityAddRemove() noexcept
 {
-    bool didUpdateEntityList = false;
-
     if (!m_entitiesToAdd.empty())
     {
         for (const auto& entity : m_entitiesToAdd)
@@ -82,11 +75,12 @@ bool Engine::handleDeferredEntityAddRemove() noexcept
             // Add this entity to the list of entities owned by its parent.
             if (const auto& parentEntity = entity->parentEntity())
                 m_entitiesForParent[parentEntity].emplace_front(entity);
+
+            for (auto* observer : m_observers)
+                observer->entityAdded(*this, entity);
         }
 
         m_entitiesToAdd.clear();
-
-        didUpdateEntityList = true;
     }
 
     if (!m_entitiesToRemove.empty())
@@ -106,14 +100,13 @@ bool Engine::handleDeferredEntityAddRemove() noexcept
 
             // Also remove the list of entities owned by this entity, so we reclaim some memory.
             m_entitiesForParent.erase(entity);
+
+            for (auto* observer : m_observers)
+                observer->entityRemoved(*this, entity);
         }
 
         m_entitiesToRemove.clear();
-
-        didUpdateEntityList = true;
     }
-
-    return didUpdateEntityList;
 }
 
 void Engine::checkForEntityCollisions()
@@ -150,6 +143,9 @@ void Engine::checkForEntityCollisions()
             // Now process the collision on each object.
             entity1->collide(*this, *entity2, e2Precollision);
             entity2->collide(*this, *entity1, e1Precollision);
+
+            for (auto* observer : m_observers)
+                observer->collision(*this, entity1, entity2);
         }
     }
 }

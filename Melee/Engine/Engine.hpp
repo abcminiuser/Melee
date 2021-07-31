@@ -38,7 +38,7 @@ namespace Melee
             return EntityList{};
         }
 
-        float       getPlayfieldSize() const							{ return m_playfieldSize; }
+        float       getPlayfieldSize() const                            { return m_playfieldSize; }
         Rectangle   getPlayersBoundingBox();
 
         void        update(uint32_t msElapsed);
@@ -47,14 +47,14 @@ namespace Melee
         void        removeEntity(const std::shared_ptr<Entity>& entity) noexcept;
 
     private:
-        bool        handleDeferredEntityAddRemove() noexcept;
+        void        handleDeferredEntityAddRemove() noexcept;
         void        checkForEntityCollisions();
 
     private:
         template <typename K>
         using EntityMap = std::unordered_map<K, EntityList>;
 
-        const float		                    m_playfieldSize;
+        const float                         m_playfieldSize;
 
         std::forward_list<Observer*>        m_observers;
 
@@ -73,7 +73,9 @@ namespace Melee
     public:
         virtual         ~Observer() = default;
 
-        virtual void    entitiesAdjusted(Engine& engine)                {}
-        virtual void    update(Engine& engine, uint32_t msElapsed)      {}
+        virtual void    entityAdded(Engine& engine, const std::shared_ptr<Entity>& entity)      {}
+        virtual void    entityRemoved(Engine& engine, const std::shared_ptr<Entity>& entity)    {}
+        virtual void    collision(Engine& engine, const std::shared_ptr<Entity>& entity1, const std::shared_ptr<Entity>& entity2)   {};
+        virtual void    updated(Engine& engine, uint32_t msElapsed)                             {}
     };
 }

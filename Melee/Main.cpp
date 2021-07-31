@@ -5,6 +5,66 @@ using namespace Melee;
 
 namespace
 {
+    class AsteroidGenerator : public Engine::Observer
+    {
+    public:
+        static inline constexpr auto kMinAsteroidGenerationIntervalMs = 5000;
+
+        explicit    AsteroidGenerator(uint8_t maxAsteroids, float minVelocity_km_s, float maxVelocity_km_s, float minRadius_km, float maxRadius_km)
+            : m_maxAsteroids(maxAsteroids)
+            , m_minVelocity_km_s(minVelocity_km_s)
+            , m_maxVelocity_km_s(maxVelocity_km_s)
+            , m_minRadius_km(minRadius_km)
+            , m_maxRadius_km(maxRadius_km)
+            , m_generatorTimer(kMinAsteroidGenerationIntervalMs, kMinAsteroidGenerationIntervalMs)
+        {
+
+        }
+
+        virtual     ~AsteroidGenerator() = default;
+
+        void        updated(Engine& engine, uint32_t msElapsed) override
+        {
+            m_generatorTimer.add(msElapsed);
+
+            if (m_currentTotalAsteroids < m_maxAsteroids && m_generatorTimer.expired())
+            {
+                AsteroidEntity::AsteroidProperties asteroidProps = {};
+                asteroidProps.radius_km = LinearInterpolateRandom(m_minRadius_km, m_maxRadius_km);
+                asteroidProps.rotation_degPerSec = LinearInterpolateRandom(-20.0f, 20.0f);
+                asteroidProps.mass_kg = 1e5;
+
+                const auto newSpeed = LinearInterpolateRandom(m_minVelocity_km_s, m_maxVelocity_km_s);
+                const auto startingXYPos = LinearInterpolateRandom(0.0f, engine.getPlayfieldSize());
+
+                const auto velocity = RotationMatrix(LinearInterpolateRandom(0.0f, 360.0f)) * Vector2d { newSpeed, 0 };
+                const auto position = (NormalizedRandom() < .5f) ? Point{ 0, startingXYPos } : Point{ startingXYPos, 0 };
+
+                auto asteroid = std::make_shared<AsteroidEntity>(asteroidProps, position, velocity);
+                engine.addEntity(asteroid);
+
+                m_currentTotalAsteroids++;
+            }
+        }
+
+        void        entityRemoved(Engine& engine, const std::shared_ptr<Entity>& entity) override
+        {
+            m_currentTotalAsteroids = engine.getEntities(Entity::Type::Asteroid).size();
+        }
+
+    private:
+        const uint8_t   m_maxAsteroids = 0;
+
+        const float     m_minVelocity_km_s = 0;
+        const float     m_maxVelocity_km_s = 0;
+
+        const float     m_minRadius_km = 0;
+        const float     m_maxRadius_km = 0;
+
+        Periodic        m_generatorTimer;
+        size_t          m_currentTotalAsteroids = 0;
+    };
+
     void AddTestEntities(Engine& engine)
     {
         const auto playFieldSize = engine.getPlayfieldSize();
@@ -35,53 +95,6 @@ namespace
             engine.addEntity(planet);
         }
     }
-
-    class AsteroidGenerator : public Engine::Observer
-    {
-    public:
-        explicit    AsteroidGenerator(uint8_t maxAsteroids, float minVelocity_km_s, float maxVelocity_km_s, float minRadius_km, float maxRadius_km)
-            : m_maxAsteroids(maxAsteroids)
-            , m_minVelocity_km_s(minVelocity_km_s)
-            , m_maxVelocity_km_s(maxVelocity_km_s)
-            , m_minRadius_km(minRadius_km)
-            , m_maxRadius_km(maxRadius_km)
-        {
-
-        }
-
-        virtual     ~AsteroidGenerator() = default;
-
-        void        entitiesAdjusted(Engine& engine) override
-        {
-            const auto asteroidCount = engine.getEntities(Entity::Type::Asteroid).size();
-
-            for (auto i = asteroidCount; i < m_maxAsteroids; i++)
-            {
-                AsteroidEntity::AsteroidProperties asteroidProps = {};
-                asteroidProps.radius_km = LinearInterpolateRandom(m_minRadius_km, m_maxRadius_km);
-                asteroidProps.rotation_degPerSec = LinearInterpolateRandom(-20.0f, 20.0f);
-                asteroidProps.mass_kg = 1e5;
-
-                const auto newSpeed = LinearInterpolateRandom(m_minVelocity_km_s, m_maxVelocity_km_s);
-                const auto startingYPos = LinearInterpolateRandom(0.0f, engine.getPlayfieldSize());
-
-                const auto velocity = RotationMatrix(LinearInterpolateRandom(0.0f, 360.0f)) * Vector2d{ newSpeed, 0 };
-                const auto position = Point{ 0, startingYPos };
-
-                auto asteroid = std::make_shared<AsteroidEntity>(asteroidProps, position, velocity);
-                engine.addEntity(asteroid);
-            }
-        }
-
-    private:
-        const uint8_t                           m_maxAsteroids = 0;
-
-        const float                             m_minVelocity_km_s = 0;
-        const float                             m_maxVelocity_km_s = 0;
-
-        const float                             m_minRadius_km = 0;
-        const float                             m_maxRadius_km = 0;
-    };
 }
 
 int main(int argc, char* argv[])
