@@ -22,7 +22,7 @@ endif ()
 add_dependencies(Melee SpritePacker)
 
 add_custom_command(TARGET Melee PRE_BUILD
-                   COMMAND "$<TARGET_FILE_DIR:SpritePacker>/SpritePacker"
+                   COMMAND "$<TARGET_FILE:SpritePacker>"
                    ARGS "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Images" "$<TARGET_FILE_DIR:Melee>/Assets/Images"
                    COMMENT "Packing image assets...")
 

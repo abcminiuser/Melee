@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <list>
+#include <optional>
 #include <utility>
 #include <vector>
 
@@ -10,13 +11,121 @@
 
 namespace
 {
-    struct PackedImageInfo
+    struct ImageInfo
     {
-        std::string         name;
-        sf::Rect<size_t>    position;
+        std::filesystem::path          path;
+        std::string                    name;
+        sf::Image                      image;
+        sf::Vector2u                   size;
+
+        std::optional<sf::Vector2u>    packPosition;
     };
 
-    constexpr auto kMaxDimensionSize = 512;
+    std::list<ImageInfo> GatherImages(const std::filesystem::path& path)
+    {
+        std::list<ImageInfo> images;
+
+        for (const auto& asset : std::filesystem::directory_iterator(path))
+        {
+            ImageInfo imageInfo = {};
+            imageInfo.path      = asset.path();
+            imageInfo.name      = imageInfo.path.filename().stem().string();
+
+            if (imageInfo.image.loadFromFile(imageInfo.path.string()))
+            {
+                std::cout << "Loaded asset '" << imageInfo.name << "'.\n";
+            }
+            else
+            {
+                std::cerr << "Failed to load asset '" << imageInfo.name << "!\n";
+                exit(1);
+            }
+
+            imageInfo.size = imageInfo.image.getSize();
+
+            images.push_back(std::move(imageInfo));
+        }
+
+        return images;
+    }
+
+    sf::Vector2u PackImages(std::list<ImageInfo>& images, unsigned int maxImageDimension)
+    {
+        sf::Vector2u outputSize = { 0, 0 };
+
+        // Simple X-only packing for now.
+        for (auto& imageInfo : images)
+        {
+            if (std::max(imageInfo.size.x, imageInfo.size.y) > maxImageDimension)
+            {
+                std::cout << "Not packing asset '" << imageInfo.name << "' due to large size.\n";
+                continue;
+            }
+
+            imageInfo.packPosition = sf::Vector2u(outputSize.x, 0);
+            outputSize.x += imageInfo.size.x;
+            outputSize.y = std::max(outputSize.y, imageInfo.size.y);
+        }
+
+        return outputSize;
+    }
+
+    void WritePackedSprites(const std::list<ImageInfo>& images, const std::filesystem::path& outputFolder, const sf::Vector2u& outputImageSize)
+    {
+        const auto outputImagePath = outputFolder / "SpriteSheet.png";
+        const auto outputMetadataPath = outputFolder / "SpriteSheet.dat";
+
+        std::ofstream packedImageMetadata(outputMetadataPath);
+
+        sf::Image packedImage;
+        packedImage.create(outputImageSize.x, outputImageSize.y, sf::Color::Transparent);
+
+        unsigned int currentXPos = 0;
+        for (const auto& imageInfo : images)
+        {
+            if (!imageInfo.packPosition.has_value())
+                continue;
+
+            packedImage.copy(imageInfo.image, imageInfo.packPosition->x, imageInfo.packPosition->y, {}, true);
+
+            packedImageMetadata << imageInfo.name << "\t";
+            packedImageMetadata << imageInfo.packPosition->x << "\t";
+            packedImageMetadata << imageInfo.packPosition->y << "\t";
+            packedImageMetadata << imageInfo.size.x << "\t";
+            packedImageMetadata << imageInfo.size.y << "\n";
+        }
+
+        if (!packedImage.saveToFile(outputImagePath.string()))
+        {
+            std::cerr << "Failed to save asset '" << outputImagePath.filename().stem() << "!\n";
+            exit(1);
+        }
+        else
+        {
+            std::cout << "Saved asset '" << outputImagePath.filename().stem() << "'.\n";
+        }
+    }
+
+    void WriteRejectedSprites(const std::list<ImageInfo>& images, const std::filesystem::path& outputFolder)
+    {
+        for (const auto& imageInfo : images)
+        {
+            if (imageInfo.packPosition.has_value())
+                continue;
+
+            const auto outputPath = outputFolder / (imageInfo.name + ".png");
+
+            if (!imageInfo.image.saveToFile(outputPath.string()))
+            {
+                std::cerr << "Failed to save asset '" << imageInfo.name << "!\n";
+                exit(1);
+            }
+            else
+            {
+                std::cout << "Saved asset '" << imageInfo.name << "'.\n";
+            }
+        }
+    }
 }
 
 int main(int argc, char** argv)
@@ -33,62 +142,19 @@ int main(int argc, char** argv)
 
     std::filesystem::create_directories(outputFolder);
 
-    std::list<std::pair<std::string, sf::Image>> sprites;
+    // Load all source images from the input directory, and compute their basic info.
+    auto images = GatherImages(inputFolder);
 
-    size_t totalWidth = 0;
-    size_t maxHeight = 0;
+    // Pack the images into a sprite sheet, returning the final sheet size. Some sprites
+    // may be rejected if either of their size dimensions exceeeds the limit.
+    auto outputImageSize = PackImages(images, 512);
 
-    for (const auto& asset : std::filesystem::directory_iterator(inputFolder))
-    {
-        std::cout << "Loading asset: " << asset << "\n";
+    // Write the final sprite sheet out to the output folder.
+    if (outputImageSize.x && outputImageSize.y)
+        WritePackedSprites(images, outputFolder, outputImageSize);
 
-        sf::Image image;
-        if (!image.loadFromFile(asset.path().string()))
-        {
-            std::cerr << "Failed to load source image!\n";
-            exit(1);
-        }
-
-        const auto imageSize = image.getSize();
-        if (imageSize.x > kMaxDimensionSize || imageSize.y > kMaxDimensionSize)
-        {
-            std::cout << "Ignoring asset due to large size: " << asset << "\n";
-            image.saveToFile((outputFolder / asset.path().filename()).string());
-            continue;
-        }
-
-        totalWidth += imageSize.x;
-        maxHeight = std::max<size_t>(maxHeight, imageSize.y);
-
-        sprites.emplace_back(std::make_pair(asset.path().filename().stem().string(), image));
-    }
-
-    sf::Image packedImage;
-    std::vector<PackedImageInfo> packedImageInfo;
-
-    packedImage.create((unsigned int)totalWidth, (unsigned int)maxHeight, sf::Color::Transparent);
-
-    size_t currentXPos = 0;
-    for (const auto& [name, image] : sprites)
-    {
-        const auto imageSize = image.getSize();
-
-        packedImage.copy(image, (unsigned int)currentXPos, 0, {}, true);
-
-        PackedImageInfo packingInfo = {};
-        packingInfo.name = name;
-        packingInfo.position = { currentXPos, 0, imageSize.x, imageSize.y };
-
-        packedImageInfo.emplace_back(packingInfo);
-
-        currentXPos += imageSize.x;
-    }
-
-    packedImage.saveToFile((outputFolder / "SpriteSheet.png").string());
-
-    std::ofstream infoFile((outputFolder / "SpriteSheet.dat"));
-    for (const auto& packingInfo : packedImageInfo)
-        infoFile << packingInfo.name << "\t" << packingInfo.position.left << "\t" << packingInfo.position.top << "\t" << packingInfo.position.width << "\t" << packingInfo.position.height << "\n";
+    // Any images rejected for packing should just be saved as-is to the output folder.
+    WriteRejectedSprites(images, outputFolder);
 
     return 0;
 }
