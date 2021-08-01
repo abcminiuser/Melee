@@ -53,6 +53,7 @@ namespace
     {
         sf::Vector2u outputSize = { 0, 0 };
 
+        // We want to pack the larger images first, as we'll then have a higher chance of getting smaller images into the resulting free space.
         images.sort([](const auto& image1, const auto& image2) -> bool { return std::max(image1.size.x, image1.size.y) > std::max(image2.size.x, image2.size.y); });
 
         std::list<sf::Rect<unsigned int>> freeSpaces;
@@ -71,18 +72,31 @@ namespace
             const auto foundSpace = std::find_if(freeSpaces.begin(), freeSpaces.end(), [&](const auto& space) { return (space.width >= imageInfo.size.x) && (space.height >= imageInfo.size.y); });
             if (foundSpace == freeSpaces.end())
             {
-                // No free space that can accomodate this sprite: we need to increase out output dimensions.
+                // No free space that can accomodate this sprite: we need to increase out output dimensions, so we should expand the sprite sheet
+                // to accomodate it. We want to grow the smallest dimension first, to try to keep the final output size mostly square.
 
-                imageInfo.packPosition = { 0, outputSize.y };
+                if (outputSize.y < outputSize.x)
+                {
+                    imageInfo.packPosition = { 0, outputSize.y };
 
-                const auto largerNewDimension = std::max(imageInfo.size.x, imageInfo.size.y);
+                    // If the new image is wider than the current total size, we need to add a space rect above it. If it's smaller, the new space
+                    // rect goes to the right of it.
+                    if (imageInfo.size.x > outputSize.x)
+                        freeSpaces.push_back({ outputSize.x, 0, imageInfo.size.x - outputSize.x, outputSize.y });
+                    else if ((imageInfo.size.x < outputSize.x))
+                        freeSpaces.push_back({ imageInfo.size.x, outputSize.y, outputSize.x - imageInfo.size.x, imageInfo.size.y });
+                }
+                else
+                {
+                    imageInfo.packPosition = { outputSize.x, 0 };
 
-                // Add new space rect to the right of the image, increasing by the larger of the two new image dimensions.
-                freeSpaces.push_back({ outputSize.x, 0, largerNewDimension, outputSize.y });
-
-                // Check if we will have any remaining space rect to right of the new image, if so add a new space rect.
-                if ((outputSize.x + largerNewDimension) > imageInfo.size.x)
-                    freeSpaces.push_back({ imageInfo.size.x, outputSize.y, outputSize.x + largerNewDimension, imageInfo.size.y });
+                    // If the new image is taller than the current total size, we need to add a space rect to the left of it. If it's smaller, the new space
+                    // rect goes below it.
+                    if (imageInfo.size.y > outputSize.y)
+                        freeSpaces.push_back({ 0, outputSize.y, outputSize.x, imageInfo.size.y - outputSize.y });
+                    else if ((imageInfo.size.x < outputSize.x))
+                        freeSpaces.push_back({ outputSize.x, imageInfo.size.y, imageInfo.size.x, outputSize.y - imageInfo.size.y });
+                }
             }
             else
             {
