@@ -49,23 +49,61 @@ namespace
         return images;
     }
 
-    sf::Vector2u PackImages(std::list<ImageInfo>& images, unsigned int maxImageDimension)
+    sf::Vector2u PackImages(std::list<ImageInfo>& images, unsigned int maxAssetDimension, unsigned int maxOutputWidth)
     {
         sf::Vector2u outputSize = { 0, 0 };
 
-        // Simple X-only packing for now.
+        images.sort([](const auto& image1, const auto& image2) -> bool { return std::max(image1.size.x, image1.size.y) > std::max(image2.size.x, image2.size.y); });
+
+        std::list<sf::Rect<unsigned int>> freeSpaces;
+
         for (auto& imageInfo : images)
         {
-            if (std::max(imageInfo.size.x, imageInfo.size.y) > maxImageDimension)
+            if (std::max(imageInfo.size.x, imageInfo.size.y) > maxAssetDimension)
             {
                 std::cout << "Not packing asset '" << imageInfo.name << "' due to large size.\n";
                 continue;
             }
 
-            imageInfo.packPosition = sf::Vector2u(outputSize.x, 0);
-            outputSize.x += imageInfo.size.x;
-            outputSize.y = std::max(outputSize.y, imageInfo.size.y);
+            // Sort the free spaces smallest first, so we always try to pick the smallest free space that will accomodate our new image.
+            freeSpaces.sort([](const auto& space1, const auto& space2) -> bool { return std::min(space1.width, space1.height) < std::min(space2.width, space2.height); });
+
+            const auto foundSpace = std::find_if(freeSpaces.begin(), freeSpaces.end(), [&](const auto& space) { return (space.width >= imageInfo.size.x) && (space.height >= imageInfo.size.y); });
+            if (foundSpace == freeSpaces.end())
+            {
+                // No free space that can accomodate this sprite: we need to start a new line.
+
+                imageInfo.packPosition = { 0, outputSize.y };
+
+                // Check if we will have any remaining space rect to right of the new image, if so add a new space rect.
+                if (maxOutputWidth > imageInfo.size.x)
+                    freeSpaces.push_back({ imageInfo.size.x, outputSize.y, maxOutputWidth - imageInfo.size.x, imageInfo.size.y });
+            }
+            else
+            {
+                // Found a space: pack at this position, then split the remaining space into new rectangles.
+
+                imageInfo.packPosition = sf::Vector2u(foundSpace->left, foundSpace->top);
+
+                // Check if we will have any remaining space rect to right of the new image, if so add a new space rect.
+                if (foundSpace->width > imageInfo.size.x)
+                    freeSpaces.push_back({ foundSpace->left + imageInfo.size.x, foundSpace->top, foundSpace->width - imageInfo.size.x, foundSpace->height });
+
+                // Check if we will have any remaining space rect below the new image, if so add a new space rect.
+                if (foundSpace->height > imageInfo.size.y)
+                    freeSpaces.push_back({ foundSpace->left, foundSpace->top + imageInfo.size.y, foundSpace->width, foundSpace->height - imageInfo.size.y });
+
+                freeSpaces.erase(foundSpace);
+            }
+
+            // Bump output sheet size if this asset's pack position exceeds the current bounds.
+            outputSize.x = std::max(outputSize.x, imageInfo.packPosition->x + imageInfo.size.x);
+            outputSize.y = std::max(outputSize.y, imageInfo.packPosition->y + imageInfo.size.y);
+
+            std::cout << "Packed asset '" << imageInfo.name << "' at (" << imageInfo.packPosition->x << "," << imageInfo.packPosition->y << ").\n";
         }
+
+        std::cout << "Final packed sheet size: " << outputSize.x << " x " << outputSize.y << ".\n";
 
         return outputSize;
     }
@@ -146,7 +184,7 @@ int main(int argc, char** argv)
 
     // Pack the images into a sprite sheet, returning the final sheet size. Some sprites
     // may be rejected if either of their size dimensions exceeeds the limit.
-    auto outputImageSize = PackImages(images, 512);
+    auto outputImageSize = PackImages(images, 512, 2140);
 
     // Write the final sprite sheet out to the output folder.
     if (outputImageSize.x && outputImageSize.y)
