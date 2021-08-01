@@ -4,8 +4,6 @@
 #include <iostream>
 #include <list>
 #include <optional>
-#include <utility>
-#include <vector>
 
 #include <SFML/Graphics.hpp>
 
@@ -144,10 +142,10 @@ namespace
 
             packedImage.copy(imageInfo.image, imageInfo.packPosition->x, imageInfo.packPosition->y, {}, true);
 
-            packedImageMetadata << imageInfo.name << "\t";
-            packedImageMetadata << imageInfo.packPosition->x << "\t";
-            packedImageMetadata << imageInfo.packPosition->y << "\t";
-            packedImageMetadata << imageInfo.size.x << "\t";
+            packedImageMetadata << imageInfo.name << ",";
+            packedImageMetadata << imageInfo.packPosition->x << ",";
+            packedImageMetadata << imageInfo.packPosition->y << ",";
+            packedImageMetadata << imageInfo.size.x << ",";
             packedImageMetadata << imageInfo.size.y << "\n";
         }
 
@@ -158,7 +156,7 @@ namespace
         }
         else
         {
-            std::cout << "Saved asset '" << outputImagePath.filename().stem() << "'.\n";
+            std::cout << "Saved asset '" << outputImagePath.filename().stem().string() << "'.\n";
         }
     }
 

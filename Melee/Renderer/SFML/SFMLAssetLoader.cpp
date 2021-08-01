@@ -39,9 +39,9 @@ SFMLAssetLoader::SFMLAssetLoader()
 
                 const auto NextField = [&]()
                     {
-                        nextPos = line.find('\t', currPos + 1);
-                        const auto fieldValue = line.substr(currPos, nextPos);
-                        currPos = nextPos;
+                        nextPos = line.find(',', currPos);
+                        const auto fieldValue = line.substr(currPos, nextPos - currPos);
+                        currPos = nextPos + 1;
 
                         return fieldValue;
                     };
