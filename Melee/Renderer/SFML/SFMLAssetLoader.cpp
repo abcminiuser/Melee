@@ -34,34 +34,25 @@ SFMLAssetLoader::SFMLAssetLoader()
             std::string line;
             while (std::getline(metadata, line))
             {
-                CachedTexture cachedEntry = {};
-
                 size_t currPos = 0;
                 size_t nextPos = 0;
 
-                std::string assetName;
+                const auto NextField = [&]()
+                    {
+                        nextPos = line.find('\t', currPos + 1);
+                        const auto fieldValue = line.substr(currPos, nextPos);
+                        currPos = nextPos;
 
+                        return fieldValue;
+                    };
+
+                std::string assetName = NextField();
+
+                CachedTexture cachedEntry = {};
                 cachedEntry.texture = texture;
 
-                nextPos = line.find('\t', currPos + 1);
-                assetName = line.substr(currPos, nextPos);
-                currPos = nextPos;
-
-                nextPos = line.find('\t', currPos + 1);
-                cachedEntry.region.left = std::stoi(line.substr(currPos, nextPos));
-                currPos = nextPos;
-
-                nextPos = line.find('\t', currPos + 1);
-                cachedEntry.region.top = std::stoi(line.substr(currPos, nextPos));
-                currPos = nextPos;
-
-                nextPos = line.find('\t', currPos + 1);
-                cachedEntry.region.width = std::stoi(line.substr(currPos, nextPos));
-                currPos = nextPos;
-
-                nextPos = line.find('\t', currPos + 1);
-                cachedEntry.region.height = std::stoi(line.substr(currPos, nextPos));
-                currPos = nextPos;
+                for (auto* coordinate : { &cachedEntry.region.left, &cachedEntry.region.top, &cachedEntry.region.width, &cachedEntry.region.height })
+                    *coordinate = std::stoi(NextField());
 
                 m_textureCache.emplace(ToCacheKey(assetName), cachedEntry);
             }

@@ -80,7 +80,6 @@ namespace
         sf::Image packedImage;
         packedImage.create(outputImageSize.x, outputImageSize.y, sf::Color::Transparent);
 
-        unsigned int currentXPos = 0;
         for (const auto& imageInfo : images)
         {
             if (!imageInfo.packPosition.has_value())
