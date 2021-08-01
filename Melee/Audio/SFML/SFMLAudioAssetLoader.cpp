@@ -28,9 +28,7 @@ SFMLAudioAssetLoader::SFMLAudioAssetLoader()
 		auto soundEffect = std::make_shared<sf::SoundBuffer>();
 		soundEffect->loadFromFile(asset.path().string());
 
-		CachedSoundEffect cachedSoundEffect;
-		cachedSoundEffect = soundEffect;
-
+		CachedSoundEffect cachedSoundEffect = soundEffect;
 		m_soundEffectCache.emplace(ToCacheKey(assetName), cachedSoundEffect);
 	}
 
@@ -44,9 +42,7 @@ SFMLAudioAssetLoader::SFMLAudioAssetLoader()
 		auto music = std::make_shared<sf::Music>();
 		music->openFromFile(asset.path().string());
 
-		CachedMusic cachedMusic;
-		cachedMusic = music;
-
+		CachedMusic cachedMusic = music;
 		m_musicCache.emplace(ToCacheKey(assetName), cachedMusic);
 	}
 }

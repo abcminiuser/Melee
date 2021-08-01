@@ -72,6 +72,6 @@ void SFMLAudio::playSoundEffect(const std::string& name, Point position)
 
     freeSoundEffect->setBuffer(*SFMLAudioAssetLoader::Instance().getSoundEffect(name));
     freeSoundEffect->setPosition(position.x, position.y, 0);
-    freeSoundEffect->setMinDistance(std::max(1.0f, m_engine.getPlayersBoundingBox().size.lengthSquared()));
+    freeSoundEffect->setMinDistance(std::max(1.0f, m_engine.getPlayersBoundingBox().size.length()));
     freeSoundEffect->play();
 }

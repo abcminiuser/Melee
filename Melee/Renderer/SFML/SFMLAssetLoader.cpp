@@ -79,9 +79,7 @@ SFMLAssetLoader::SFMLAssetLoader()
         auto font = std::make_shared<sf::Font>();
         font->loadFromFile(asset.path().string());
 
-        CachedFont cachedFont;
-        cachedFont = font;
-
+        CachedFont cachedFont = font;
         m_fontCache.emplace(ToCacheKey(assetName), cachedFont);
     }
 }
