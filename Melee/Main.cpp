@@ -38,7 +38,7 @@ namespace
             {
                 AsteroidEntity::AsteroidProperties asteroidProps = {};
                 asteroidProps.radius_km = LinearInterpolateRandom(m_minRadius_km, m_maxRadius_km);
-                asteroidProps.rotation_degPerSec = LinearInterpolateRandom(-20.0f, 20.0f);
+                asteroidProps.rotation_degPerSec = (NormalizedRandom() < .5f) ? -120.0f : 120.0f;
                 asteroidProps.mass_kg = 1e5;
 
                 const auto newSpeed = LinearInterpolateRandom(m_minVelocity_km_s, m_maxVelocity_km_s);
