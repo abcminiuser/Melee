@@ -32,7 +32,8 @@ namespace Melee
         auto&       getEntities(Entity::Type type)                      { return m_entitiesForType[type]; }
         auto        getEntities(const std::shared_ptr<Entity>& parent)
         {
-            if (const auto foundList = m_entitiesForParent.find(parent); foundList != m_entitiesForParent.end())
+            const auto foundList = m_entitiesForParent.find(parent);
+            if (foundList != m_entitiesForParent.end())
                 return foundList->second;
 
             return EntityList{};

@@ -28,7 +28,7 @@ SFMLAssetLoader::SFMLAssetLoader()
 
         const auto textureSize = texture->getSize();
 
-        std::ifstream metadata((asset.path().parent_path() / asset.path().stem()).string() + ".dat");
+        std::ifstream metadata(asset.path().parent_path() / (asset.path().stem().string() + ".dat"));
         if (metadata.is_open())
         {
             std::string line;
@@ -40,13 +40,13 @@ SFMLAssetLoader::SFMLAssetLoader()
                 const auto NextField = [&]()
                     {
                         nextPos = line.find(',', currPos);
-                        const auto fieldValue = line.substr(currPos, nextPos - currPos);
+                        auto fieldValue = line.substr(currPos, nextPos - currPos);
                         currPos = nextPos + 1;
 
                         return fieldValue;
                     };
 
-                std::string assetName = NextField();
+                auto assetName = NextField();
 
                 CachedTexture cachedEntry = {};
                 cachedEntry.texture = texture;

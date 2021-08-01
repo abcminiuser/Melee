@@ -64,14 +64,14 @@ namespace
                 continue;
             }
 
-            // Sort the free spaces smallest first, so we always try to pick the smallest free space that will accomodate our new image.
+            // Sort the free spaces smallest first, so we always try to pick the smallest free space that will accommodate our new image.
             freeSpaces.sort([](const auto& space1, const auto& space2) -> bool { return std::min(space1.width, space1.height) < std::min(space2.width, space2.height); });
 
             const auto foundSpace = std::find_if(freeSpaces.begin(), freeSpaces.end(), [&](const auto& space) { return (space.width >= imageInfo.size.x) && (space.height >= imageInfo.size.y); });
             if (foundSpace == freeSpaces.end())
             {
-                // No free space that can accomodate this sprite: we need to increase out output dimensions, so we should expand the sprite sheet
-                // to accomodate it. We want to grow the smallest dimension first, to try to keep the final output size mostly square.
+                // No free space that can accommodate this sprite: we need to increase out output dimensions, so we should expand the sprite sheet
+                // to accommodate it. We want to grow the smallest dimension first, to try to keep the final output size mostly square.
 
                 if (outputSize.y < outputSize.x)
                 {
@@ -200,7 +200,7 @@ int main(int argc, char** argv)
     auto images = GatherImages(inputFolder);
 
     // Pack the images into a sprite sheet, returning the final sheet size. Some sprites
-    // may be rejected if either of their size dimensions exceeeds the limit.
+    // may be rejected if either of their size dimensions exceeds the limit.
     auto outputImageSize = PackImages(images, 512);
 
     // Write the final sprite sheet out to the output folder.
