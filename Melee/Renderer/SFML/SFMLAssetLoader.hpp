@@ -29,7 +29,10 @@ namespace Melee
             sf::IntRect                     region;
         };
 
-        using CachedFont = std::shared_ptr<sf::Font>;
+        struct CachedFont
+        {
+            std::shared_ptr<sf::Font>       font;
+        };
 
         CachedTexture           getTexture(const std::string& name) const;
         CachedFont              getFont(const std::string& name) const;

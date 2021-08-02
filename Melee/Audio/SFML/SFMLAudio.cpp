@@ -8,8 +8,8 @@ SFMLAudio::SFMLAudio(Engine& engine)
 {
     m_engine.addObserver(this);
 
-    m_music->setLoop(true);
-    m_music->play();
+    m_music.music->setLoop(true);
+    m_music.music->play();
 }
 
 SFMLAudio::~SFMLAudio()
@@ -21,7 +21,7 @@ void SFMLAudio::setVolume(float percent)
 {
     percent = std::clamp(percent, 0.0f, 100.0f);
 
-    m_music->setVolume(percent);
+    m_music.music->setVolume(percent);
 
     for (auto& soundEffect : m_sounds)
         soundEffect.setVolume(percent);
@@ -70,7 +70,9 @@ void SFMLAudio::playSoundEffect(const std::string& name, Point position)
     if (freeSoundEffect == m_sounds.end())
         return;
 
-    freeSoundEffect->setBuffer(*SFMLAudioAssetLoader::Instance().getSoundEffect(name));
+    auto soundEffect = SFMLAudioAssetLoader::Instance().getSoundEffect(name);
+
+    freeSoundEffect->setBuffer(*soundEffect.soundEffect);
     freeSoundEffect->setPosition(position.x, position.y, 0);
     freeSoundEffect->setMinDistance(std::max(1.0f, m_engine.getPlayersBoundingBox().size.length()));
     freeSoundEffect->play();

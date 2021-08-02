@@ -26,10 +26,7 @@ SFMLAssetLoader::SFMLAssetLoader()
         auto texture = std::make_shared<sf::Texture>();
         texture->loadFromFile(asset.path().string());
 
-        const auto textureSize = texture->getSize();
-
-        std::ifstream metadata(asset.path().parent_path() / (asset.path().stem().string() + ".dat"));
-        if (metadata.is_open())
+        if (std::ifstream metadata(asset.path().parent_path() / (asset.path().stem().string() + ".dat")); metadata.is_open())
         {
             std::string line;
             while (std::getline(metadata, line))
@@ -39,14 +36,16 @@ SFMLAssetLoader::SFMLAssetLoader()
 
                 const auto NextField = [&]()
                     {
+                        std::string fieldValue;
+
                         nextPos = line.find(',', currPos);
-                        auto fieldValue = line.substr(currPos, nextPos - currPos);
+                        fieldValue = line.substr(currPos, nextPos - currPos);
                         currPos = nextPos + 1;
 
                         return fieldValue;
                     };
 
-                auto assetName = NextField();
+                const auto assetName = NextField();
 
                 CachedTexture cachedEntry = {};
                 cachedEntry.texture = texture;
@@ -59,11 +58,12 @@ SFMLAssetLoader::SFMLAssetLoader()
         }
         else
         {
-            auto assetName = asset.path().filename().stem().string();
+            const auto assetName = asset.path().filename().stem().string();
+            const auto textureSize = texture->getSize();
 
             CachedTexture cachedEntry = {};
             cachedEntry.texture = texture;
-            cachedEntry.region = { 0, 0, (int)textureSize.x, (int)textureSize.y };
+            cachedEntry.region = { 0, 0, static_cast<int>(textureSize.x), static_cast<int>(textureSize.y) };
 
             m_textureCache.emplace(ToCacheKey(assetName), cachedEntry);
         }
@@ -74,12 +74,14 @@ SFMLAssetLoader::SFMLAssetLoader()
         if (asset.path().extension() != ".ttf")
             continue;
 
-        auto assetName = asset.path().filename().stem().string();
+        const auto assetName = asset.path().filename().stem().string();
 
         auto font = std::make_shared<sf::Font>();
         font->loadFromFile(asset.path().string());
 
-        CachedFont cachedFont = font;
+        CachedFont cachedFont = {};
+        cachedFont.font = font;
+
         m_fontCache.emplace(ToCacheKey(assetName), cachedFont);
     }
 }
