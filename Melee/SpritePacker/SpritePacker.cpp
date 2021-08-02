@@ -25,6 +25,9 @@ namespace
 
         for (const auto& asset : std::filesystem::directory_iterator(path))
         {
+            if (asset.path().filename().extension() != ".png")
+                continue;
+
             ImageInfo imageInfo = {};
             imageInfo.path      = asset.path();
             imageInfo.name      = imageInfo.path.filename().stem().string();
@@ -151,7 +154,7 @@ namespace
 
         if (!packedImage.saveToFile(outputImagePath.string()))
         {
-            std::cerr << "Failed to save asset '" << outputImagePath.filename().stem() << "!\n";
+            std::cerr << "Failed to save asset '" << outputImagePath.filename().stem() << "'!\n";
             exit(1);
         }
         else
