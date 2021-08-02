@@ -1,5 +1,7 @@
 #include "Engine/Engine.hpp"
 
+#include <algorithm>
+
 using namespace Melee;
 
 namespace
