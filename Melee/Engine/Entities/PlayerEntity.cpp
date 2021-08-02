@@ -61,7 +61,7 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     {
         engine.removeEntity(shared_from_this());
 
-        auto explosionEntity = std::make_shared<ExplosionEntity>(ExplosionEntity::ExplosionProperties{}, m_position);
+        auto explosionEntity = std::make_shared<ExplosionEntity>(nullptr, ExplosionEntity::ExplosionProperties{}, m_position);
         engine.addEntity(explosionEntity);
 
         return;
@@ -93,7 +93,7 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
         if (m_thrustExhaustTimer.expired())
         {
             auto exhaustEntity = std::make_shared<ExhaustEntity>(shared_from_this(), ExhaustEntity::ExhaustProperties{}, m_position, m_velocity + -m_acceleration);
-            engine.addEntity(exhaustEntity);
+            engine.addEntity(exhaustEntity, Engine::InsertionOrder::Bottom);
         }
     }
     else

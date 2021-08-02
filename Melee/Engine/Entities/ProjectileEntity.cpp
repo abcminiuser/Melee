@@ -31,7 +31,7 @@ void ProjectileEntity::collide(Engine& engine, const Entity& otherEntity, const 
     ExplosionEntity::ExplosionProperties explosionProps = {};
     explosionProps.radius_km = 1000;
 
-    auto explosionEntity = std::make_shared<ExplosionEntity>(explosionProps, m_position);
+    auto explosionEntity = std::make_shared<ExplosionEntity>(nullptr, explosionProps, m_position);
     engine.addEntity(explosionEntity);
 
     Entity::collide(engine, otherEntity, otherEntityState);

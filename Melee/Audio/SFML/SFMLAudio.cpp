@@ -33,7 +33,10 @@ void SFMLAudio::entityAdded(Engine& engine, const std::shared_ptr<Entity>& entit
     {
         case Entity::Type::Explosion:
         {
-            playSoundEffect("explosion1", entity->position());
+            // Only the initial explosion entity will be parentless, any sub-explosions are owned by the initial explosion.
+            if (!entity->parentEntity())
+                playSoundEffect("explosion1", entity->position());
+
             break;
         }
 

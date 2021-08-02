@@ -33,9 +33,12 @@ void Engine::update(uint32_t msElapsed)
     }
 }
 
-void Engine::addEntity(const std::shared_ptr<Entity>& entity) noexcept
+void Engine::addEntity(const std::shared_ptr<Entity>& entity, InsertionOrder zOrder) noexcept
 {
-    m_entitiesToAdd.emplace_back(entity);
+    if (zOrder == InsertionOrder::Top)
+        m_entitiesToAddTop.emplace_back(entity);
+    else
+        m_entitiesToAddBottom.emplace_back(entity);
 }
 
 void Engine::removeEntity(const std::shared_ptr<Entity>& entity) noexcept
@@ -45,9 +48,9 @@ void Engine::removeEntity(const std::shared_ptr<Entity>& entity) noexcept
 
 void Engine::handleDeferredEntityAddRemove()
 {
-    if (!m_entitiesToAdd.empty())
+    if (!m_entitiesToAddBottom.empty())
     {
-        for (const auto& entity : m_entitiesToAdd)
+        for (const auto& entity : m_entitiesToAddBottom)
         {
             m_entities.push_front(entity);
             m_entitiesForType[entity->type()].push_front(entity);
@@ -60,7 +63,25 @@ void Engine::handleDeferredEntityAddRemove()
                 observer->entityAdded(*this, entity);
         }
 
-        m_entitiesToAdd.clear();
+        m_entitiesToAddBottom.clear();
+    }
+
+    if (!m_entitiesToAddTop.empty())
+    {
+        for (const auto& entity : m_entitiesToAddTop)
+        {
+            m_entities.push_back(entity);
+            m_entitiesForType[entity->type()].push_back(entity);
+
+            // Add this entity to the list of entities owned by its parent.
+            if (const auto& parentEntity = entity->parentEntity())
+                m_entitiesForParent[parentEntity].push_back(entity);
+
+            for (auto* observer : m_observers)
+                observer->entityAdded(*this, entity);
+        }
+
+        m_entitiesToAddTop.clear();
     }
 
     if (!m_entitiesToRemove.empty())

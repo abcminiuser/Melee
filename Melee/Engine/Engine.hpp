@@ -22,6 +22,12 @@ namespace Melee
     public:
         class Observer;
 
+        enum class InsertionOrder
+        {
+            Bottom,
+            Top,
+        };
+
         explicit    Engine(float playfieldSize);
                     ~Engine() = default;
 
@@ -44,7 +50,7 @@ namespace Melee
 
         void        update(uint32_t msElapsed);
 
-        void        addEntity(const std::shared_ptr<Entity>& entity) noexcept;
+        void        addEntity(const std::shared_ptr<Entity>& entity, InsertionOrder zOrder = InsertionOrder::Top) noexcept;
         void        removeEntity(const std::shared_ptr<Entity>& entity) noexcept;
 
     private:
@@ -64,7 +70,8 @@ namespace Melee
         EntityMap<Entity::Type>             m_entitiesForType;
         EntityMap<std::shared_ptr<Entity>>  m_entitiesForParent;
 
-        EntityList                          m_entitiesToAdd;
+        EntityList                          m_entitiesToAddTop;
+        EntityList                          m_entitiesToAddBottom;
         EntityList                          m_entitiesToRemove;
 
         Rectangle                           m_playersBoundingBox;

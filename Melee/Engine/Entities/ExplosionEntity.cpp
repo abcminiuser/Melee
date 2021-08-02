@@ -10,8 +10,8 @@ namespace
     constexpr auto kNumSubExplosions = 2;
 }
 
-ExplosionEntity::ExplosionEntity(const ExplosionProperties& properties, const Point& pos)
-    : Entity(Entity::Type::Explosion, nullptr, properties, pos)
+ExplosionEntity::ExplosionEntity(const std::shared_ptr<Entity>& parent, const ExplosionProperties& properties, const Point& pos)
+    : Entity(Entity::Type::Explosion, parent, properties, pos)
     , m_explosionProperties(properties)
 {
 
@@ -41,7 +41,7 @@ void ExplosionEntity::update(Engine& engine, uint32_t msElapsed)
                 newStartPosition.x += LinearInterpolateRandom(-m_explosionProperties.radius_km, m_explosionProperties.radius_km);
                 newStartPosition.y += LinearInterpolateRandom(-m_explosionProperties.radius_km, m_explosionProperties.radius_km);
 
-                auto explosionEntity = std::make_shared<ExplosionEntity>(newProperties, newStartPosition);
+                auto explosionEntity = std::make_shared<ExplosionEntity>(shared_from_this(), newProperties, newStartPosition);
                 engine.addEntity(explosionEntity);
             }
         }
