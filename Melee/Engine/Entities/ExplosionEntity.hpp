@@ -17,6 +17,7 @@ namespace Melee
             }
 
             uint32_t maxAge_ms = 1000;
+            float    subExplosionProbability = 1.0f;
         };
 
     public:
@@ -35,5 +36,6 @@ namespace Melee
         const ExplosionProperties   m_explosionProperties;
 
         uint32_t                    m_age = 0;
+        bool                        m_subExplosionOccured = false;
     };
 }
