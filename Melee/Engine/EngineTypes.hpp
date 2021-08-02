@@ -3,8 +3,8 @@
 #include "Util/VectorMath.hpp"
 #include "Util/MatrixMath.hpp"
 
-#include <list>
 #include <memory>
+#include <deque>
 
 namespace Melee
 {
@@ -32,11 +32,11 @@ namespace Melee
             size.y += height;
         }
 
-        Vector2d center() const
+        inline Vector2d center() const
         {
             return { origin.x + (size.x / 2), origin.y + (size.y / 2) };
         }
     };
 
-    using EntityList = std::list<std::shared_ptr<Entity>>;
+    using EntityList = std::deque<std::shared_ptr<Entity>>;
 }

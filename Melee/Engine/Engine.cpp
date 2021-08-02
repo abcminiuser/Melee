@@ -49,12 +49,12 @@ void Engine::handleDeferredEntityAddRemove()
     {
         for (const auto& entity : m_entitiesToAdd)
         {
-            m_entities.emplace_front(entity);
-            m_entitiesForType[entity->type()].emplace_front(entity);
+            m_entities.push_front(entity);
+            m_entitiesForType[entity->type()].push_front(entity);
 
             // Add this entity to the list of entities owned by its parent.
             if (const auto& parentEntity = entity->parentEntity())
-                m_entitiesForParent[parentEntity].emplace_front(entity);
+                m_entitiesForParent[parentEntity].push_front(entity);
 
             for (auto* observer : m_observers)
                 observer->entityAdded(*this, entity);
@@ -65,18 +65,25 @@ void Engine::handleDeferredEntityAddRemove()
 
     if (!m_entitiesToRemove.empty())
     {
+        static constexpr auto RemoveFromContainer =
+            [](auto& container, const auto value)
+            {
+                container.erase(std::remove_if(container.begin(), container.end(), [&](const auto& e) { return e == value; }), container.end());
+            };
+
+        EntityList deferredEntitiesToRemove;
+
         for (const auto& entity : m_entitiesToRemove)
         {
-            m_entities.remove(entity);
-            m_entitiesForType[entity->type()].remove(entity);
+            RemoveFromContainer(m_entities, entity);
+            RemoveFromContainer(m_entitiesForType[entity->type()], entity);
 
             // Remove this entity from the list of entities owned by its parent.
             if (const auto& parentEntity = entity->parentEntity())
-                m_entitiesForParent[parentEntity].remove(entity);
+                RemoveFromContainer(m_entitiesForParent[parentEntity], entity);
 
             // Remove all entities owned by this entity (on the next update loop).
-            for (const auto& e : m_entitiesForParent[entity])
-                removeEntity(e);
+            deferredEntitiesToRemove.insert(deferredEntitiesToRemove.end(), m_entitiesForParent[entity].begin(), m_entitiesForParent[entity].end());
 
             // Also remove the list of entities owned by this entity, so we reclaim some memory.
             m_entitiesForParent.erase(entity);
@@ -85,7 +92,7 @@ void Engine::handleDeferredEntityAddRemove()
                 observer->entityRemoved(*this, entity);
         }
 
-        m_entitiesToRemove.clear();
+        m_entitiesToRemove = std::move(deferredEntitiesToRemove);
     }
 }
 
