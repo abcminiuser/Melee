@@ -13,7 +13,6 @@
 #include "Entities/ProjectileEntity.hpp"
 
 #include <forward_list>
-#include <unordered_map>
 
 namespace Melee
 {
@@ -35,15 +34,6 @@ namespace Melee
         void        removeObserver(Observer* observer)                  { m_observers.remove(observer); }
 
         auto&       getEntities()                                       { return m_entities; }
-        auto&       getEntities(Entity::Type type)                      { return m_entitiesForType[type]; }
-        auto        getEntities(const std::shared_ptr<Entity>& parent)
-        {
-            const auto foundList = m_entitiesForParent.find(parent);
-            if (foundList != m_entitiesForParent.end())
-                return foundList->second;
-
-            return EntityList{};
-        }
 
         float       getPlayfieldSize() const                            { return m_playfieldSize; }
         Rectangle   getPlayersBoundingBox()                             { return m_playersBoundingBox; }
@@ -61,16 +51,11 @@ namespace Melee
         void        updatePlayersBoundingBox();
 
     private:
-        template <typename K>
-        using EntityMap = std::unordered_map<K, EntityList>;
-
         const float                         m_playfieldSize;
 
         std::forward_list<Observer*>        m_observers;
 
         EntityList                          m_entities;
-        EntityMap<Entity::Type>             m_entitiesForType;
-        EntityMap<std::shared_ptr<Entity>>  m_entitiesForParent;
 
         EntityList                          m_entitiesToAddTop;
         EntityList                          m_entitiesToAddBottom;

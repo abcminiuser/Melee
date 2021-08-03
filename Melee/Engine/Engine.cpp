@@ -52,17 +52,12 @@ void Engine::handleDeferredEntityAddRemove()
 {
     if (!m_entitiesToAddBottom.empty())
     {
-        for (const auto& entity : m_entitiesToAddBottom)
+        for (const auto& addBottomEntity : m_entitiesToAddBottom)
         {
-            m_entities.push_front(entity);
-            m_entitiesForType[entity->type()].push_front(entity);
-
-            // Add this entity to the list of entities owned by its parent.
-            if (const auto& parentEntity = entity->parentEntity())
-                m_entitiesForParent[parentEntity].push_front(entity);
+            m_entities.push_front(addBottomEntity);
 
             for (auto* observer : m_observers)
-                observer->entityAdded(*this, entity);
+                observer->entityAdded(*this, addBottomEntity);
         }
 
         m_entitiesToAddBottom.clear();
@@ -70,49 +65,34 @@ void Engine::handleDeferredEntityAddRemove()
 
     if (!m_entitiesToAddTop.empty())
     {
-        for (const auto& entity : m_entitiesToAddTop)
+        for (const auto& addTopEntity : m_entitiesToAddTop)
         {
-            m_entities.push_back(entity);
-            m_entitiesForType[entity->type()].push_back(entity);
-
-            // Add this entity to the list of entities owned by its parent.
-            if (const auto& parentEntity = entity->parentEntity())
-                m_entitiesForParent[parentEntity].push_back(entity);
+            m_entities.push_back(addTopEntity);
 
             for (auto* observer : m_observers)
-                observer->entityAdded(*this, entity);
+                observer->entityAdded(*this, addTopEntity);
         }
 
         m_entitiesToAddTop.clear();
     }
 
-    if (!m_entitiesToRemove.empty())
+    while (!m_entitiesToRemove.empty())
     {
-        static constexpr auto RemoveFromContainer =
-            [](auto& container, const auto value)
-            {
-                container.erase(std::remove_if(container.begin(), container.end(), [&](const auto& e) { return e == value; }), container.end());
-            };
-
         EntityList deferredEntitiesToRemove;
 
-        for (const auto& entity : m_entitiesToRemove)
+        for (const auto& removeEntity : m_entitiesToRemove)
         {
-            RemoveFromContainer(m_entities, entity);
-            RemoveFromContainer(m_entitiesForType[entity->type()], entity);
+            // Queue up any entities owned by this entity for deferred removal.
+            for (const auto& entity : m_entities)
+            {
+                if (entity->parentEntity() == removeEntity)
+                    deferredEntitiesToRemove.push_back(entity);
+            }
 
-            // Remove this entity from the list of entities owned by its parent.
-            if (const auto& parentEntity = entity->parentEntity())
-                RemoveFromContainer(m_entitiesForParent[parentEntity], entity);
-
-            // Remove all entities owned by this entity (on the next update loop).
-            deferredEntitiesToRemove.insert(deferredEntitiesToRemove.end(), m_entitiesForParent[entity].begin(), m_entitiesForParent[entity].end());
-
-            // Also remove the list of entities owned by this entity, so we reclaim some memory.
-            m_entitiesForParent.erase(entity);
+            m_entities.erase(std::remove_if(m_entities.begin(), m_entities.end(), [&](const auto& e) { return e == removeEntity; }), m_entities.end());
 
             for (auto* observer : m_observers)
-                observer->entityRemoved(*this, entity);
+                observer->entityRemoved(*this, removeEntity);
         }
 
         m_entitiesToRemove = std::move(deferredEntitiesToRemove);
@@ -172,8 +152,11 @@ void Engine::updatePlayersBoundingBox()
     float maxX = 0;
     float maxY = 0;
 
-    for (const auto& entity : m_entitiesForType[Entity::Type::Player])
+    for (const auto& entity : m_entities)
     {
+        if (entity->type() != Entity::Type::Player)
+            continue;
+
         const auto pos = entity->position();
         const auto radius = entity->properties().radius_km;
 

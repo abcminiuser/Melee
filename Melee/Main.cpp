@@ -19,6 +19,7 @@ namespace
             , m_minRadius_km(minRadius_km)
             , m_maxRadius_km(maxRadius_km)
             , m_generatorTimer(kMinAsteroidGenerationIntervalMs, kMinAsteroidGenerationIntervalMs, true)
+            , m_currentTotalAsteroids(std::count_if(engine.getEntities().begin(), engine.getEntities().end(), [](const auto& e) { return e->type() == Entity::Type::Asteroid; }))
         {
             m_engine.addObserver(this);
         }
@@ -63,7 +64,8 @@ namespace
 
         void        entityRemoved(Engine& engine, const std::shared_ptr<Entity>& entity) override
         {
-            m_currentTotalAsteroids = engine.getEntities(Entity::Type::Asteroid).size();
+            if (entity->type() == Entity::Type::Asteroid)
+                m_currentTotalAsteroids--;
         }
 
     private:

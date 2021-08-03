@@ -159,8 +159,11 @@ void SFMLRenderer::processEvents(sf::RenderWindow& window)
 
 void SFMLRenderer::handleKey(sf::Keyboard::Key key, bool down)
 {
-    for (const auto& entity : m_engine.getEntities(Entity::Type::Player))
+    for (const auto& entity : m_engine.getEntities())
     {
+        if (entity->type() != Entity::Type::Player)
+            continue;
+
         const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
         const auto& playerKeyMap = playerEntity->index() == 0 ? kPlayer1Keys : kPlayer2Keys;
 
@@ -189,10 +192,11 @@ void SFMLRenderer::renderPlayerHud(sf::RenderTarget& target)
     r.setSize(sf::Vector2f{ 250, 1000 });
     target.draw(r);
 
-    const auto playerEntities = m_engine.getEntities(Entity::Type::Player);
-
-    for (const auto& entity : playerEntities)
+    for (const auto& entity : m_engine.getEntities())
     {
+        if (entity->type() != Entity::Type::Player)
+            continue;
+
         const auto& rendererContext = getEntityRenderContext(entity);
 
         if (rendererContext->uiRenderer)

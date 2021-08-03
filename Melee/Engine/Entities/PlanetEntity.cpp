@@ -18,8 +18,11 @@ PlanetEntity::PlanetEntity(const PlanetProperties& properties, const Point& pos)
 
 void PlanetEntity::update(Engine& engine, uint32_t msElapsed)
 {
-    for (const auto& entity : engine.getEntities(Entity::Type::Player))
+    for (const auto& entity : engine.getEntities())
     {
+        if (entity->type() != Entity::Type::Player)
+            continue;
+
         const auto entityToPlanetVector     = (m_position - entity->position());
 
         const auto distanceToPlanetSquared  = entityToPlanetVector.lengthSquared();
