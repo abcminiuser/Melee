@@ -20,12 +20,15 @@ void PlanetEntity::update(Engine& engine, uint32_t msElapsed)
 {
     for (const auto& entity : engine.getEntities())
     {
-        if (entity->type() != Entity::Type::Player)
+        if (entity->type() == Entity::Type::Planet)
             continue;
 
-        const auto entityToPlanetVector     = (m_position - entity->position());
+        if (!entity->properties().mass_kg)
+            continue;
 
-        const auto distanceToPlanetSquared  = entityToPlanetVector.lengthSquared();
+        const auto entityToPlanetVector = (m_position - entity->position());
+        const auto distanceToPlanetSquared = entityToPlanetVector.lengthSquared();
+
         if (distanceToPlanetSquared == 0)
             continue;
 
