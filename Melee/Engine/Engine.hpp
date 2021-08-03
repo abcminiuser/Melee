@@ -53,6 +53,8 @@ namespace Melee
         void        addEntity(const std::shared_ptr<Entity>& entity, InsertionOrder zOrder = InsertionOrder::Top) noexcept;
         void        removeEntity(const std::shared_ptr<Entity>& entity) noexcept;
 
+        bool		checkCollison(const std::shared_ptr<Entity>& entity1, const std::shared_ptr<Entity>& entity2) const noexcept;
+
     private:
         void        handleDeferredEntityAddRemove();
         void        checkForEntityCollisions();

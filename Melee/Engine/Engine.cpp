@@ -119,6 +119,18 @@ void Engine::handleDeferredEntityAddRemove()
     }
 }
 
+bool Engine::checkCollison(const std::shared_ptr<Entity>& entity1, const std::shared_ptr<Entity>& entity2) const noexcept
+{
+	if (! entity1->properties().collidable || !entity2->properties().collidable)
+		return false;
+
+	const auto distanceBetweenEntitiesSquared = (entity1->position() - entity2->position()).lengthSquared();
+	const auto minCollisionRadius = entity1->properties().radius_km + entity2->properties().radius_km;
+
+	// Crude radius check
+	return (distanceBetweenEntitiesSquared < (minCollisionRadius * minCollisionRadius));
+}
+
 void Engine::checkForEntityCollisions()
 {
     const auto totalEntities = m_entities.size();
@@ -136,26 +148,19 @@ void Engine::checkForEntityCollisions()
         {
             const auto& entity2 = *e2;
 
-            if (!entity2->properties().collidable)
-                continue;
+            if (!checkCollison(entity1, entity2))
+            	continue;
 
-            const auto distanceBetweenEntitiesSquared = (entity1->position() - entity2->position()).lengthSquared();
-            const auto minCollisionRadius = entity1->properties().radius_km + entity2->properties().radius_km;
+			// We need to copy out the pre-collision kinematic states before we start processing the collisions.
+			const auto e1Precollision = entity1->preCollisionState();
+			const auto e2Precollision = entity2->preCollisionState();
 
-            // Crude radius check, which we can do in the engine without the renderer.
-            if (distanceBetweenEntitiesSquared > (minCollisionRadius * minCollisionRadius))
-                continue;
+			// Now process the collision on each object.
+			entity1->collide(*this, *entity2, e2Precollision);
+			entity2->collide(*this, *entity1, e1Precollision);
 
-            // We need to copy out the pre-collision kinematic states before we start processing the collisions.
-            const auto e1Precollision = entity1->preCollisionState();
-            const auto e2Precollision = entity2->preCollisionState();
-
-            // Now process the collision on each object.
-            entity1->collide(*this, *entity2, e2Precollision);
-            entity2->collide(*this, *entity1, e1Precollision);
-
-            for (auto* observer : m_observers)
-                observer->collision(*this, entity1, entity2);
+			for (auto* observer : m_observers)
+				observer->collision(*this, entity1, entity2);
         }
     }
 }

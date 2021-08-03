@@ -48,9 +48,16 @@ namespace
                 const auto position = (NormalizedRandom() < .5f) ? Point{ 0, startingXYPos } : Point{ startingXYPos, 0 };
 
                 auto asteroid = std::make_shared<AsteroidEntity>(asteroidProps, position, velocity);
-                engine.addEntity(asteroid);
 
-                m_currentTotalAsteroids++;
+                const auto entities = engine.getEntities();
+                const bool wouldCollide = std::any_of(entities.begin(), entities.end(), [&](const auto& e){ return engine.checkCollison(asteroid, e); });
+
+                if (!wouldCollide)
+                {
+                    engine.addEntity(asteroid);
+
+                    m_currentTotalAsteroids++;
+                }
             }
         }
 
@@ -83,7 +90,7 @@ namespace
             playerProps.mass_kg = 9.718e5;
             playerProps.engineForce_N = 8e3;
             playerProps.rotation_degPerSec = 100;
-            playerProps.maxVelocity_km_s = 100;
+            playerProps.maxVelocity_km_s = 40;
             playerProps.maxHealth = 2;
             playerProps.maxEnergy = 10;
             playerProps.radius_km = 1000;
