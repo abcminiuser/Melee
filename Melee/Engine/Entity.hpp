@@ -44,7 +44,7 @@ namespace Melee
         auto        					parentEntity() const 		{ return m_parentEntity; }
 
         virtual void                    update(Engine& engine, uint32_t msElapsed);
-        virtual void                    collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState);
+        virtual void                    collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState);
 
         Type                            type() const				{ return m_type; }
         virtual const Properties&    	properties() const			{ return m_properties; }

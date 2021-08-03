@@ -3,6 +3,8 @@
 #include "Engine/Entity.hpp"
 #include "Engine/Util/Periodic.hpp"
 
+#include <bitset>
+
 namespace Melee
 {
     class PlayerEntity : public Entity
@@ -47,7 +49,7 @@ namespace Melee
         const PlayerProperties&		properties() const override	{ return m_playerProperties; }
 
         void       					update(Engine& engine, uint32_t msElapsed) override;
-        void       					collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState) override;
+        void       					collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
     private:
         void       					applyDamage(int amount);
@@ -56,14 +58,16 @@ namespace Melee
     private:
         struct Flags
         {
-            enum Mask : uint32_t
+            enum
             {
-                ThrustActive            = 1 << 0,
-                ReverseThrustActive     = 1 << 1,
-                RotateLeftActive        = 1 << 2,
-                RotateRightActive       = 1 << 3,
-                FirePrimaryActive       = 1 << 4,
-                FireSpecialActive       = 1 << 5,
+                ThrustActive,
+                ReverseThrustActive,
+                RotateLeftActive,
+                RotateRightActive,
+                FirePrimaryActive,
+                FireSpecialActive,
+
+                _Count
             };
         };
 
@@ -74,7 +78,7 @@ namespace Melee
         Matrix2x2               	m_rotationalThrustLeft;
         Matrix2x2               	m_rotationalThrustRight;
 
-        uint32_t                	m_flags = 0;
+        std::bitset<Flags::_Count>  m_flags;
 
         Periodic                	m_energyRechargeTimer;
         Periodic                	m_rotationTimer;

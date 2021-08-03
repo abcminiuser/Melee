@@ -30,9 +30,9 @@ void AsteroidEntity::update(Engine& engine, uint32_t msElapsed)
     Entity::update(engine, msElapsed);
 }
 
-void AsteroidEntity::collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState)
+void AsteroidEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState)
 {
-    switch (otherEntity.type())
+    switch (otherEntity->type())
     {
         case Entity::Type::Asteroid:
         case Entity::Type::Player:

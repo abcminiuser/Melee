@@ -22,9 +22,9 @@ void ProjectileEntity::update(Engine& engine, uint32_t msElapsed)
     Entity::update(engine, msElapsed);
 }
 
-void ProjectileEntity::collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState)
+void ProjectileEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState)
 {
-    if (&otherEntity == m_parentEntity.get())
+    if (otherEntity == m_parentEntity)
         return;
 
     engine.removeEntity(shared_from_this());

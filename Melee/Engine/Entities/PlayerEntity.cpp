@@ -33,26 +33,18 @@ PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, 
 
 void PlayerEntity::handleKey(KeyEvent key, bool down)
 {
-    const auto UpdateFlag = [&](Flags::Mask flag, bool state)
-        {
-            if (state)
-                m_flags |= flag;
-            else
-                m_flags &= ~flag;
-        };
-
     if (key == KeyEvent::Thrust)
-        UpdateFlag(Flags::ThrustActive, down);
+        m_flags.set(Flags::ThrustActive, down);
     else if (key == KeyEvent::ReverseThrust)
-        UpdateFlag(Flags::ReverseThrustActive, down);
+        m_flags.set(Flags::ReverseThrustActive, down);
     else if (key == KeyEvent::RotateLeft)
-        UpdateFlag(Flags::RotateLeftActive, down);
+        m_flags.set(Flags::RotateLeftActive, down);
     else if (key == KeyEvent::RotateRight)
-        UpdateFlag(Flags::RotateRightActive, down);
+        m_flags.set(Flags::RotateRightActive, down);
     else if (key == KeyEvent::FirePrimary)
-        UpdateFlag(Flags::FirePrimaryActive, down);
+        m_flags.set(Flags::FirePrimaryActive, down);
     else if (key == KeyEvent::FireSpecial)
-        UpdateFlag(Flags::FireSpecialActive, down);
+        m_flags.set(Flags::FireSpecialActive, down);
 }
 
 void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
@@ -67,12 +59,11 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
         return;
     }
 
-    const auto rotateFlags = m_flags & (Flags::RotateLeftActive | Flags::RotateRightActive);
-    if (rotateFlags == Flags::RotateLeftActive || rotateFlags == Flags::RotateRightActive)
+    if (m_flags.test(Flags::RotateLeftActive) || m_flags.test(Flags::RotateRightActive))
     {
         m_rotationTimer.add(msElapsed);
 
-        const auto thrustRotationVector = (rotateFlags == Flags::RotateLeftActive) ? m_rotationalThrustLeft : m_rotationalThrustRight;
+        const auto thrustRotationVector = m_flags.test(Flags::RotateLeftActive) ? m_rotationalThrustLeft : m_rotationalThrustRight;
 
         while (m_rotationTimer.expired())
             m_heading = thrustRotationVector * m_heading;
@@ -82,10 +73,9 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
         m_rotationTimer.reset();
     }
 
-    const auto thrustFlags = m_flags & (Flags::ThrustActive | Flags::ReverseThrustActive);
-    if (thrustFlags == Flags::ThrustActive || thrustFlags == Flags::ReverseThrustActive)
+    if (m_flags.test(Flags::ThrustActive) || m_flags.test(Flags::ReverseThrustActive))
     {
-        const auto thrustVector = (thrustFlags == Flags::ThrustActive) ? m_heading : -m_heading;
+        const auto thrustVector = m_flags.test(Flags::ThrustActive) ? m_heading : -m_heading;
 
         m_acceleration = thrustVector * m_engineAcceleration_ms2;
 
@@ -103,7 +93,7 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     }
 
     m_primaryFireTimer.add(msElapsed);
-    if (m_flags & Flags::FirePrimaryActive && m_energy >= m_playerProperties.primaryEnergyCost && m_primaryFireTimer.expired())
+    if (m_flags.test(Flags::FirePrimaryActive) && m_energy >= m_playerProperties.primaryEnergyCost && m_primaryFireTimer.expired())
     {
         auto projectileEntity = std::make_shared<ProjectileEntity>(shared_from_this(), ProjectileEntity::ProjectileProperties{}, m_position + (m_heading * m_playerProperties.radius_km), m_velocity, m_heading);
         engine.addEntity(projectileEntity);
@@ -118,9 +108,9 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     Entity::update(engine, msElapsed);
 }
 
-void PlayerEntity::collide(Engine& engine, const Entity& otherEntity, const PreCollisionState& otherEntityState)
+void PlayerEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState)
 {
-    switch (otherEntity.type())
+    switch (otherEntity->type())
     {
         case Entity::Type::Asteroid:
         case Entity::Type::Planet:
@@ -129,7 +119,7 @@ void PlayerEntity::collide(Engine& engine, const Entity& otherEntity, const PreC
             m_acceleration = {};
             m_velocity = -m_velocity;
 
-            if (otherEntity.type() == Entity::Type::Planet)
+            if (otherEntity->type() == Entity::Type::Planet)
                 applyDamage(1);
 
             break;
@@ -137,11 +127,13 @@ void PlayerEntity::collide(Engine& engine, const Entity& otherEntity, const PreC
 
         case Entity::Type::Projectile:
         {
-            const auto& projectileEntity = *dynamic_cast<const ProjectileEntity*>(&otherEntity);
+            if (otherEntity->parentEntity() != shared_from_this())
+            {
+                const auto& projectileEntity = std::dynamic_pointer_cast<const ProjectileEntity>(otherEntity);
 
-            if (projectileEntity.parentEntity() != shared_from_this())
-                applyDamage(projectileEntity.properties().damage);
-
+                applyDamage(projectileEntity->properties().damage);
+            }
+ 
             break;
         }
 

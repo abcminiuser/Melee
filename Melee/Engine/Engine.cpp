@@ -136,8 +136,8 @@ void Engine::checkForEntityCollisions()
 			const auto e2Precollision = entity2->preCollisionState();
 
 			// Now process the collision on each object.
-			entity1->collide(*this, *entity2, e2Precollision);
-			entity2->collide(*this, *entity1, e1Precollision);
+			entity1->collide(*this, entity2, e2Precollision);
+			entity2->collide(*this, entity1, e1Precollision);
 
 			for (auto* observer : m_observers)
 				observer->collision(*this, entity1, entity2);
