@@ -5,10 +5,11 @@
 using namespace Melee;
 
 ProjectileEntity::ProjectileEntity(const std::shared_ptr<Entity>& parent,const ProjectileProperties& properties, const Point& position, const Vector2d& velocity, const Vector2d& heading)
-    : Entity(Entity::Type::Projectile, parent, properties, position, velocity)
+    : Entity(Entity::Type::Projectile, parent, properties, position)
     , m_projectileProperties(properties)
 {
-    m_velocity += heading * (properties.firingForce_N / properties.mass_kg);
+    m_heading = heading;
+    m_velocity = velocity + (heading * (properties.firingForce_N / properties.mass_kg));
 }
 
 void ProjectileEntity::update(Engine& engine, uint32_t msElapsed)

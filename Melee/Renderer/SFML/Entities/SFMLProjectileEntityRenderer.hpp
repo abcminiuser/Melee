@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer/SFML/SFMLRenderable.hpp"
+#include "Renderer/SFML/SFMLAssetLoader.hpp"
 
 namespace Melee
 {
@@ -9,16 +10,17 @@ namespace Melee
     class SFMLProjectileEntityRenderer : public SFMLRenderable
     {
     public:
-        explicit                SFMLProjectileEntityRenderer(ProjectileEntity& entity);
-        virtual                 ~SFMLProjectileEntityRenderer() = default;
+        explicit                        SFMLProjectileEntityRenderer(ProjectileEntity& entity);
+        virtual                         ~SFMLProjectileEntityRenderer() = default;
 
         // SFMLRenderable i/f:
     public:
-        void                    render(sf::RenderTarget& renderer) override;
+        void                            render(sf::RenderTarget& renderer) override;
 
     private:
-        const ProjectileEntity& m_entity;
+        const ProjectileEntity&         m_entity;
 
-        sf::CircleShape         m_shape;
+        SFMLAssetLoader::CachedTexture  m_projectileImage;
+        sf::Sprite                      m_sprite;
     };
 }

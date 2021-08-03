@@ -21,7 +21,7 @@ namespace Melee
         };
 
     public:
-        explicit    				ExplosionEntity(const std::shared_ptr<Entity>& parent, const ExplosionProperties& properties, const Point& pos);
+        explicit    				ExplosionEntity(const std::shared_ptr<Entity>& parent, const ExplosionProperties& properties, const Point& position);
         virtual    					~ExplosionEntity() = default;
 
         uint32_t    				age() const         		{ return m_age; }

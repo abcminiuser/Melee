@@ -13,7 +13,7 @@ namespace Melee
         };
 
     public:
-        explicit                	PlanetEntity(const PlanetProperties& properties, const Point& pos);
+        explicit                	PlanetEntity(const PlanetProperties& properties, const Point& position);
         virtual                 	~PlanetEntity() = default;
 
     // Entity i/f:

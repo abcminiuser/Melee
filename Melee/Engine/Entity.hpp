@@ -38,7 +38,7 @@ namespace Melee
         };
 
     public:
-        explicit                        Entity(Type type, const std::shared_ptr<Entity>& parent, const Properties& properties, const Point& pos, const Point& vel = {}, const Point& acc = {});
+        explicit                        Entity(Type type, const std::shared_ptr<Entity>& parent, const Properties& properties, const Point& pos);
         virtual                         ~Entity() = default;
 
         auto        					parentEntity() const 		{ return m_parentEntity; }

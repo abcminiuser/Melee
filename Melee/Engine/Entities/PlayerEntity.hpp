@@ -33,7 +33,7 @@ namespace Melee
         };
 
     public:
-        explicit    				PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& pos);
+        explicit    				PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& position);
         virtual     				~PlayerEntity() = default;
 
         int        					index() const       		{ return m_playerIndex; }

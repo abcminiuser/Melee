@@ -3,13 +3,11 @@
 
 using namespace Melee;
 
-Entity::Entity(Type type, const std::shared_ptr<Entity>& parent, const Properties& properties, const Point& pos, const Point& vel, const Point& acc)
+Entity::Entity(Type type, const std::shared_ptr<Entity>& parent, const Properties& properties, const Point& pos)
     : m_type(type)
     , m_parentEntity(parent)
     , m_properties(properties)
     , m_position(pos)
-    , m_velocity(vel)
-    , m_acceleration(acc)
 {
 
 }

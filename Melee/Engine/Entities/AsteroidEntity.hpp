@@ -14,7 +14,7 @@ namespace Melee
         };
 
     public:
-        explicit    				AsteroidEntity(const AsteroidProperties& properties, const Point& position, const Vector2d& heading);
+        explicit    				AsteroidEntity(const AsteroidProperties& properties, const Point& position, const Vector2d& velocity);
         virtual     				~AsteroidEntity() = default;
 
         // Entity i/f:

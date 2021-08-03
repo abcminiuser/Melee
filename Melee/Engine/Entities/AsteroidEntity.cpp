@@ -10,10 +10,12 @@ namespace
 }
 
 AsteroidEntity::AsteroidEntity(const AsteroidProperties& properties, const Point& position, const Vector2d& velocity)
-    : Entity(Entity::Type::Asteroid, nullptr, properties, position, velocity)
+    : Entity(Entity::Type::Asteroid, nullptr, properties, position)
     , m_asteroidProperties(properties)
     , m_rotationTimer(kRotationIntervalMs)
 {
+    m_velocity = velocity;
+
     const float rotationDegreesPerInterval = properties.rotation_degPerSec * kRotationIntervalMs / 1000;
     m_rotation = RotationMatrix(rotationDegreesPerInterval);
 }

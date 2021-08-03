@@ -19,7 +19,7 @@ namespace Melee
         };
 
     public:
-        explicit    				ExhaustEntity(const std::shared_ptr<Entity>& parent, const ExhaustProperties& properties, const Point& pos, const Vector2d& heading);
+        explicit    				ExhaustEntity(const std::shared_ptr<Entity>& parent, const ExhaustProperties& properties, const Point& position, const Vector2d& velocity);
         virtual     				~ExhaustEntity() = default;
 
         uint32_t    				age() const         		{ return m_age; }

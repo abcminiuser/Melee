@@ -10,8 +10,8 @@ namespace
     constexpr auto kNumSubExplosions = 2;
 }
 
-ExplosionEntity::ExplosionEntity(const std::shared_ptr<Entity>& parent, const ExplosionProperties& properties, const Point& pos)
-    : Entity(Entity::Type::Explosion, parent, properties, pos)
+ExplosionEntity::ExplosionEntity(const std::shared_ptr<Entity>& parent, const ExplosionProperties& properties, const Point& position)
+    : Entity(Entity::Type::Explosion, parent, properties, position)
     , m_explosionProperties(properties)
 {
 

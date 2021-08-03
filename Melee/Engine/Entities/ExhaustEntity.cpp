@@ -4,11 +4,11 @@
 
 using namespace Melee;
 
-ExhaustEntity::ExhaustEntity(const std::shared_ptr<Entity>& parent, const ExhaustProperties& properties, const Point& pos, const Vector2d& heading)
-    : Entity(Entity::Type::Exhaust, parent, properties, pos, heading)
+ExhaustEntity::ExhaustEntity(const std::shared_ptr<Entity>& parent, const ExhaustProperties& properties, const Point& position, const Vector2d& velocity)
+    : Entity(Entity::Type::Exhaust, parent, properties, position)
     , m_exhaustProperties(properties)
 {
-
+    m_velocity = velocity;
 }
 
 void ExhaustEntity::update(Engine& engine, uint32_t msElapsed)

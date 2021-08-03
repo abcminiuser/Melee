@@ -12,8 +12,8 @@ namespace
     constexpr uint32_t kThrustExhaustIntervalMs = 100;
 }
 
-PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& pos)
-    : Entity(Entity::Type::Player, nullptr, properties, pos)
+PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& position)
+    : Entity(Entity::Type::Player, nullptr, properties, position)
     , m_playerIndex(playerIndex)
     , m_playerProperties(properties)
     , m_energyRechargeTimer(properties.energyRechargeRate_ms)

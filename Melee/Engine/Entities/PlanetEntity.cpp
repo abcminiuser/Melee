@@ -9,8 +9,8 @@ namespace
     constexpr auto kGravitationalConstant = 6.674e-11f;
 }
 
-PlanetEntity::PlanetEntity(const PlanetProperties& properties, const Point& pos)
-    : Entity(Entity::Type::Planet, nullptr, properties, pos)
+PlanetEntity::PlanetEntity(const PlanetProperties& properties, const Point& position)
+    : Entity(Entity::Type::Planet, nullptr, properties, position)
     , m_planetProperties(properties)
 {
 
