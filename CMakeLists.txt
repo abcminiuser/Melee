@@ -23,3 +23,9 @@ endif ()
 project ("Melee")
 
 add_subdirectory ("Melee")
+
+set(CPACK_PACKAGE_NAME "Melee")
+set(CPACK_PACKAGE_VERSION "0.0.0")
+set(CPACK_PACKAGE_VENDOR "Dean Camera")
+
+include(CPack)

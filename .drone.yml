@@ -9,7 +9,8 @@ steps:
   - export CXX=/usr/bin/clang++
   - $CC --version
   - cmake -B build/clang -DCMAKE_CXX_COMPILER="$CXX" -DCMAKE_BUILD_TYPE=Release -G "Ninja" .
-  - cmake --build build/clang --config Release
+  - cmake --build build/clang
+  - cd build/clang && cpack -G ZIP
 
 - name: Build (GCC)
   image: abcminiuser/docker-ci-ubuntu-buildtools
@@ -18,4 +19,5 @@ steps:
   - export CXX=/usr/bin/g++
   - $CC --version
   - cmake -B build/gcc -DCMAKE_CXX_COMPILER="$CXX" -DCMAKE_BUILD_TYPE=Release -G "Ninja" .
-  - cmake --build build/gcc --config Release
+  - cmake --build build/gcc
+  - cd build/gcc && cpack -G ZIP
