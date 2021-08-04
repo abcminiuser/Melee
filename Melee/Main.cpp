@@ -1,88 +1,12 @@
 ﻿#include "Engine/Engine.hpp"
 #include "Audio/SFML/SFMLAudio.hpp"
 #include "Renderer/SFML/SFMLRenderer.hpp"
+#include "AsteroidGenerator.hpp"
 
 using namespace Melee;
 
 namespace
 {
-    class AsteroidGenerator : public Engine::Observer
-    {
-    public:
-        static inline constexpr auto kMinAsteroidGenerationIntervalMs = 5000;
-
-        explicit    AsteroidGenerator(Engine& engine, uint8_t maxAsteroids, float minVelocity_km_s, float maxVelocity_km_s, float minRadius_km, float maxRadius_km)
-            : m_engine(engine)
-            , m_maxAsteroids(maxAsteroids)
-            , m_minVelocity_km_s(minVelocity_km_s)
-            , m_maxVelocity_km_s(maxVelocity_km_s)
-            , m_minRadius_km(minRadius_km)
-            , m_maxRadius_km(maxRadius_km)
-            , m_generatorTimer(kMinAsteroidGenerationIntervalMs, kMinAsteroidGenerationIntervalMs, true)
-            , m_currentTotalAsteroids(std::count_if(engine.getEntities().begin(), engine.getEntities().end(), [](const auto& e) { return e->type() == Entity::Type::Asteroid; }))
-        {
-            m_engine.addObserver(this);
-        }
-
-        virtual     ~AsteroidGenerator()
-        {
-            m_engine.removeObserver(this);
-        }
-
-    // Engine::Observer i.f:
-    public:
-        void        updated(Engine& engine, uint32_t msElapsed) override
-        {
-            m_generatorTimer.add(msElapsed);
-
-            if (m_currentTotalAsteroids < m_maxAsteroids && m_generatorTimer.expired())
-            {
-                AsteroidEntity::AsteroidProperties asteroidProps = {};
-                asteroidProps.radius_km = LinearInterpolateRandom(m_minRadius_km, m_maxRadius_km);
-                asteroidProps.rotation_degPerSec = (NormalizedRandom() < .5f) ? -120.0f : 120.0f;
-                asteroidProps.mass_kg = 1e5;
-
-                const auto newSpeed = LinearInterpolateRandom(m_minVelocity_km_s, m_maxVelocity_km_s);
-                const auto startingXYPos = LinearInterpolateRandom(0.0f, engine.getPlayfieldSize());
-
-                const auto velocity = RotationMatrix(LinearInterpolateRandom(0.0f, 360.0f)) * Vector2d { newSpeed, 0 };
-                const auto position = (NormalizedRandom() < .5f) ? Point{ 0, startingXYPos } : Point{ startingXYPos, 0 };
-
-                auto asteroid = std::make_shared<AsteroidEntity>(asteroidProps, position, velocity);
-
-                const auto entities = engine.getEntities();
-                const bool wouldCollide = std::any_of(entities.begin(), entities.end(), [&](const auto& e){ return engine.checkCollison(asteroid, e); });
-
-                if (!wouldCollide)
-                {
-                    engine.addEntity(asteroid);
-
-                    m_currentTotalAsteroids++;
-                }
-            }
-        }
-
-        void        entityRemoved(Engine& engine, const std::shared_ptr<Entity>& entity) override
-        {
-            if (entity->type() == Entity::Type::Asteroid)
-                m_currentTotalAsteroids--;
-        }
-
-    private:
-        Engine&         m_engine;
-
-        const uint8_t   m_maxAsteroids = 0;
-
-        const float     m_minVelocity_km_s = 0;
-        const float     m_maxVelocity_km_s = 0;
-
-        const float     m_minRadius_km = 0;
-        const float     m_maxRadius_km = 0;
-
-        Periodic        m_generatorTimer;
-        size_t          m_currentTotalAsteroids = 0;
-    };
-
     void AddTestEntities(Engine& engine)
     {
         const auto playFieldSize = engine.getPlayfieldSize();
@@ -118,9 +42,9 @@ namespace
 int main(int argc, char* argv[])
 {
     Engine            engine(200000);
+    AsteroidGenerator asteroidGenerator(engine, 2, 10, 20, 1000, 1200);
     SFMLRenderer      renderer(engine);
     SFMLAudio         audio(engine);
-    AsteroidGenerator asteroidGenerator(engine, 2, 10, 20, 1000, 1200);
 
     audio.setVolume(30);
 

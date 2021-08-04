@@ -7,6 +7,8 @@ add_subdirectory ("SpritePacker")
 
 add_executable (Melee
     Main.cpp
+    AsteroidGenerator.cpp
+    AsteroidGenerator.hpp
 )
 
 target_include_directories (Melee PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
