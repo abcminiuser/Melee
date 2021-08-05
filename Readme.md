@@ -35,7 +35,7 @@ linked.
 
 ### Linux (GCC or Clang)
 
-To build on Linux, install the `cmake`, `build-essential`, `build-ninja` and
+To build on Linux, install the `cmake`, `build-essential`, `ninja-build` and
 `libsfml-dev` packages from your distribution's package manager as
 prerequisites.
 
