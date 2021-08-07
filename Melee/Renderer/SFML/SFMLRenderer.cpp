@@ -19,8 +19,10 @@ using namespace Melee;
 
 namespace
 {
+    using KeyMap = std::unordered_map<sf::Keyboard::Key, PlayerEntity::KeyEvent>;
+
     // FIXME: User key mappings
-    const std::unordered_map<sf::Keyboard::Key, PlayerEntity::KeyEvent> kPlayer1Keys =
+    const KeyMap kPlayer1Keys =
     {
         { sf::Keyboard::Key::W,          PlayerEntity::KeyEvent::Thrust },
         { sf::Keyboard::Key::A,          PlayerEntity::KeyEvent::RotateLeft },
@@ -29,7 +31,7 @@ namespace
         { sf::Keyboard::Key::Tilde,      PlayerEntity::KeyEvent::FirePrimary },
         { sf::Keyboard::Key::Tab,        PlayerEntity::KeyEvent::FireSpecial },
     };
-    const std::unordered_map<sf::Keyboard::Key, PlayerEntity::KeyEvent> kPlayer2Keys =
+    const KeyMap kPlayer2Keys =
     {
         { sf::Keyboard::Key::Up,         PlayerEntity::KeyEvent::Thrust },
         { sf::Keyboard::Key::Left,       PlayerEntity::KeyEvent::RotateLeft },
@@ -52,7 +54,7 @@ SFMLRenderer::SFMLRenderer(Engine& engine)
     : m_engine(engine)
     , m_backgroundTexture(SFMLAssetLoader::Instance().getTexture("background"))
 {
-	m_engine.addObserver(this);
+    m_engine.addObserver(this);
 
     const auto playfieldSize = m_engine.getPlayfieldSize();
 
@@ -63,7 +65,7 @@ SFMLRenderer::SFMLRenderer(Engine& engine)
 
 SFMLRenderer::~SFMLRenderer()
 {
-	m_engine.removeObserver(this);
+    m_engine.removeObserver(this);
 }
 
 int SFMLRenderer::runModal()
@@ -165,10 +167,15 @@ void SFMLRenderer::handleKey(sf::Keyboard::Key key, bool down)
             continue;
 
         const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
-        const auto& playerKeyMap = playerEntity->index() == 0 ? kPlayer1Keys : kPlayer2Keys;
+        const KeyMap* playerKeyMap = nullptr;
 
-        if (playerKeyMap.count(key))
-            playerEntity->handleKey(playerKeyMap.at(key), down);
+        if (playerEntity->index() == 0)
+            playerKeyMap = &kPlayer1Keys;
+        else if (playerEntity->index() == 1)
+            playerKeyMap = &kPlayer2Keys;
+
+        if (playerKeyMap && playerKeyMap->count(key))
+            playerEntity->handleKey(playerKeyMap->at(key), down);
     }
 }
 
