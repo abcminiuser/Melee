@@ -42,11 +42,15 @@ namespace
 int main(int argc, char* argv[])
 {
     Engine            engine(200000);
-    AsteroidGenerator asteroidGenerator(engine, 2, 10, 20, 1000, 1200);
+    AsteroidGenerator asteroidGenerator(engine, 1000);
     SFMLRenderer      renderer(engine);
     SFMLAudio         audio(engine);
 
-    audio.setVolume(30);
+    asteroidGenerator.setMaxAsteroids(2);
+    asteroidGenerator.setVelocityRange(10, 20);
+    asteroidGenerator.setRadiusRange(1000, 1100);
+
+    audio.setVolume(100);
 
     AddTestEntities(engine);
 
