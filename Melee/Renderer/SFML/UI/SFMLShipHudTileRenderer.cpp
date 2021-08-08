@@ -3,6 +3,8 @@
 #include "Renderer/SFML/SFMLUtils.hpp"
 #include "Engine/Engine.hpp"
 
+#include <map>
+
 using namespace Melee;
 
 namespace
@@ -12,6 +14,12 @@ namespace
 
     static const auto kEnergyBarInactiveFillColour = HSVColor(240, 100, 40);
     static const auto kEnergyBarActiveFillColour = HSVColor(240, 100, 90);
+
+    static const std::map<ShipEntity::VisualType, std::string> kRaceNames
+    {
+        { ShipEntity::VisualType::Race1Ship, "Race 1" },
+        { ShipEntity::VisualType::Race2Ship, "Race 2" },
+    };
 }
 
 SFMLShipHudTileRenderer::SFMLShipHudTileRenderer(ShipEntity& entity, const sf::FloatRect& renderArea)
@@ -31,7 +39,7 @@ void SFMLShipHudTileRenderer::render(sf::RenderTarget& renderer)
     renderer.draw(r);
 
     sf::Text text;
-    text.setString("Player");
+    text.setString(kRaceNames.at(m_entity.properties().visualType));
     text.setPosition(m_renderArea.left + 60, m_renderArea.top);
     text.setFillColor(sf::Color::Black);
     text.setFont(*m_font.font);

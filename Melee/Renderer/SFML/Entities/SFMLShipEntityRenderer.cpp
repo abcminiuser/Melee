@@ -3,6 +3,8 @@
 #include "Renderer/SFML/SFMLUtils.hpp"
 #include "Engine/Engine.hpp"
 
+#include <map>
+
 using namespace Melee;
 
 namespace
