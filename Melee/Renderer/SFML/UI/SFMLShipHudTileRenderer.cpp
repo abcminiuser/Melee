@@ -40,10 +40,12 @@ void SFMLShipHudTileRenderer::render(sf::RenderTarget& renderer)
 
     sf::Text text;
     text.setString(kRaceNames.at(m_entity.properties().visualType));
-    text.setPosition(m_renderArea.left + 60, m_renderArea.top);
+    text.setPosition(m_renderArea.left + m_renderArea.width / 2, m_renderArea.top + 10);
     text.setFillColor(sf::Color::Black);
     text.setFont(*m_font.font);
     text.setCharacterSize(24);
+    sf::FloatRect textRect = text.getLocalBounds();
+    text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top);
     renderer.draw(text);
 
     const float healthNormalized = m_entity.health() / (float)m_entity.properties().maxHealth;
@@ -52,10 +54,12 @@ void SFMLShipHudTileRenderer::render(sf::RenderTarget& renderer)
     {
         sf::Text text;
         text.setString("Health");
-        text.setPosition(m_renderArea.left + 15, m_renderArea.top + 140);
+        text.setPosition(m_renderArea.left + 40, m_renderArea.top + 145);
         text.setFillColor(sf::Color::Black);
         text.setFont(*m_font.font);
         text.setCharacterSize(16);
+        sf::FloatRect textRect = text.getLocalBounds();
+        text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top);
         renderer.draw(text);
     }
 
@@ -65,10 +69,12 @@ void SFMLShipHudTileRenderer::render(sf::RenderTarget& renderer)
     {
         sf::Text text;
         text.setString("Energy");
-        text.setPosition(m_renderArea.left + 175, m_renderArea.top + 140);
+        text.setPosition(m_renderArea.left + m_renderArea.width - 30 - 10, m_renderArea.top + 145);
         text.setFillColor(sf::Color::Black);
         text.setFont(*m_font.font);
         text.setCharacterSize(16);
+        sf::FloatRect textRect = text.getLocalBounds();
+        text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top);
         renderer.draw(text);
     }
 }
