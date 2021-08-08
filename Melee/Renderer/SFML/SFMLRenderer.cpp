@@ -6,10 +6,10 @@
 #include "Entities/SFMLExhaustEntityRenderer.hpp"
 #include "Entities/SFMLExplosionEntityRenderer.hpp"
 #include "Entities/SFMLPlanetEntityRenderer.hpp"
-#include "Entities/SFMLPlayerEntityRenderer.hpp"
-#include "Entities/SFMLProjectileEntityRenderer.hpp"
+#include "Entities/SFMLShipEntityRenderer.hpp"
+#include "Entities/SFMLWeaponEntityRenderer.hpp"
 
-#include "UI/SFMLPlayerHudTileRenderer.hpp"
+#include "UI/SFMLShipHudTileRenderer.hpp"
 
 #include "Engine/Engine.hpp"
 
@@ -19,26 +19,26 @@ using namespace Melee;
 
 namespace
 {
-    using KeyMap = std::unordered_map<sf::Keyboard::Key, PlayerEntity::KeyEvent>;
+    using KeyMap = std::unordered_map<sf::Keyboard::Key, ShipEntity::KeyEvent>;
 
     // FIXME: User key mappings
     const KeyMap kPlayer1Keys =
     {
-        { sf::Keyboard::Key::W,          PlayerEntity::KeyEvent::Thrust },
-        { sf::Keyboard::Key::A,          PlayerEntity::KeyEvent::RotateLeft },
-        { sf::Keyboard::Key::S,          PlayerEntity::KeyEvent::ReverseThrust },
-        { sf::Keyboard::Key::D,          PlayerEntity::KeyEvent::RotateRight },
-        { sf::Keyboard::Key::Tilde,      PlayerEntity::KeyEvent::FirePrimary },
-        { sf::Keyboard::Key::Tab,        PlayerEntity::KeyEvent::FireSpecial },
+        { sf::Keyboard::Key::W,          ShipEntity::KeyEvent::Thrust },
+        { sf::Keyboard::Key::A,          ShipEntity::KeyEvent::RotateLeft },
+        { sf::Keyboard::Key::S,          ShipEntity::KeyEvent::ReverseThrust },
+        { sf::Keyboard::Key::D,          ShipEntity::KeyEvent::RotateRight },
+        { sf::Keyboard::Key::Tilde,      ShipEntity::KeyEvent::FirePrimary },
+        { sf::Keyboard::Key::Tab,        ShipEntity::KeyEvent::FireSpecial },
     };
     const KeyMap kPlayer2Keys =
     {
-        { sf::Keyboard::Key::Up,         PlayerEntity::KeyEvent::Thrust },
-        { sf::Keyboard::Key::Left,       PlayerEntity::KeyEvent::RotateLeft },
-        { sf::Keyboard::Key::Down,       PlayerEntity::KeyEvent::ReverseThrust },
-        { sf::Keyboard::Key::Right,      PlayerEntity::KeyEvent::RotateRight },
-        { sf::Keyboard::Key::RControl,   PlayerEntity::KeyEvent::FirePrimary },
-        { sf::Keyboard::Key::RShift,     PlayerEntity::KeyEvent::FireSpecial },
+        { sf::Keyboard::Key::Up,         ShipEntity::KeyEvent::Thrust },
+        { sf::Keyboard::Key::Left,       ShipEntity::KeyEvent::RotateLeft },
+        { sf::Keyboard::Key::Down,       ShipEntity::KeyEvent::ReverseThrust },
+        { sf::Keyboard::Key::Right,      ShipEntity::KeyEvent::RotateRight },
+        { sf::Keyboard::Key::RControl,   ShipEntity::KeyEvent::FirePrimary },
+        { sf::Keyboard::Key::RShift,     ShipEntity::KeyEvent::FireSpecial },
     };
 
     constexpr auto kTargetFPS = 60;
@@ -112,7 +112,7 @@ void SFMLRenderer::updatePlayfieldViewport()
 {
     const auto playfieldSize = m_engine.getPlayfieldSize();
 
-    auto playfieldView = m_engine.getPlayersBoundingBox();
+    auto playfieldView = m_engine.getShipsBoundingBox();
 
     // We want some padding around the players, so they aren't at the extreme edges of the resuling view unless unavoidable.
     playfieldView.inflate(Vector2d{ kViewportPadding_km, kViewportPadding_km });
@@ -163,10 +163,10 @@ void SFMLRenderer::handleKey(sf::Keyboard::Key key, bool down)
 {
     for (const auto& entity : m_engine.getEntities())
     {
-        if (entity->type() != Entity::Type::Player)
+        if (entity->type() != Entity::Type::Ship)
             continue;
 
-        const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
+        const auto playerEntity = std::dynamic_pointer_cast<ShipEntity>(entity);
         const KeyMap* playerKeyMap = nullptr;
 
         if (playerEntity->index() == 0)
@@ -201,7 +201,7 @@ void SFMLRenderer::renderPlayerHud(sf::RenderTarget& target)
 
     for (const auto& entity : m_engine.getEntities())
     {
-        if (entity->type() != Entity::Type::Player)
+        if (entity->type() != Entity::Type::Ship)
             continue;
 
         const auto& rendererContext = getEntityRenderContext(entity);
@@ -253,22 +253,22 @@ std::shared_ptr<RenderContext> SFMLRenderer::getEntityRenderContext(const std::s
             break;
         }
 
-        case Entity::Type::Player:
+        case Entity::Type::Ship:
         {
-            const auto playerEntity = std::dynamic_pointer_cast<PlayerEntity>(entity);
+            const auto playerEntity = std::dynamic_pointer_cast<ShipEntity>(entity);
 
             sf::FloatRect tileArea(0, 1000 * playerEntity->index() / 4.0f, 250, 1000 / 4.0f);
 
-            rendererContext->playfieldRenderer = std::make_unique<SFMLPlayerEntityRenderer>(*playerEntity);
-            rendererContext->uiRenderer = std::make_unique<SFMLPlayerHudTileRenderer>(*playerEntity, tileArea);
+            rendererContext->playfieldRenderer = std::make_unique<SFMLShipEntityRenderer>(*playerEntity);
+            rendererContext->uiRenderer = std::make_unique<SFMLShipHudTileRenderer>(*playerEntity, tileArea);
             break;
         }
 
-        case Entity::Type::Projectile:
+        case Entity::Type::Weapon:
         {
-            const auto projectileEntity = std::dynamic_pointer_cast<ProjectileEntity>(entity);
+            const auto projectileEntity = std::dynamic_pointer_cast<WeaponEntity>(entity);
 
-            rendererContext->playfieldRenderer = std::make_unique<SFMLProjectileEntityRenderer>(*projectileEntity);
+            rendererContext->playfieldRenderer = std::make_unique<SFMLWeaponEntityRenderer>(*projectileEntity);
             break;
         }
     }

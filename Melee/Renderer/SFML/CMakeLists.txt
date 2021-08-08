@@ -23,13 +23,13 @@ add_library (SFMLRenderer
     Entities/SFMLExplosionEntityRenderer.hpp
     Entities/SFMLPlanetEntityRenderer.cpp
     Entities/SFMLPlanetEntityRenderer.hpp
-    Entities/SFMLPlayerEntityRenderer.cpp
-    Entities/SFMLPlayerEntityRenderer.hpp
-    Entities/SFMLProjectileEntityRenderer.cpp
-    Entities/SFMLProjectileEntityRenderer.hpp
+    Entities/SFMLShipEntityRenderer.cpp
+    Entities/SFMLShipEntityRenderer.hpp
+    Entities/SFMLWeaponEntityRenderer.cpp
+    Entities/SFMLWeaponEntityRenderer.hpp
 
-    UI/SFMLPlayerHudTileRenderer.cpp
-    UI/SFMLPlayerHudTileRenderer.hpp
+    UI/SFMLShipHudTileRenderer.cpp
+    UI/SFMLShipHudTileRenderer.hpp
 )
 
 target_include_directories (SFMLRenderer PRIVATE ../../)

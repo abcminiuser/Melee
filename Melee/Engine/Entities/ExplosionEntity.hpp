@@ -21,16 +21,16 @@ namespace Melee
         };
 
     public:
-        explicit    				ExplosionEntity(const std::shared_ptr<Entity>& parent, const ExplosionProperties& properties, const Point& position);
-        virtual    					~ExplosionEntity() = default;
+        explicit                    ExplosionEntity(const std::shared_ptr<Entity>& parent, const ExplosionProperties& properties, const Point& position);
+        virtual                     ~ExplosionEntity() = default;
 
-        uint32_t    				age() const         		{ return m_age; }
+        uint32_t                    age() const                 { return m_age; }
 
     // Entity i/f:
     public:
-        const ExplosionProperties&	properties() const override	{ return m_explosionProperties; }
+        const ExplosionProperties&  properties() const override { return m_explosionProperties; }
 
-        void        				update(Engine& engine, uint32_t msElapsed) override;
+        void                        update(Engine& engine, uint32_t msElapsed) override;
 
     private:
         const ExplosionProperties   m_explosionProperties;

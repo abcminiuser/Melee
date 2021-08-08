@@ -1,4 +1,4 @@
-#include "SFMLPlayerHudTileRenderer.hpp"
+#include "SFMLShipHudTileRenderer.hpp"
 
 #include "Renderer/SFML/SFMLUtils.hpp"
 #include "Engine/Engine.hpp"
@@ -14,7 +14,7 @@ namespace
     static const auto kEnergyBarActiveFillColour = HSVColor(240, 100, 90);
 }
 
-SFMLPlayerHudTileRenderer::SFMLPlayerHudTileRenderer(PlayerEntity& entity, const sf::FloatRect& renderArea)
+SFMLShipHudTileRenderer::SFMLShipHudTileRenderer(ShipEntity& entity, const sf::FloatRect& renderArea)
 	: m_entity(entity)
     , m_renderArea(renderArea)
     , m_font(SFMLAssetLoader::Instance().getFont("8bitoperatorplus8-bold"))
@@ -22,7 +22,7 @@ SFMLPlayerHudTileRenderer::SFMLPlayerHudTileRenderer(PlayerEntity& entity, const
 
 }
 
-void SFMLPlayerHudTileRenderer::render(sf::RenderTarget& renderer)
+void SFMLShipHudTileRenderer::render(sf::RenderTarget& renderer)
 {
     sf::RectangleShape r;
     r.setFillColor(sf::Color(150, 150, 150));
@@ -31,7 +31,7 @@ void SFMLPlayerHudTileRenderer::render(sf::RenderTarget& renderer)
     renderer.draw(r);
 
     sf::Text text;
-    text.setString("Player " + std::to_string(m_entity.index() + 1));
+    text.setString("Ship " + std::to_string(m_entity.index() + 1));
     text.setPosition(m_renderArea.left + 60, m_renderArea.top);
     text.setFillColor(sf::Color::Black);
     text.setFont(*m_font.font);
@@ -65,7 +65,7 @@ void SFMLPlayerHudTileRenderer::render(sf::RenderTarget& renderer)
     }
 }
 
-void SFMLPlayerHudTileRenderer::drawVerticalBarGraph(sf::RenderTarget& renderer, sf::FloatRect area, sf::Color inactiveColour, sf::Color activeColour, float valueNormalized)
+void SFMLShipHudTileRenderer::drawVerticalBarGraph(sf::RenderTarget& renderer, sf::FloatRect area, sf::Color inactiveColour, sf::Color activeColour, float valueNormalized)
 {
     // Background fill
     {

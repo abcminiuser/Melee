@@ -1,28 +1,28 @@
-#include "ProjectileEntity.hpp"
+#include "WeaponEntity.hpp"
 
 #include "Engine/Engine.hpp"
 
 using namespace Melee;
 
-ProjectileEntity::ProjectileEntity(const std::shared_ptr<Entity>& parent,const ProjectileProperties& properties, const Point& position, const Vector2d& velocity, const Vector2d& heading)
-    : Entity(Entity::Type::Projectile, parent, properties, position)
-    , m_projectileProperties(properties)
+WeaponEntity::WeaponEntity(const std::shared_ptr<Entity>& parent,const WeaponProperties& properties, const Point& position, const Vector2d& velocity, const Vector2d& heading)
+    : Entity(Entity::Type::Weapon, parent, properties, position)
+    , m_weaponProperties(properties)
 {
     m_heading = heading;
     m_velocity = velocity + (heading * (properties.firingForce_N / properties.mass_kg));
 }
 
-void ProjectileEntity::update(Engine& engine, uint32_t msElapsed)
+void WeaponEntity::update(Engine& engine, uint32_t msElapsed)
 {
     m_age += msElapsed;
 
-    if (m_age >= m_projectileProperties.maxAge_ms)
+    if (m_age >= m_weaponProperties.maxAge_ms)
         engine.removeEntity(shared_from_this());
 
     Entity::update(engine, msElapsed);
 }
 
-void ProjectileEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState)
+void WeaponEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState)
 {
     if (otherEntity == m_parentEntity)
         return;

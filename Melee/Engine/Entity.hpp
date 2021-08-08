@@ -17,8 +17,8 @@ namespace Melee
             Exhaust,
             Explosion,
             Planet,
-            Player,
-            Projectile,
+            Ship,
+            Weapon,
         };
 
         struct Properties

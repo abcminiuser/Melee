@@ -21,7 +21,8 @@ namespace Melee
         explicit        SFMLAudio(Engine& engine);
         virtual         ~SFMLAudio();
 
-        void            setVolume(float percent);
+        void            setMusicVolume(float percent);
+        void            setSoundEffectVolume(float percent);
 
     // Engine::Observer i.f:
     public:

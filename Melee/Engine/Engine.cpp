@@ -23,7 +23,7 @@ void Engine::update(uint32_t msElapsed)
     {
         handleDeferredEntityAddRemove();
         checkForEntityCollisions();
-        updatePlayersBoundingBox();
+        updateShipsBoundingBox();
 
         for (const auto& entity : m_entities)
             entity->update(*this, kMaxUpdateTimestepMs);
@@ -145,7 +145,7 @@ void Engine::checkForEntityCollisions()
     }
 }
 
-void Engine::updatePlayersBoundingBox()
+void Engine::updateShipsBoundingBox()
 {
     float minX = m_playfieldSize;
     float minY = m_playfieldSize;
@@ -154,7 +154,7 @@ void Engine::updatePlayersBoundingBox()
 
     for (const auto& entity : m_entities)
     {
-        if (entity->type() != Entity::Type::Player)
+        if (entity->type() != Entity::Type::Ship)
             continue;
 
         const auto pos = entity->position();
@@ -166,5 +166,5 @@ void Engine::updatePlayersBoundingBox()
         maxY = std::max(maxY, pos.y + radius);
     }
 
-    m_playersBoundingBox = Rectangle{ { minX, minY}, {maxX - minX, maxY - minY } };
+    m_shipsBoundingBox = Rectangle{ { minX, minY}, {maxX - minX, maxY - minY } };
 }

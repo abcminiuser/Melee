@@ -5,13 +5,13 @@
 
 namespace Melee
 {
-	class PlayerEntity;
+	class ShipEntity;
 
-	class SFMLPlayerHudTileRenderer : public SFMLRenderable
+	class SFMLShipHudTileRenderer : public SFMLRenderable
 	{
 	public:
-		explicit					SFMLPlayerHudTileRenderer(PlayerEntity& entity, const sf::FloatRect& renderArea);
-		virtual						~SFMLPlayerHudTileRenderer() = default;
+		explicit					SFMLShipHudTileRenderer(ShipEntity& entity, const sf::FloatRect& renderArea);
+		virtual						~SFMLShipHudTileRenderer() = default;
 
 	    // SFMLRenderable i/f:
 	public:
@@ -21,7 +21,7 @@ namespace Melee
 		void						drawVerticalBarGraph(sf::RenderTarget& renderer, sf::FloatRect area, sf::Color inactiveColour, sf::Color activeColour, float valueNormalized);
 
 	private:
-		const PlayerEntity&			m_entity;
+		const ShipEntity&			m_entity;
 		const sf::FloatRect			m_renderArea;
 
 	    SFMLAssetLoader::CachedFont	m_font;

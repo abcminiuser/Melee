@@ -19,20 +19,20 @@ namespace Melee
         };
 
     public:
-        explicit    				ExhaustEntity(const std::shared_ptr<Entity>& parent, const ExhaustProperties& properties, const Point& position, const Vector2d& velocity);
-        virtual     				~ExhaustEntity() = default;
+        explicit                    ExhaustEntity(const std::shared_ptr<Entity>& parent, const ExhaustProperties& properties, const Point& position, const Vector2d& velocity);
+        virtual                     ~ExhaustEntity() = default;
 
-        uint32_t    				age() const         		{ return m_age; }
+        uint32_t                    age() const                 { return m_age; }
 
     // Entity i/f:
     public:
-        const ExhaustProperties&	properties() const override	{ return m_exhaustProperties; }
+        const ExhaustProperties&    properties() const override { return m_exhaustProperties; }
 
-        void        				update(Engine& engine, uint32_t msElapsed) override;
+        void                        update(Engine& engine, uint32_t msElapsed) override;
 
     private:
-        const ExhaustProperties		m_exhaustProperties;
+        const ExhaustProperties     m_exhaustProperties;
 
-        uint32_t               		m_age = 0;
+        uint32_t                    m_age = 0;
     };
 }

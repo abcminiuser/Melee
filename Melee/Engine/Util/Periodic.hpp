@@ -29,8 +29,8 @@ public:
     void        add(uint32_t ms) noexcept
     {
         m_elapsed += ms;
-        if (m_maxValue && m_elapsed > m_maxValue)
-            m_elapsed = m_maxValue;
+        if (m_maxValue)
+            m_elapsed = std::min(m_elapsed, m_maxValue);
     }
 
     bool        expired() noexcept

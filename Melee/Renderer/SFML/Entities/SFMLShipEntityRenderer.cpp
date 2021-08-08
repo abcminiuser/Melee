@@ -1,20 +1,30 @@
-#include "SFMLPlayerEntityRenderer.hpp"
+#include "SFMLShipEntityRenderer.hpp"
 
 #include "Renderer/SFML/SFMLUtils.hpp"
 #include "Engine/Engine.hpp"
 
 using namespace Melee;
 
-SFMLPlayerEntityRenderer::SFMLPlayerEntityRenderer(PlayerEntity& entity)
-    : m_entity(entity)
-    , m_shipImage(SFMLAssetLoader::Instance().getTexture("ship"))
+namespace
 {
+    static const std::map<ShipEntity::VisualType, std::string> kShipAssetNames
+    {
+        { ShipEntity::VisualType::Race1Ship, "race1ship" },
+        { ShipEntity::VisualType::Race2Ship, "race2ship" },
+    };
+}
+
+SFMLShipEntityRenderer::SFMLShipEntityRenderer(ShipEntity& entity)
+    : m_entity(entity)
+{
+    m_shipImage = SFMLAssetLoader::Instance().getTexture(kShipAssetNames.at(entity.properties().visualType));
+
     m_sprite.setTexture(*m_shipImage.texture);
     m_sprite.setTextureRect(m_shipImage.region);
     m_sprite.setOrigin(sf::Vector2f{ m_shipImage.region.width / 2.0f, m_shipImage.region.height / 2.0f });
 }
 
-void SFMLPlayerEntityRenderer::render(sf::RenderTarget& renderer)
+void SFMLShipEntityRenderer::render(sf::RenderTarget& renderer)
 {
     const int playerIndex = m_entity.index();
     const auto playerHeading = m_entity.heading();

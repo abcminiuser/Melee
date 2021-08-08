@@ -7,7 +7,7 @@
 
 namespace Melee
 {
-    class PlayerEntity : public Entity
+    class ShipEntity : public Entity
     {
     public:
         enum class KeyEvent
@@ -20,8 +20,16 @@ namespace Melee
             FireSpecial,
         };
 
-        struct PlayerProperties : public Properties
+        enum class VisualType
         {
+            Race1Ship,
+            Race2Ship,
+        };
+
+        struct ShipProperties : public Properties
+        {
+            VisualType  visualType            = VisualType::Race1Ship;
+
             float       engineForce_N         = 0;
             float       rotation_degPerSec    = 0;
 
@@ -35,10 +43,10 @@ namespace Melee
         };
 
     public:
-        explicit    				PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& position);
-        virtual     				~PlayerEntity() = default;
+        explicit    				ShipEntity(int shipIndex, const ShipProperties& properties, const Point& position);
+        virtual     				~ShipEntity() = default;
 
-        int        					index() const       		{ return m_playerIndex; }
+        int        					index() const       		{ return m_shipIndex; }
         void       					handleKey(KeyEvent key, bool down);
 
         uint32_t   					health() const      		{ return m_health; }
@@ -46,16 +54,18 @@ namespace Melee
 
     // Entity i/f:
     public:
-        const PlayerProperties&		properties() const override	{ return m_playerProperties; }
+        const ShipProperties&		properties() const override	{ return m_shipProperties; }
 
         void       					update(Engine& engine, uint32_t msElapsed) override;
         void       					collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
-    private:
+    protected:
+        virtual void                onPrimaryWeaponFired(Engine& engine) = 0;
+
         void       					applyDamage(int amount);
         void       					consumeEnergy(int amount);
 
-    private:
+    protected:
         struct Flags
         {
             enum
@@ -71,8 +81,8 @@ namespace Melee
             };
         };
 
-        const int               	m_playerIndex;
-        const PlayerProperties  	m_playerProperties;
+        const int               	m_shipIndex;
+        const ShipProperties  		m_shipProperties;
 
         float                   	m_engineAcceleration_ms2;
         Matrix2x2               	m_rotationalThrustLeft;

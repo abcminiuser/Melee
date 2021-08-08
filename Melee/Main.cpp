@@ -12,19 +12,10 @@ namespace
         const auto playFieldSize = engine.getPlayfieldSize();
 
         {
-            PlayerEntity::PlayerProperties playerProps = {};
-            playerProps.mass_kg = 9.718e5;
-            playerProps.engineForce_N = 8e3;
-            playerProps.rotation_degPerSec = 100;
-            playerProps.maxVelocity_km_s = 40;
-            playerProps.maxHealth = 2;
-            playerProps.maxEnergy = 10;
-            playerProps.radius_km = 1000;
-
-            auto player1 = std::make_shared<PlayerEntity>(0, playerProps, Point{ playFieldSize * .2f, playFieldSize * .2f });
+            auto player1 = std::make_shared<Race1ShipEntity>(0, Point{ playFieldSize * .2f, playFieldSize * .2f });
             engine.addEntity(player1);
 
-            auto player2 = std::make_shared<PlayerEntity>(1, playerProps, Point{ playFieldSize * .1f, playFieldSize * .1f });
+            auto player2 = std::make_shared<Race2ShipEntity>(1, Point{ playFieldSize * .1f, playFieldSize * .1f });
             engine.addEntity(player2);
         }
 
@@ -50,7 +41,8 @@ int main(int argc, char* argv[])
     asteroidGenerator.setVelocityRange(10, 20);
     asteroidGenerator.setRadiusRange(1000, 1100);
 
-    audio.setVolume(100);
+    audio.setMusicVolume(20);
+    audio.setSoundEffectVolume(100);
 
     AddTestEntities(engine);
 

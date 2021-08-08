@@ -1,4 +1,4 @@
-#include "PlayerEntity.hpp"
+#include "ShipEntity.hpp"
 
 #include "Engine/Engine.hpp"
 
@@ -12,10 +12,10 @@ namespace
     constexpr uint32_t kThrustExhaustIntervalMs = 100;
 }
 
-PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, const Point& position)
-    : Entity(Entity::Type::Player, nullptr, properties, position)
-    , m_playerIndex(playerIndex)
-    , m_playerProperties(properties)
+ShipEntity::ShipEntity(int shipIndex, const ShipProperties& properties, const Point& position)
+    : Entity(Entity::Type::Ship, nullptr, properties, position)
+    , m_shipIndex(shipIndex)
+    , m_shipProperties(properties)
     , m_energyRechargeTimer(properties.energyRechargeRate_ms)
     , m_rotationTimer(kRotationIntervalMs)
     , m_thrustExhaustTimer(kThrustExhaustIntervalMs, kThrustExhaustIntervalMs, true)
@@ -31,7 +31,7 @@ PlayerEntity::PlayerEntity(int playerIndex, const PlayerProperties& properties, 
     m_energy                    = properties.maxEnergy;
 }
 
-void PlayerEntity::handleKey(KeyEvent key, bool down)
+void ShipEntity::handleKey(KeyEvent key, bool down)
 {
     if (key == KeyEvent::Thrust)
         m_flags.set(Flags::ThrustActive, down);
@@ -47,7 +47,7 @@ void PlayerEntity::handleKey(KeyEvent key, bool down)
         m_flags.set(Flags::FireSpecialActive, down);
 }
 
-void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
+void ShipEntity::update(Engine& engine, uint32_t msElapsed)
 {
     if (!m_health)
     {
@@ -93,12 +93,11 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     }
 
     m_primaryFireTimer.add(msElapsed);
-    if (m_flags.test(Flags::FirePrimaryActive) && m_energy >= m_playerProperties.primaryEnergyCost && m_primaryFireTimer.expired())
+    if (m_flags.test(Flags::FirePrimaryActive) && m_energy >= m_shipProperties.primaryEnergyCost && m_primaryFireTimer.expired())
     {
-        auto projectileEntity = std::make_shared<ProjectileEntity>(shared_from_this(), ProjectileEntity::ProjectileProperties{}, m_position + (m_heading * m_playerProperties.radius_km), m_velocity, m_heading);
-        engine.addEntity(projectileEntity);
+        onPrimaryWeaponFired(engine);
 
-        consumeEnergy(m_playerProperties.primaryEnergyCost);
+        consumeEnergy(m_shipProperties.primaryEnergyCost);
     }
 
     m_energyRechargeTimer.add(msElapsed);
@@ -108,13 +107,13 @@ void PlayerEntity::update(Engine& engine, uint32_t msElapsed)
     Entity::update(engine, msElapsed);
 }
 
-void PlayerEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState)
+void ShipEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState)
 {
     switch (otherEntity->type())
     {
         case Entity::Type::Asteroid:
         case Entity::Type::Planet:
-        case Entity::Type::Player:
+        case Entity::Type::Ship:
         {
             m_acceleration = {};
             m_velocity = -m_velocity;
@@ -125,15 +124,15 @@ void PlayerEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherE
             break;
         }
 
-        case Entity::Type::Projectile:
+        case Entity::Type::Weapon:
         {
             if (otherEntity->parentEntity() != shared_from_this())
             {
-                const auto& projectileEntity = std::dynamic_pointer_cast<const ProjectileEntity>(otherEntity);
+                const auto& weaponEntity = std::dynamic_pointer_cast<const WeaponEntity>(otherEntity);
 
-                applyDamage(projectileEntity->properties().damage);
+                applyDamage(weaponEntity->properties().damage);
             }
- 
+
             break;
         }
 
@@ -145,12 +144,12 @@ void PlayerEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherE
     Entity::collide(engine, otherEntity, otherEntityState);
 }
 
-void PlayerEntity::applyDamage(int amount)
+void ShipEntity::applyDamage(int amount)
 {
-    m_health = std::clamp<int>(m_health - amount, 0, m_playerProperties.maxHealth);
+    m_health = std::clamp<int>(m_health - amount, 0, m_shipProperties.maxHealth);
 }
 
-void PlayerEntity::consumeEnergy(int amount)
+void ShipEntity::consumeEnergy(int amount)
 {
-    m_energy = std::clamp<int>(m_energy - amount, 0, m_playerProperties.maxEnergy);
+    m_energy = std::clamp<int>(m_energy - amount, 0, m_shipProperties.maxEnergy);
 }

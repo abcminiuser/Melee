@@ -15,10 +15,15 @@ add_library (Engine
     Entities/ExplosionEntity.hpp
     Entities/PlanetEntity.cpp
     Entities/PlanetEntity.hpp
-    Entities/PlayerEntity.cpp
-    Entities/PlayerEntity.hpp
-    Entities/ProjectileEntity.cpp
-    Entities/ProjectileEntity.hpp
+    Entities/ShipEntity.cpp
+    Entities/ShipEntity.hpp
+    Entities/WeaponEntity.cpp
+    Entities/WeaponEntity.hpp
+
+    Entities/Races/Race1ShipEntity.cpp
+    Entities/Races/Race1ShipEntity.hpp
+    Entities/Races/Race2ShipEntity.cpp
+    Entities/Races/Race2ShipEntity.hpp
 
     Util/EngineUtils.hpp
     Util/VectorMath.hpp

@@ -35,7 +35,7 @@ void AsteroidEntity::collide(Engine& engine, const std::shared_ptr<Entity>& othe
     switch (otherEntity->type())
     {
         case Entity::Type::Asteroid:
-        case Entity::Type::Player:
+        case Entity::Type::Ship:
         {
             m_acceleration = {};
             m_velocity = -m_velocity;
@@ -45,7 +45,7 @@ void AsteroidEntity::collide(Engine& engine, const std::shared_ptr<Entity>& othe
 
         case Entity::Type::Planet:
         case Entity::Type::Explosion:
-        case Entity::Type::Projectile:
+        case Entity::Type::Weapon:
         {
             engine.removeEntity(shared_from_this());
 

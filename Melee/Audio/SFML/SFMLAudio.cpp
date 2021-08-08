@@ -17,11 +17,16 @@ SFMLAudio::~SFMLAudio()
     m_engine.removeObserver(this);
 }
 
-void SFMLAudio::setVolume(float percent)
+void SFMLAudio::setMusicVolume(float percent)
 {
     percent = std::clamp(percent, 0.0f, 100.0f);
 
     m_music.music->setVolume(percent);
+}
+
+void SFMLAudio::setSoundEffectVolume(float percent)
+{
+    percent = std::clamp(percent, 0.0f, 100.0f);
 
     for (auto& soundEffect : m_sounds)
         soundEffect.setVolume(percent);
@@ -40,7 +45,7 @@ void SFMLAudio::entityAdded(Engine& engine, const std::shared_ptr<Entity>& entit
             break;
         }
 
-        case Entity::Type::Projectile:
+        case Entity::Type::Weapon:
         {
             playSoundEffect("laser-shot-3", entity->position());
             break;
@@ -59,11 +64,11 @@ void SFMLAudio::collision(Engine& engine, const std::shared_ptr<Entity>& entity1
             return (e1Type == type1 && e2Type == type2) || (e1Type == type2 && e2Type == type1);
         };
 
-    if (AreEntitiesOfType(Entity::Type::Player, Entity::Type::Player))
+    if (AreEntitiesOfType(Entity::Type::Ship, Entity::Type::Ship))
         playSoundEffect("robot-footstep_1", entity1->position());
-    else if (AreEntitiesOfType(Entity::Type::Player, Entity::Type::Planet))
+    else if (AreEntitiesOfType(Entity::Type::Ship, Entity::Type::Planet))
         playSoundEffect("robot-footstep_1", entity1->position());
-    else if (AreEntitiesOfType(Entity::Type::Player, Entity::Type::Asteroid))
+    else if (AreEntitiesOfType(Entity::Type::Ship, Entity::Type::Asteroid))
         playSoundEffect("robot-footstep_1", entity1->position());
 }
 
@@ -77,6 +82,6 @@ void SFMLAudio::playSoundEffect(const std::string& name, Point position)
 
     freeSoundEffect->setBuffer(*soundEffect.soundEffect);
     freeSoundEffect->setPosition(position.x, position.y, 0);
-    freeSoundEffect->setMinDistance(std::max(1.0f, m_engine.getPlayersBoundingBox().size.length()));
+    freeSoundEffect->setMinDistance(std::max(1.0f, m_engine.getShipsBoundingBox().size.length()));
     freeSoundEffect->play();
 }

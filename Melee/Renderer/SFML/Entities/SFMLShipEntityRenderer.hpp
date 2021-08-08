@@ -5,20 +5,20 @@
 
 namespace Melee
 {
-    class PlayerEntity;
+    class ShipEntity;
 
-    class SFMLPlayerEntityRenderer : public SFMLRenderable
+    class SFMLShipEntityRenderer : public SFMLRenderable
     {
     public:
-        explicit                        SFMLPlayerEntityRenderer(PlayerEntity& entity);
-        virtual                         ~SFMLPlayerEntityRenderer() = default;
+        explicit                        SFMLShipEntityRenderer(ShipEntity& entity);
+        virtual                         ~SFMLShipEntityRenderer() = default;
 
         // SFMLRenderable i/f:
     public:
         void                            render(sf::RenderTarget& window) override;
 
     private:
-        const PlayerEntity&             m_entity;
+        const ShipEntity&               m_entity;
 
         SFMLAssetLoader::CachedTexture  m_shipImage;
         sf::Sprite                      m_sprite;

@@ -9,8 +9,10 @@
 #include "Entities/ExhaustEntity.hpp"
 #include "Entities/ExplosionEntity.hpp"
 #include "Entities/PlanetEntity.hpp"
-#include "Entities/PlayerEntity.hpp"
-#include "Entities/ProjectileEntity.hpp"
+#include "Entities/ShipEntity.hpp"
+#include "Entities/WeaponEntity.hpp"
+#include "Entities/Races/Race1ShipEntity.hpp"
+#include "Entities/Races/Race2ShipEntity.hpp"
 
 #include <forward_list>
 
@@ -36,7 +38,7 @@ namespace Melee
         auto&       getEntities()                                       { return m_entities; }
 
         float       getPlayfieldSize() const                            { return m_playfieldSize; }
-        Rectangle   getPlayersBoundingBox()                             { return m_playersBoundingBox; }
+        Rectangle   getShipsBoundingBox()                               { return m_shipsBoundingBox; }
 
         void        update(uint32_t msElapsed);
 
@@ -48,7 +50,7 @@ namespace Melee
     private:
         void        handleDeferredEntityAddRemove();
         void        checkForEntityCollisions();
-        void        updatePlayersBoundingBox();
+        void        updateShipsBoundingBox();
 
     private:
         const float                         m_playfieldSize;
@@ -61,7 +63,7 @@ namespace Melee
         EntityList                          m_entitiesToAddBottom;
         EntityList                          m_entitiesToRemove;
 
-        Rectangle                           m_playersBoundingBox;
+        Rectangle                           m_shipsBoundingBox;
 
         uint32_t                            m_updateMsElapsed = 0;
     };
