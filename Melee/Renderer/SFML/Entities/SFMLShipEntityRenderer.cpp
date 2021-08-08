@@ -26,7 +26,6 @@ SFMLShipEntityRenderer::SFMLShipEntityRenderer(ShipEntity& entity)
 
 void SFMLShipEntityRenderer::render(sf::RenderTarget& renderer)
 {
-    const int playerIndex = m_entity.index();
     const auto playerHeading = m_entity.heading();
     const auto playerPos = m_entity.position();
     const auto playerRadius = m_entity.properties().radius_km;

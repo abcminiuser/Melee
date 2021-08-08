@@ -43,10 +43,9 @@ namespace Melee
         };
 
     public:
-        explicit    				ShipEntity(int shipIndex, const ShipProperties& properties, const Point& position);
+        explicit    				ShipEntity(const ShipProperties& properties, const Point& position);
         virtual     				~ShipEntity() = default;
 
-        int        					index() const       		{ return m_shipIndex; }
         void       					handleKey(KeyEvent key, bool down);
 
         uint32_t   					health() const      		{ return m_health; }
@@ -81,7 +80,6 @@ namespace Melee
             };
         };
 
-        const int               	m_shipIndex;
         const ShipProperties  		m_shipProperties;
 
         float                   	m_engineAcceleration_ms2;

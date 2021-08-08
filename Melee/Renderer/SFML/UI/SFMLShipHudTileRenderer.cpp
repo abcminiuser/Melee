@@ -31,7 +31,7 @@ void SFMLShipHudTileRenderer::render(sf::RenderTarget& renderer)
     renderer.draw(r);
 
     sf::Text text;
-    text.setString("Ship " + std::to_string(m_entity.index() + 1));
+    text.setString("Player");
     text.setPosition(m_renderArea.left + 60, m_renderArea.top);
     text.setFillColor(sf::Color::Black);
     text.setFont(*m_font.font);

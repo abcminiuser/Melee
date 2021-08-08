@@ -7,6 +7,9 @@
 #include "SFMLAssetLoader.hpp"
 #include "SFMLRenderable.hpp"
 
+#include <memory>
+#include <vector>
+
 namespace Melee
 {
     class Engine;
@@ -30,6 +33,8 @@ namespace Melee
 
     private:
         Engine&                         m_engine;
+
+        std::vector<std::shared_ptr<ShipEntity>> m_shipEntities;
 
         SFMLAssetLoader::CachedTexture  m_backgroundTexture;
         sf::Sprite                      m_backgroundSprite;

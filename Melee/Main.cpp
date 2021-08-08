@@ -11,13 +11,11 @@ namespace
     {
         const auto playFieldSize = engine.getPlayfieldSize();
 
-        {
-            auto player1 = std::make_shared<Race1ShipEntity>(0, Point{ playFieldSize * .2f, playFieldSize * .2f });
-            engine.addEntity(player1);
+        auto player1 = std::make_shared<Race1ShipEntity>(Point{ playFieldSize * .2f, playFieldSize * .2f });
+        engine.addEntity(player1);
 
-            auto player2 = std::make_shared<Race2ShipEntity>(1, Point{ playFieldSize * .1f, playFieldSize * .1f });
-            engine.addEntity(player2);
-        }
+        auto player2 = std::make_shared<Race2ShipEntity>(Point{ playFieldSize * .1f, playFieldSize * .1f });
+        engine.addEntity(player2);
 
         {
             PlanetEntity::PlanetProperties planetProps = {};

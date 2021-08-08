@@ -161,21 +161,16 @@ void SFMLRenderer::processEvents(sf::RenderWindow& window)
 
 void SFMLRenderer::handleKey(sf::Keyboard::Key key, bool down)
 {
-    for (const auto& entity : m_engine.getEntities())
+    if (m_shipEntities.size() >= 1)
     {
-        if (entity->type() != Entity::Type::Ship)
-            continue;
+        if (kPlayer1Keys.count(key))
+            m_shipEntities[0]->handleKey(kPlayer1Keys.at(key), down);
+    }
 
-        const auto playerEntity = std::dynamic_pointer_cast<ShipEntity>(entity);
-        const KeyMap* playerKeyMap = nullptr;
-
-        if (playerEntity->index() == 0)
-            playerKeyMap = &kPlayer1Keys;
-        else if (playerEntity->index() == 1)
-            playerKeyMap = &kPlayer2Keys;
-
-        if (playerKeyMap && playerKeyMap->count(key))
-            playerEntity->handleKey(playerKeyMap->at(key), down);
+    if (m_shipEntities.size() >= 2)
+    {
+        if (kPlayer2Keys.count(key))
+            m_shipEntities[1]->handleKey(kPlayer2Keys.at(key), down);
     }
 }
 
@@ -199,11 +194,8 @@ void SFMLRenderer::renderPlayerHud(sf::RenderTarget& target)
     r.setSize(sf::Vector2f{ 250, 1000 });
     target.draw(r);
 
-    for (const auto& entity : m_engine.getEntities())
+    for (const auto& entity : m_shipEntities)
     {
-        if (entity->type() != Entity::Type::Ship)
-            continue;
-
         const auto& rendererContext = getEntityRenderContext(entity);
 
         if (rendererContext->uiRenderer)
@@ -255,12 +247,15 @@ std::shared_ptr<RenderContext> SFMLRenderer::getEntityRenderContext(const std::s
 
         case Entity::Type::Ship:
         {
-            const auto playerEntity = std::dynamic_pointer_cast<ShipEntity>(entity);
+            const auto shipEntity = std::dynamic_pointer_cast<ShipEntity>(entity);
+            const auto shipIndex = m_shipEntities.size();
 
-            sf::FloatRect tileArea(0, 1000 * playerEntity->index() / 4.0f, 250, 1000 / 4.0f);
+            m_shipEntities.push_back(shipEntity);
 
-            rendererContext->playfieldRenderer = std::make_unique<SFMLShipEntityRenderer>(*playerEntity);
-            rendererContext->uiRenderer = std::make_unique<SFMLShipHudTileRenderer>(*playerEntity, tileArea);
+            sf::FloatRect tileArea(0, 1000 * shipIndex / 4.0f, 250, 1000 / 4.0f);
+
+            rendererContext->playfieldRenderer = std::make_unique<SFMLShipEntityRenderer>(*shipEntity);
+            rendererContext->uiRenderer = std::make_unique<SFMLShipHudTileRenderer>(*shipEntity, tileArea);
             break;
         }
 

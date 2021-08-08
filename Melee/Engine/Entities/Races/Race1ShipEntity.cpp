@@ -5,8 +5,8 @@
 using namespace Melee;
 
 
-Race1ShipEntity::Race1ShipEntity(int shipIndex, const Point& position)
-    : ShipEntity(shipIndex, MakeShipProperties(), position)
+Race1ShipEntity::Race1ShipEntity(const Point& position)
+    : ShipEntity(MakeShipProperties(), position)
 {
 
 }

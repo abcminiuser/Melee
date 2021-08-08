@@ -8,7 +8,7 @@ namespace Melee
     class Race1ShipEntity : public ShipEntity
     {
     public:
-        explicit    Race1ShipEntity(int shipIndex, const Point& position);
+        explicit    Race1ShipEntity(const Point& position);
         virtual     ~Race1ShipEntity() = default;
 
     protected:

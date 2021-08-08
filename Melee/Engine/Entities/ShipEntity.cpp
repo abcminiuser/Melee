@@ -12,9 +12,8 @@ namespace
     constexpr uint32_t kThrustExhaustIntervalMs = 100;
 }
 
-ShipEntity::ShipEntity(int shipIndex, const ShipProperties& properties, const Point& position)
+ShipEntity::ShipEntity(const ShipProperties& properties, const Point& position)
     : Entity(Entity::Type::Ship, nullptr, properties, position)
-    , m_shipIndex(shipIndex)
     , m_shipProperties(properties)
     , m_energyRechargeTimer(properties.energyRechargeRate_ms)
     , m_rotationTimer(kRotationIntervalMs)
