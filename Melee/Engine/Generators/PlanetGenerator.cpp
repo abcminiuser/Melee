@@ -1,7 +1,6 @@
 #include "PlanetGenerator.hpp"
 
 #include <algorithm>
-#include <limits>
 
 using namespace Melee;
 
@@ -30,7 +29,7 @@ void PlanetGenerator::setRadiusRange(float minRadius, float maxRadius)
 
 void PlanetGenerator::setMinimumDistanceMultiplier(uint8_t multiplier)
 {
-    m_minDistanceMultiplier = std::clamp<uint8_t>(multiplier, 5, 10);
+    m_minDistanceMultiplier = std::clamp<uint8_t>(multiplier, 5, 20);
 }
 
 void PlanetGenerator::generate()
@@ -50,11 +49,8 @@ void PlanetGenerator::generate()
 
         auto planet = std::make_shared<PlanetEntity>(planetProps, position);
 
-        float minDistanceToEntitySquared = std::numeric_limits<float>::max();
-        for (const auto& entity : m_engine.getEntities())
-            minDistanceToEntitySquared = std::min(minDistanceToEntitySquared, (entity->position() - position).lengthSquared());
-
-        if (minDistanceToEntitySquared < minDistanceAllowedSquared)
+        const bool tooClose = std::any_of(m_engine.getEntities().begin(), m_engine.getEntities().end(), [&](const auto& e) { return (e->position() - position).lengthSquared() < minDistanceAllowedSquared; });
+        if (tooClose)
             continue;
 
         m_engine.addEntity(planet);

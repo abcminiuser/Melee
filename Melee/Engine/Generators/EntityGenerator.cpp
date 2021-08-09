@@ -1,5 +1,7 @@
 #include "EntityGenerator.hpp"
 
+#include <algorithm>
+
 using namespace Melee;
 
 EntityGenerator::EntityGenerator(Engine& engine, Entity::Type entityType)
