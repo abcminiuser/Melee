@@ -9,11 +9,11 @@ using namespace Melee;
 
 namespace
 {
-    static const std::map<WeaponEntity::VisualType, std::string> kWeaponAssetNames
-    {
-        { WeaponEntity::VisualType::Race1Missile, "race1missile" },
-        { WeaponEntity::VisualType::Race2Missile, "race2missile" },
-    };
+    const std::map<WeaponEntity::VisualType, std::string> kWeaponAssetNames
+        {
+            { WeaponEntity::VisualType::Race1Missile, "race1missile" },
+            { WeaponEntity::VisualType::Race2Missile, "race2missile" },
+        };
 }
 
 SFMLWeaponEntityRenderer::SFMLWeaponEntityRenderer(WeaponEntity& entity)

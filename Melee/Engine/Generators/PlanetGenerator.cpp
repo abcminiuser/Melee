@@ -7,6 +7,12 @@ using namespace Melee;
 namespace
 {
     constexpr auto kMaxGeneratorAttempts = 100;
+
+    constexpr PlanetEntity::VisualType kPlanetVisualTypes[] =
+        {
+            PlanetEntity::VisualType::Planet1,
+            PlanetEntity::VisualType::Planet2,
+        };
 }
 
 PlanetGenerator::PlanetGenerator(Engine& engine)
@@ -37,6 +43,7 @@ void PlanetGenerator::generate()
     PlanetEntity::PlanetProperties planetProps = {};
     planetProps.radius_km = LinearInterpolateRandom(m_minRadius_km, m_maxRadius_km);
     planetProps.mass_kg = LinearInterpolateRandom(m_minMass_kg, m_maxMass_kg);
+    planetProps.visualType = kPlanetVisualTypes[LinearInterpolateIndex(kPlanetVisualTypes, NormalizedRandom())];
 
     const auto minDistanceAllowedSquared = (planetProps.radius_km * planetProps.radius_km) * (m_minDistanceMultiplier * m_minDistanceMultiplier);
 

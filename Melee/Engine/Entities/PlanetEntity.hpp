@@ -7,9 +7,15 @@ namespace Melee
     class PlanetEntity : public Entity
     {
     public:
+        enum class VisualType
+        {
+            Planet1,
+            Planet2,
+        };
+
         struct PlanetProperties : public Properties
         {
-
+            VisualType visualType = VisualType::Planet1;
         };
 
     public:

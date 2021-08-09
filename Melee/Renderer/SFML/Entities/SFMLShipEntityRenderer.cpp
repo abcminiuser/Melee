@@ -9,11 +9,11 @@ using namespace Melee;
 
 namespace
 {
-    static const std::map<ShipEntity::VisualType, std::string> kShipAssetNames
-    {
-        { ShipEntity::VisualType::Race1Ship, "race1ship" },
-        { ShipEntity::VisualType::Race2Ship, "race2ship" },
-    };
+    const std::map<ShipEntity::VisualType, std::string> kShipAssetNames
+        {
+            { ShipEntity::VisualType::Race1Ship, "race1ship" },
+            { ShipEntity::VisualType::Race2Ship, "race2ship" },
+        };
 }
 
 SFMLShipEntityRenderer::SFMLShipEntityRenderer(ShipEntity& entity)

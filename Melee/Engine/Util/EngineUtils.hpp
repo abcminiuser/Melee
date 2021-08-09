@@ -7,7 +7,7 @@
 
 namespace Melee
 {
-	inline float			NormalizedRandom()
+	inline float			NormalizedRandom() noexcept
 	{
 		static std::mt19937								random(std::random_device{}());
 		static std::uniform_real_distribution<float>	randomDistribution(0.0f, 1.0f);
@@ -40,7 +40,8 @@ namespace Melee
 		if (!size)
 			return size_t(0);
 
-		return LinearInterpolate<size_t>(0, size - 1, val);
+		const auto chosenValue = LinearInterpolate<size_t>(0, size, val); // Effectively a floor(), so will only return size if val is 1.
+		return std::min(chosenValue, size - 1); // Ensure final range is between [0, size).
 	}
 
 	template<typename T>
