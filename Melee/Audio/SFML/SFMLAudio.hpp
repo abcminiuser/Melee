@@ -10,8 +10,6 @@
 
 namespace Melee
 {
-    class Engine;
-
     class SFMLAudio
         : public Engine::Observer
     {
@@ -21,8 +19,8 @@ namespace Melee
         explicit        SFMLAudio(Engine& engine);
         virtual         ~SFMLAudio();
 
+        void            setMasterVolume(float percent);
         void            setMusicVolume(float percent);
-        void            setSoundEffectVolume(float percent);
 
     // Engine::Observer i.f:
     public:

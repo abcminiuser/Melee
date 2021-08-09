@@ -17,19 +17,18 @@ SFMLAudio::~SFMLAudio()
     m_engine.removeObserver(this);
 }
 
+void SFMLAudio::setMasterVolume(float percent)
+{
+    percent = std::clamp(percent, 0.0f, 100.0f);
+
+    sf::Listener::setGlobalVolume(percent);
+}
+
 void SFMLAudio::setMusicVolume(float percent)
 {
     percent = std::clamp(percent, 0.0f, 100.0f);
 
     m_music.music->setVolume(percent);
-}
-
-void SFMLAudio::setSoundEffectVolume(float percent)
-{
-    percent = std::clamp(percent, 0.0f, 100.0f);
-
-    for (auto& soundEffect : m_sounds)
-        soundEffect.setVolume(percent);
 }
 
 void SFMLAudio::entityAdded(Engine& engine, const std::shared_ptr<Entity>& entity)
@@ -82,6 +81,5 @@ void SFMLAudio::playSoundEffect(const std::string& name, Point position)
 
     freeSoundEffect->setBuffer(*soundEffect.soundEffect);
     freeSoundEffect->setPosition(position.x, position.y, 0);
-    freeSoundEffect->setMinDistance(std::max(1.0f, m_engine.getShipsBoundingBox().size.length()));
     freeSoundEffect->play();
 }

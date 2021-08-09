@@ -19,11 +19,17 @@ add_library (Engine
     Entities/ShipEntity.hpp
     Entities/WeaponEntity.cpp
     Entities/WeaponEntity.hpp
-
     Entities/Races/Race1ShipEntity.cpp
     Entities/Races/Race1ShipEntity.hpp
     Entities/Races/Race2ShipEntity.cpp
     Entities/Races/Race2ShipEntity.hpp
+
+    Generators/AsteroidGenerator.cpp
+    Generators/AsteroidGenerator.hpp
+    Generators/EntityGenerator.cpp
+    Generators/EntityGenerator.hpp
+    Generators/PlanetGenerator.cpp
+    Generators/PlanetGenerator.hpp
 
     Util/EngineUtils.hpp
     Util/VectorMath.hpp
