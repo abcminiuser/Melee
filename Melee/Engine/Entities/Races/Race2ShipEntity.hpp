@@ -13,6 +13,7 @@ namespace Melee
 
     protected:
         void        onPrimaryWeaponFired(Engine& engine) override;
+        void        onSpecialWeaponFired(Engine& engine) override;
 
     private:
         static ShipEntity::ShipProperties		MakeShipProperties();

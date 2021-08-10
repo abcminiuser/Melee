@@ -19,6 +19,11 @@ void Race2ShipEntity::onPrimaryWeaponFired(Engine& engine)
     engine.addEntity(weaponEntity);
 }
 
+void Race2ShipEntity::onSpecialWeaponFired(Engine& engine)
+{
+    // TODO
+}
+
 ShipEntity::ShipProperties Race2ShipEntity::MakeShipProperties()
 {
     ShipEntity::ShipProperties shipProps = {};

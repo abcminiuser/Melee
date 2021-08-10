@@ -40,6 +40,9 @@ namespace Melee
 
             uint32_t    primaryFireRate_ms    = 200;
             uint32_t    primaryEnergyCost     = 1;
+
+            uint32_t    specialFireRate_ms    = 1000;
+            uint32_t    specialEnergyCost     = 5;
         };
 
     public:
@@ -60,6 +63,7 @@ namespace Melee
 
     protected:
         virtual void                onPrimaryWeaponFired(Engine& engine) = 0;
+        virtual void                onSpecialWeaponFired(Engine& engine) = 0;
 
         void       					applyDamage(int amount);
         void       					consumeEnergy(int amount);
@@ -92,6 +96,7 @@ namespace Melee
         Periodic                	m_rotationTimer;
         Periodic                	m_thrustExhaustTimer;
         Periodic                	m_primaryFireTimer;
+        Periodic                	m_specialFireTimer;
 
         uint32_t                	m_health = 0;
         uint32_t                	m_energy = 0;

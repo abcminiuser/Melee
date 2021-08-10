@@ -12,6 +12,7 @@ namespace
     const std::map<WeaponEntity::VisualType, std::string> kWeaponAssetNames
         {
             { WeaponEntity::VisualType::Race1Missile, "race1missile" },
+            { WeaponEntity::VisualType::Race1Mine,    "race1mine" },
             { WeaponEntity::VisualType::Race2Missile, "race2missile" },
         };
 }

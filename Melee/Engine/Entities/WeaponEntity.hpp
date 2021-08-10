@@ -10,6 +10,7 @@ namespace Melee
 		enum class VisualType
         {
             Race1Missile,
+            Race1Mine,
             Race2Missile,
         };
 
@@ -29,7 +30,7 @@ namespace Melee
         };
 
     public:
-        explicit                    WeaponEntity(const std::shared_ptr<Entity>& parent, const WeaponProperties& properties, const Point& position, const Vector2d& velocity, const Vector2d& heading);
+        explicit                    WeaponEntity(const std::shared_ptr<Entity>& parent, const WeaponProperties& properties, const Point& position, const Vector2d& velocity = Vector2d{}, const Vector2d& heading = Vector2d{});
         virtual                     ~WeaponEntity() = default;
 
         uint32_t                    age() const                 { return m_age; }

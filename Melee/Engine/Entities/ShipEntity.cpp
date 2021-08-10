@@ -19,6 +19,7 @@ ShipEntity::ShipEntity(const ShipProperties& properties, const Point& position)
     , m_rotationTimer(kRotationIntervalMs)
     , m_thrustExhaustTimer(kThrustExhaustIntervalMs, kThrustExhaustIntervalMs, true)
     , m_primaryFireTimer(properties.primaryFireRate_ms, properties.primaryFireRate_ms, true)
+    , m_specialFireTimer(properties.specialFireRate_ms, properties.specialFireRate_ms, true)
 {
     m_engineAcceleration_ms2    = properties.engineForce_N / properties.mass_kg;
 
@@ -97,6 +98,14 @@ void ShipEntity::update(Engine& engine, uint32_t msElapsed)
         onPrimaryWeaponFired(engine);
 
         consumeEnergy(m_shipProperties.primaryEnergyCost);
+    }
+
+    m_specialFireTimer.add(msElapsed);
+    if (m_flags.test(Flags::FireSpecialActive) && m_energy >= m_shipProperties.specialEnergyCost && m_specialFireTimer.expired())
+    {
+        onSpecialWeaponFired(engine);
+
+        consumeEnergy(m_shipProperties.specialEnergyCost);
     }
 
     m_energyRechargeTimer.add(msElapsed);

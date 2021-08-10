@@ -16,7 +16,7 @@ void WeaponEntity::update(Engine& engine, uint32_t msElapsed)
 {
     m_age += msElapsed;
 
-    if (m_age >= m_weaponProperties.maxAge_ms)
+    if (m_weaponProperties.maxAge_ms && m_age >= m_weaponProperties.maxAge_ms)
         engine.removeEntity(shared_from_this());
 
     Entity::update(engine, msElapsed);
@@ -24,7 +24,7 @@ void WeaponEntity::update(Engine& engine, uint32_t msElapsed)
 
 void WeaponEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState)
 {
-    if (otherEntity == m_parentEntity)
+    if (otherEntity == m_parentEntity || otherEntity->parentEntity() == m_parentEntity)
         return;
 
     engine.removeEntity(shared_from_this());
@@ -33,7 +33,7 @@ void WeaponEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherE
     explosionProps.radius_km = 1000;
 
     auto explosionEntity = std::make_shared<ExplosionEntity>(nullptr, explosionProps, m_position);
-    engine.addEntity(explosionEntity);
+    engine.addEntity(explosionEntity, Engine::InsertionOrder::Bottom);
 
     Entity::collide(engine, otherEntity, otherEntityState);
 }
