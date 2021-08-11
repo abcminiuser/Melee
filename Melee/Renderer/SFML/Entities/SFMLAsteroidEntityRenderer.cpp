@@ -16,7 +16,7 @@ SFMLAsteroidEntityRenderer::SFMLAsteroidEntityRenderer(AsteroidEntity& entity)
 
 void SFMLAsteroidEntityRenderer::render(sf::RenderTarget& renderer)
 {
-    const auto asteroidRadius = m_entity.properties().radius_km;
+    const auto asteroidRadius = m_entity.radius();
     const auto asteroidHeading = m_entity.heading();
     const auto asteroidPos = m_entity.position();
 

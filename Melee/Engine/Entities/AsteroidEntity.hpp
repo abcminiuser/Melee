@@ -14,20 +14,18 @@ namespace Melee
         };
 
     public:
-        explicit                    AsteroidEntity(const AsteroidProperties& properties, const Point& position, const Vector2d& velocity);
-        virtual                     ~AsteroidEntity() = default;
+        explicit    AsteroidEntity(const AsteroidProperties& properties, const Point& position, const Vector2d& velocity);
+        virtual     ~AsteroidEntity() = default;
 
         // Entity i/f:
     public:
-        const AsteroidProperties&   properties() const override { return m_asteroidProperties; }
-
-        void                        update(Engine& engine, uint32_t msElapsed) override;
-        void                        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
+        void        update(Engine& engine, uint32_t msElapsed) override;
+        void        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
     private:
-        const AsteroidProperties    m_asteroidProperties;
+        float       m_rotation_degPerSec = 0;
 
-        Periodic                    m_rotationTimer;
-        Matrix2x2                   m_rotation;
+        Periodic    m_rotationTimer;
+        Matrix2x2   m_rotation;
     };
 }

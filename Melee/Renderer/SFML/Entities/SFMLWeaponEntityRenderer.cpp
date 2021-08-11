@@ -20,7 +20,7 @@ namespace
 SFMLWeaponEntityRenderer::SFMLWeaponEntityRenderer(WeaponEntity& entity)
     : m_entity(entity)
 {
-    m_weaponImage = SFMLAssetLoader::Instance().getTexture(kWeaponAssetNames.at(entity.properties().visualType));
+    m_weaponImage = SFMLAssetLoader::Instance().getTexture(kWeaponAssetNames.at(entity.visualType()));
 
     m_sprite.setTexture(*m_weaponImage.texture);
     m_sprite.setTextureRect(m_weaponImage.region);
@@ -31,7 +31,7 @@ void SFMLWeaponEntityRenderer::render(sf::RenderTarget& renderer)
 {
     const auto projectileHeading = m_entity.heading();
     const auto projectilePos = m_entity.position();
-    const auto projectileRadius = m_entity.properties().radius_km;
+    const auto projectileRadius = m_entity.radius();
 
     m_sprite.setRotation(ToDegrees(projectileHeading));
     m_sprite.setScale(sf::Vector2f{ projectileRadius * 2 / m_weaponImage.region.width, projectileRadius * 2 / m_weaponImage.region.height });

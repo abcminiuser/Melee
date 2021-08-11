@@ -47,7 +47,12 @@ namespace Melee
         virtual void                    collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState);
 
         Type                            type() const				{ return m_type; }
-        virtual const Properties&    	properties() const			{ return m_properties; }
+
+        auto                            mass() const                { return m_mass_kg; }
+        auto                            radius() const              { return m_radius_km; }
+        auto                            maxVelocity() const         { return m_maxVelocity_km_s; }
+        auto                            collidable() const          { return m_collidable; }
+        auto                            wrappable() const           { return m_wrappable; }
 
         Point                           position() const			{ return m_position; }
         Vector2d                        heading() const				{ return m_heading; }
@@ -64,7 +69,12 @@ namespace Melee
         const Type                      m_type;
 
         std::shared_ptr<Entity>			m_parentEntity;
-        Properties                      m_properties;
+
+        float                           m_mass_kg = 0;
+        float                           m_radius_km = 0;
+        uint32_t                        m_maxVelocity_km_s = 0;
+        bool                            m_collidable = true;
+        bool                            m_wrappable = true;
 
         Point                           m_position;
         Vector2d                        m_heading = { 1, 0 };

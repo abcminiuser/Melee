@@ -29,8 +29,8 @@ void SFMLExplosionEntityRenderer::render(sf::RenderTarget& renderer)
 {
     const auto explosionPos = m_entity.position();
     const auto explosionAge = m_entity.age();
-    const auto explosionMaxAge = m_entity.properties().maxAge_ms;
-    const auto explosionRadius = m_entity.properties().radius_km;
+    const auto explosionMaxAge = m_entity.maxAge();
+    const auto explosionRadius = m_entity.radius();
 
     const auto ageNormalized = explosionAge / static_cast<float>(explosionMaxAge);
 

@@ -13,7 +13,7 @@ Race2ShipEntity::Race2ShipEntity(const Point& position)
 
 void Race2ShipEntity::onPrimaryWeaponFired(Engine& engine)
 {
-	const auto spawnLocation = m_position + (m_heading * m_shipProperties.radius_km);
+	const auto spawnLocation = m_position + (m_heading * m_radius_km);
 
     auto weaponEntity = std::make_shared<WeaponEntity>(shared_from_this(), MakePrimaryWeaponProperties(), spawnLocation, m_velocity, m_heading);
     engine.addEntity(weaponEntity);

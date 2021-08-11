@@ -11,7 +11,7 @@ namespace
 
 PlanetEntity::PlanetEntity(const PlanetProperties& properties, const Point& position)
     : Entity(Entity::Type::Planet, nullptr, properties, position)
-    , m_planetProperties(properties)
+    , m_visualType(properties.visualType)
 {
 
 }
@@ -23,13 +23,13 @@ void PlanetEntity::update(Engine& engine, uint32_t msElapsed)
         if (entity->type() == Entity::Type::Planet)
             continue;
 
-        if (!entity->properties().mass_kg || entity->position() == m_position)
+        if (!entity->mass() || entity->position() == m_position)
             continue;
 
         const auto entityToPlanetVector = (m_position - entity->position());
-        const auto gravityForce = (kGravitationalConstant * m_planetProperties.mass_kg * entity->properties().mass_kg) / entityToPlanetVector.lengthSquared();
+        const auto gravityForce = (kGravitationalConstant * m_mass_kg * entity->mass()) / entityToPlanetVector.lengthSquared();
 
-        entity->applyExternalForce(entityToPlanetVector.normalised() * (gravityForce / entity->properties().mass_kg));
+        entity->applyExternalForce(entityToPlanetVector.normalised() * (gravityForce / entity->mass()));
     }
 
     Entity::update(engine, msElapsed);

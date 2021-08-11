@@ -39,7 +39,7 @@ void SFMLShipHudTileRenderer::render(sf::RenderTarget& renderer)
     renderer.draw(r);
 
     sf::Text text;
-    text.setString(kRaceNames.at(m_entity.properties().visualType));
+    text.setString(kRaceNames.at(m_entity.visualType()));
     text.setPosition(m_renderArea.left + m_renderArea.width / 2, m_renderArea.top + 10);
     text.setFillColor(sf::Color::Black);
     text.setFont(*m_font.font);
@@ -48,7 +48,7 @@ void SFMLShipHudTileRenderer::render(sf::RenderTarget& renderer)
     text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top);
     renderer.draw(text);
 
-    const float healthNormalized = m_entity.health() / (float)m_entity.properties().maxHealth;
+    const float healthNormalized = m_entity.health() / (float)m_entity.maxHealth();
     drawVerticalBarGraph(renderer, sf::FloatRect{ m_renderArea.left + 30, m_renderArea.top + 40, 20, 100 }, kLifeBarInactiveFillColour, kLifeBarActiveFillColour, healthNormalized);
 
     {
@@ -63,7 +63,7 @@ void SFMLShipHudTileRenderer::render(sf::RenderTarget& renderer)
         renderer.draw(text);
     }
 
-    const float energyNormalized = m_entity.energy() / (float)m_entity.properties().maxEnergy;
+    const float energyNormalized = m_entity.energy() / (float)m_entity.maxEnergy();
     drawVerticalBarGraph(renderer, sf::FloatRect{ m_renderArea.left + m_renderArea.width - 30 - 20, m_renderArea.top + 40, 20, 100 }, kEnergyBarInactiveFillColour, kEnergyBarActiveFillColour, energyNormalized);
 
     {

@@ -101,11 +101,11 @@ void Engine::handleDeferredEntityAddRemove()
 
 bool Engine::checkCollison(const std::shared_ptr<Entity>& entity1, const std::shared_ptr<Entity>& entity2) const noexcept
 {
-	if (! entity1->properties().collidable || !entity2->properties().collidable)
+	if (! entity1->collidable() || !entity2->collidable())
 		return false;
 
 	const auto distanceBetweenEntitiesSquared = (entity1->position() - entity2->position()).lengthSquared();
-	const auto minCollisionRadius = entity1->properties().radius_km + entity2->properties().radius_km;
+	const auto minCollisionRadius = entity1->radius() + entity2->radius();
 
 	// Crude radius check
 	return (distanceBetweenEntitiesSquared < (minCollisionRadius * minCollisionRadius));
@@ -121,7 +121,7 @@ void Engine::checkForEntityCollisions()
     {
         const auto& entity1 = *e1;
 
-        if (!entity1->properties().collidable)
+        if (!entity1->collidable())
             continue;
 
         for (auto e2 = std::next(e1); e2 != m_entities.end(); e2++)
@@ -158,7 +158,7 @@ void Engine::updateShipsBoundingBox()
             continue;
 
         const auto pos = entity->position();
-        const auto radius = entity->properties().radius_km;
+        const auto radius = entity->radius();
 
         minX = std::min(minX, pos.x - radius);
         maxX = std::max(maxX, pos.x + radius);

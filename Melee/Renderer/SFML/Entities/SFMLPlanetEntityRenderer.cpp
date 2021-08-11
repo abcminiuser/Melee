@@ -17,7 +17,7 @@ namespace
 SFMLPlanetEntityRenderer::SFMLPlanetEntityRenderer(PlanetEntity& entity)
     : m_entity(entity)
 {
-    m_planetImage = SFMLAssetLoader::Instance().getTexture(kPlanetAssetNames.at(entity.properties().visualType));
+    m_planetImage = SFMLAssetLoader::Instance().getTexture(kPlanetAssetNames.at(entity.visualType()));
 
     m_sprite.setTexture(*m_planetImage.texture);
     m_sprite.setTextureRect(m_planetImage.region);
@@ -26,7 +26,7 @@ SFMLPlanetEntityRenderer::SFMLPlanetEntityRenderer(PlanetEntity& entity)
 
 void SFMLPlanetEntityRenderer::render(sf::RenderTarget& renderer)
 {
-    const auto planetRadius = m_entity.properties().radius_km;
+    const auto planetRadius = m_entity.radius();
     const auto planetPos = m_entity.position();
 
     m_sprite.setScale(sf::Vector2f{ planetRadius * 2 / m_planetImage.region.width, planetRadius * 2 / m_planetImage.region.height });

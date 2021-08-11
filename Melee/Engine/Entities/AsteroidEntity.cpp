@@ -11,7 +11,7 @@ namespace
 
 AsteroidEntity::AsteroidEntity(const AsteroidProperties& properties, const Point& position, const Vector2d& velocity)
     : Entity(Entity::Type::Asteroid, nullptr, properties, position)
-    , m_asteroidProperties(properties)
+    , m_rotation_degPerSec(properties.rotation_degPerSec)
     , m_rotationTimer(kRotationIntervalMs)
 {
     m_velocity = velocity;

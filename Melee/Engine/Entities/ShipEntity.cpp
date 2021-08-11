@@ -14,7 +14,16 @@ namespace
 
 ShipEntity::ShipEntity(const ShipProperties& properties, const Point& position)
     : Entity(Entity::Type::Ship, nullptr, properties, position)
-    , m_shipProperties(properties)
+    , m_visualType(properties.visualType)
+    , m_engineForce_N(properties.engineForce_N)
+    , m_rotation_degPerSec(properties.rotation_degPerSec)
+    , m_maxHealth(properties.maxHealth)
+    , m_maxEnergy(properties.maxEnergy)
+    , m_energyRechargeRate_ms(properties.energyRechargeRate_ms)
+    , m_primaryFireRate_ms(properties.primaryFireRate_ms)
+    , m_primaryEnergyCost(properties.primaryEnergyCost)
+    , m_specialFireRate_ms(properties.specialFireRate_ms)
+    , m_specialEnergyCost(properties.specialEnergyCost)
     , m_energyRechargeTimer(properties.energyRechargeRate_ms)
     , m_rotationTimer(kRotationIntervalMs)
     , m_thrustExhaustTimer(kThrustExhaustIntervalMs, kThrustExhaustIntervalMs, true)
@@ -93,19 +102,19 @@ void ShipEntity::update(Engine& engine, uint32_t msElapsed)
     }
 
     m_primaryFireTimer.add(msElapsed);
-    if (m_flags.test(Flags::FirePrimaryActive) && m_energy >= m_shipProperties.primaryEnergyCost && m_primaryFireTimer.expired())
+    if (m_flags.test(Flags::FirePrimaryActive) && m_energy >= m_primaryEnergyCost && m_primaryFireTimer.expired())
     {
         onPrimaryWeaponFired(engine);
 
-        consumeEnergy(m_shipProperties.primaryEnergyCost);
+        consumeEnergy(m_primaryEnergyCost);
     }
 
     m_specialFireTimer.add(msElapsed);
-    if (m_flags.test(Flags::FireSpecialActive) && m_energy >= m_shipProperties.specialEnergyCost && m_specialFireTimer.expired())
+    if (m_flags.test(Flags::FireSpecialActive) && m_energy >= m_specialEnergyCost && m_specialFireTimer.expired())
     {
         onSpecialWeaponFired(engine);
 
-        consumeEnergy(m_shipProperties.specialEnergyCost);
+        consumeEnergy(m_specialEnergyCost);
     }
 
     m_energyRechargeTimer.add(msElapsed);
@@ -138,7 +147,7 @@ void ShipEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEnt
             {
                 const auto& weaponEntity = std::dynamic_pointer_cast<const WeaponEntity>(otherEntity);
 
-                applyDamage(weaponEntity->properties().damage);
+                applyDamage(weaponEntity->damage());
             }
 
             break;
@@ -154,10 +163,10 @@ void ShipEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEnt
 
 void ShipEntity::applyDamage(int amount)
 {
-    m_health = std::clamp<int>(m_health - amount, 0, m_shipProperties.maxHealth);
+    m_health = std::clamp<int>(m_health - amount, 0, m_maxHealth);
 }
 
 void ShipEntity::consumeEnergy(int amount)
 {
-    m_energy = std::clamp<int>(m_energy - amount, 0, m_shipProperties.maxEnergy);
+    m_energy = std::clamp<int>(m_energy - amount, 0, m_maxEnergy);
 }

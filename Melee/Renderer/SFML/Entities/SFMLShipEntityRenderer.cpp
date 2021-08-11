@@ -19,7 +19,7 @@ namespace
 SFMLShipEntityRenderer::SFMLShipEntityRenderer(ShipEntity& entity)
     : m_entity(entity)
 {
-    m_shipImage = SFMLAssetLoader::Instance().getTexture(kShipAssetNames.at(entity.properties().visualType));
+    m_shipImage = SFMLAssetLoader::Instance().getTexture(kShipAssetNames.at(entity.visualType()));
 
     m_sprite.setTexture(*m_shipImage.texture);
     m_sprite.setTextureRect(m_shipImage.region);
@@ -30,7 +30,7 @@ void SFMLShipEntityRenderer::render(sf::RenderTarget& renderer)
 {
     const auto playerHeading = m_entity.heading();
     const auto playerPos = m_entity.position();
-    const auto playerRadius = m_entity.properties().radius_km;
+    const auto playerRadius = m_entity.radius();
 
     m_sprite.setRotation(ToDegrees(playerHeading));
     m_sprite.setScale(sf::Vector2f{ playerRadius * 2 / m_shipImage.region.width, playerRadius * 2 / m_shipImage.region.height });

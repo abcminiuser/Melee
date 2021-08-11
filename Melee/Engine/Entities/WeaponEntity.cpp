@@ -6,7 +6,9 @@ using namespace Melee;
 
 WeaponEntity::WeaponEntity(const std::shared_ptr<Entity>& parent,const WeaponProperties& properties, const Point& position, const Vector2d& velocity, const Vector2d& heading)
     : Entity(Entity::Type::Weapon, parent, properties, position)
-    , m_weaponProperties(properties)
+    , m_visualType(properties.visualType)
+    , m_maxAge_ms(properties.maxAge_ms)
+    , m_damage(properties.damage)
 {
     m_heading = heading;
     m_velocity = velocity + (heading * (properties.firingForce_N / properties.mass_kg));
@@ -16,7 +18,7 @@ void WeaponEntity::update(Engine& engine, uint32_t msElapsed)
 {
     m_age += msElapsed;
 
-    if (m_weaponProperties.maxAge_ms && m_age >= m_weaponProperties.maxAge_ms)
+    if (m_maxAge_ms && m_age >= m_maxAge_ms)
         engine.removeEntity(shared_from_this());
 
     Entity::update(engine, msElapsed);

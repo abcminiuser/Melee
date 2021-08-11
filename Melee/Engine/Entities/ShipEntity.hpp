@@ -46,27 +46,30 @@ namespace Melee
         };
 
     public:
-        explicit    				ShipEntity(const ShipProperties& properties, const Point& position);
-        virtual     				~ShipEntity() = default;
+        explicit                    ShipEntity(const ShipProperties& properties, const Point& position);
+        virtual                     ~ShipEntity() = default;
 
-        void       					handleKey(KeyEvent key, bool down);
+        void                        handleKey(KeyEvent key, bool down);
 
-        uint32_t   					health() const      		{ return m_health; }
-        uint32_t   					energy() const      		{ return m_energy; }
+        VisualType                  visualType() const          { return m_visualType; }
+
+        auto                        maxHealth() const           { return m_maxHealth; }
+        auto                        maxEnergy() const           { return m_maxEnergy; }
+
+        uint32_t                    health() const              { return m_health; }
+        uint32_t                    energy() const              { return m_energy; }
 
     // Entity i/f:
     public:
-        const ShipProperties&		properties() const override	{ return m_shipProperties; }
-
-        void       					update(Engine& engine, uint32_t msElapsed) override;
-        void       					collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
+        void                        update(Engine& engine, uint32_t msElapsed) override;
+        void                        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
     protected:
         virtual void                onPrimaryWeaponFired(Engine& engine) = 0;
         virtual void                onSpecialWeaponFired(Engine& engine) = 0;
 
-        void       					applyDamage(int amount);
-        void       					consumeEnergy(int amount);
+        void                        applyDamage(int amount);
+        void                        consumeEnergy(int amount);
 
     protected:
         struct Flags
@@ -84,21 +87,30 @@ namespace Melee
             };
         };
 
-        const ShipProperties  		m_shipProperties;
+        VisualType                  m_visualType = VisualType::Race1Ship;
+        float                       m_engineForce_N = 0;
+        float                       m_rotation_degPerSec = 0;
+        uint32_t                    m_maxHealth = 0;
+        uint32_t                    m_maxEnergy = 0;
+        uint32_t                    m_energyRechargeRate_ms = 0;
+        uint32_t                    m_primaryFireRate_ms = 0;
+        uint32_t                    m_primaryEnergyCost = 0;
+        uint32_t                    m_specialFireRate_ms = 0;
+        uint32_t                    m_specialEnergyCost = 0;
 
-        float                   	m_engineAcceleration_ms2;
-        Matrix2x2               	m_rotationalThrustLeft;
-        Matrix2x2               	m_rotationalThrustRight;
+        float                       m_engineAcceleration_ms2 = 0;
+        Matrix2x2                   m_rotationalThrustLeft;
+        Matrix2x2                   m_rotationalThrustRight;
 
         std::bitset<Flags::_Count>  m_flags;
 
-        Periodic                	m_energyRechargeTimer;
-        Periodic                	m_rotationTimer;
-        Periodic                	m_thrustExhaustTimer;
-        Periodic                	m_primaryFireTimer;
-        Periodic                	m_specialFireTimer;
+        Periodic                    m_energyRechargeTimer;
+        Periodic                    m_rotationTimer;
+        Periodic                    m_thrustExhaustTimer;
+        Periodic                    m_primaryFireTimer;
+        Periodic                    m_specialFireTimer;
 
-        uint32_t                	m_health = 0;
-        uint32_t                	m_energy = 0;
+        uint32_t                    m_health = 0;
+        uint32_t                    m_energy = 0;
     };
 }

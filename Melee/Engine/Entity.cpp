@@ -6,7 +6,11 @@ using namespace Melee;
 Entity::Entity(Type type, const std::shared_ptr<Entity>& parent, const Properties& properties, const Point& pos)
     : m_type(type)
     , m_parentEntity(parent)
-    , m_properties(properties)
+    , m_mass_kg(properties.mass_kg)
+    , m_radius_km(properties.radius_km)
+    , m_maxVelocity_km_s(properties.maxVelocity_km_s)
+    , m_collidable(properties.collidable)
+    , m_wrappable(properties.wrappable)
     , m_position(pos)
 {
 
@@ -19,14 +23,14 @@ void Entity::update(Engine& engine, uint32_t msElapsed)
 
     m_externalAcceleration = {};
 
-    if (const auto maxVelocitySquared = m_properties.maxVelocity_km_s * m_properties.maxVelocity_km_s)
+    if (const auto maxVelocitySquared = m_maxVelocity_km_s * m_maxVelocity_km_s)
     {
         const auto newVelocitySquared = m_velocity.lengthSquared();
         if (newVelocitySquared > maxVelocitySquared)
             m_velocity *= maxVelocitySquared / newVelocitySquared;
     }
 
-    if (m_properties.wrappable)
+    if (m_wrappable)
     {
         const auto maxPos = engine.getPlayfieldSize();
 

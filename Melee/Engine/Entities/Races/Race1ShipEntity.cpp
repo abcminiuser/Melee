@@ -17,7 +17,7 @@ Race1ShipEntity::Race1ShipEntity(const Point& position)
 
 void Race1ShipEntity::onPrimaryWeaponFired(Engine& engine)
 {
-	const auto spawnLocation = m_position + (m_heading * m_shipProperties.radius_km);
+	const auto spawnLocation = m_position + (m_heading * m_radius_km);
 
     WeaponEntity::WeaponProperties weaponProps = {};
 
@@ -29,7 +29,7 @@ void Race1ShipEntity::onPrimaryWeaponFired(Engine& engine)
 
 void Race1ShipEntity::onSpecialWeaponFired(Engine& engine)
 {
-    const auto spawnLocation = m_position + (-m_heading * m_shipProperties.radius_km);
+    const auto spawnLocation = m_position + (-m_heading * m_radius_km);
 
     auto weaponEntity = std::make_shared<WeaponEntity>(shared_from_this(), MakeSpecialWeaponProperties(), spawnLocation);
     engine.addEntity(weaponEntity, Engine::InsertionOrder::Bottom);
