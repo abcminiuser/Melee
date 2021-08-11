@@ -1,6 +1,18 @@
 #include "SFMLAudio.hpp"
 
+#include <map>
+
 using namespace Melee;
+
+namespace
+{
+    const std::map<WeaponEntity::VisualType, std::string> kWeaponEffectAssetNames
+    {
+        { WeaponEntity::VisualType::Race1Missile, "laser-shot-3" },
+        { WeaponEntity::VisualType::Race1Mine,    "creepy_percussion_8" },
+        { WeaponEntity::VisualType::Race2Missile, "laser-shot-3" },
+    };
+}
 
 SFMLAudio::SFMLAudio(Engine& engine)
     : m_engine(engine)
@@ -46,7 +58,9 @@ void SFMLAudio::entityAdded(Engine& engine, const std::shared_ptr<Entity>& entit
 
         case Entity::Type::Weapon:
         {
-            playSoundEffect("laser-shot-3", entity->position());
+            const auto weaponEntity = std::dynamic_pointer_cast<WeaponEntity>(entity);
+
+            playSoundEffect(kWeaponEffectAssetNames.at(weaponEntity->visualType()), entity->position());
             break;
         }
 
