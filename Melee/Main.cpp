@@ -27,6 +27,8 @@ int main(int argc, char* argv[])
     auto player2 = std::make_shared<Race2ShipEntity>(Point{ kPlayfieldSize * .1f, kPlayfieldSize * .1f });
     engine.addEntity(player2);
 
+    engine.update(0);
+
     planetGenerator.setMassRange(3.9736e16f, 5.9736e16f);
     planetGenerator.setRadiusRange(4000, 6000);
     planetGenerator.generate();
