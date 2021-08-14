@@ -37,8 +37,8 @@ namespace Melee
 
         auto&       getEntities()                                       { return m_entities; }
 
-        float       getPlayfieldSize() const                            { return m_playfieldSize; }
-        Rectangle   getShipsBoundingBox()                               { return m_shipsBoundingBox; }
+        float       getPlayfieldSize() const noexcept                   { return m_playfieldSize; }
+        Rectangle   getShipsBoundingBox() const noexcept                { return m_shipsBoundingBox; }
 
         void        update(uint32_t msElapsed);
 
