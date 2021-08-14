@@ -4,7 +4,6 @@
 #include "Util/MatrixMath.hpp"
 
 #include <memory>
-#include <deque>
 
 namespace Melee
 {
@@ -37,6 +36,4 @@ namespace Melee
             return { origin.x + (size.x / 2), origin.y + (size.y / 2) };
         }
     };
-
-    using EntityList = std::deque<std::shared_ptr<Entity>>;
 }

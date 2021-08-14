@@ -14,7 +14,10 @@
 #include "Entities/Races/Race1ShipEntity.hpp"
 #include "Entities/Races/Race2ShipEntity.hpp"
 
+#include <deque>
 #include <forward_list>
+#include <utility>
+#include <vector>
 
 namespace Melee
 {
@@ -53,19 +56,21 @@ namespace Melee
         void        updateShipsBoundingBox();
 
     private:
-        const float                         m_playfieldSize;
+		using EntityAddList = std::vector<std::pair<std::shared_ptr<Entity>, InsertionOrder>>;
+  		using EntityRemoveList = std::vector<std::shared_ptr<Entity>>;
 
-        std::forward_list<Observer*>        m_observers;
+        const float                         	m_playfieldSize;
 
-        EntityList                          m_entities;
+        std::forward_list<Observer*>        	m_observers;
 
-        EntityList                          m_entitiesToAddTop;
-        EntityList                          m_entitiesToAddBottom;
-        EntityList                          m_entitiesToRemove;
+        std::deque<std::shared_ptr<Entity>> 	m_entities;
 
-        Rectangle                           m_shipsBoundingBox;
+        EntityAddList							m_entitiesToAdd;
+        EntityRemoveList						m_entitiesToRemove;
 
-        uint32_t                            m_updateMsElapsed = 0;
+        Rectangle                           	m_shipsBoundingBox;
+
+        uint32_t                            	m_updateMsElapsed = 0;
     };
 
     class Engine::Observer

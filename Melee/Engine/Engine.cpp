@@ -39,10 +39,7 @@ void Engine::update(uint32_t msElapsed)
 
 void Engine::addEntity(const std::shared_ptr<Entity>& entity, InsertionOrder zOrder) noexcept
 {
-    if (zOrder == InsertionOrder::Top)
-        m_entitiesToAddTop.emplace_back(entity);
-    else
-        m_entitiesToAddBottom.emplace_back(entity);
+	m_entitiesToAdd.emplace_back(std::make_pair(entity, zOrder));
 }
 
 void Engine::removeEntity(const std::shared_ptr<Entity>& entity) noexcept
@@ -52,35 +49,25 @@ void Engine::removeEntity(const std::shared_ptr<Entity>& entity) noexcept
 
 void Engine::handleDeferredEntityAddRemove()
 {
-    if (!m_entitiesToAddBottom.empty())
+    if (!m_entitiesToAdd.empty())
     {
-        for (const auto& addBottomEntity : m_entitiesToAddBottom)
+        for (const auto& [addEntity, zOrder] : m_entitiesToAdd)
         {
-            m_entities.push_front(addBottomEntity);
+        	if (zOrder == InsertionOrder::Bottom)
+            	m_entities.push_front(addEntity);
+            else
+				m_entities.push_back(addEntity);
 
             for (auto* observer : m_observers)
-                observer->entityAdded(*this, addBottomEntity);
+                observer->entityAdded(*this, addEntity);
         }
 
-        m_entitiesToAddBottom.clear();
-    }
-
-    if (!m_entitiesToAddTop.empty())
-    {
-        for (const auto& addTopEntity : m_entitiesToAddTop)
-        {
-            m_entities.push_back(addTopEntity);
-
-            for (auto* observer : m_observers)
-                observer->entityAdded(*this, addTopEntity);
-        }
-
-        m_entitiesToAddTop.clear();
+        m_entitiesToAdd.clear();
     }
 
     while (!m_entitiesToRemove.empty())
     {
-        EntityList deferredEntitiesToRemove;
+        EntityRemoveList deferredEntitiesToRemove;
 
         for (const auto& removeEntity : m_entitiesToRemove)
         {
