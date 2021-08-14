@@ -23,16 +23,19 @@ namespace Melee
                                 ~SFMLAssetLoader() = default;
 
     public:
-        struct CachedTexture
+        struct Texture
         {
-            std::shared_ptr<sf::Texture>    texture;
-            sf::IntRect                     region;
+            sf::Texture         texture;
+            sf::IntRect         region;
         };
 
-        struct CachedFont
+        struct Font
         {
-            std::shared_ptr<sf::Font>       font;
+            sf::Font            font;
         };
+
+        using CachedTexture = std::shared_ptr<Texture>;
+        using CachedFont = std::shared_ptr<Font>;
 
         CachedTexture           getTexture(const std::string& name) const;
         CachedFont              getFont(const std::string& name) const;

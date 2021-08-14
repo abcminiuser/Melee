@@ -23,9 +23,6 @@ SFMLAssetLoader::SFMLAssetLoader()
         if (asset.path().extension() != ".png")
             continue;
 
-        auto texture = std::make_shared<sf::Texture>();
-        texture->loadFromFile(asset.path().string());
-
         if (std::ifstream metadata(asset.path().parent_path() / (asset.path().stem().string() + ".dat")); metadata.is_open())
         {
             std::string line;
@@ -47,25 +44,29 @@ SFMLAssetLoader::SFMLAssetLoader()
 
                 const auto assetName = NextField();
 
-                CachedTexture cachedEntry = {};
-                cachedEntry.texture = texture;
+                auto cachedEntry = std::make_shared<Texture>();
 
-                for (auto* coordinate : { &cachedEntry.region.left, &cachedEntry.region.top, &cachedEntry.region.width, &cachedEntry.region.height })
+                cachedEntry->texture.loadFromFile(asset.path().string());
+
+                for (auto* coordinate : { &cachedEntry->region.left, &cachedEntry->region.top, &cachedEntry->region.width, &cachedEntry->region.height })
                     *coordinate = std::stoi(NextField());
 
-                m_textureCache.emplace(ToCacheKey(assetName), cachedEntry);
+                m_textureCache.emplace(ToCacheKey(assetName), std::move(cachedEntry));
             }
         }
         else
         {
             const auto assetName = asset.path().filename().stem().string();
-            const auto textureSize = texture->getSize();
 
-            CachedTexture cachedEntry = {};
-            cachedEntry.texture = texture;
-            cachedEntry.region = { 0, 0, static_cast<int>(textureSize.x), static_cast<int>(textureSize.y) };
+            auto cachedEntry = std::make_shared<Texture>();
 
-            m_textureCache.emplace(ToCacheKey(assetName), cachedEntry);
+            cachedEntry->texture.loadFromFile(asset.path().string());
+
+            const auto textureSize = cachedEntry->texture.getSize();
+
+            cachedEntry->region = { 0, 0, static_cast<int>(textureSize.x), static_cast<int>(textureSize.y) };
+
+            m_textureCache.emplace(ToCacheKey(assetName), std::move(cachedEntry));
         }
     }
 
@@ -76,13 +77,10 @@ SFMLAssetLoader::SFMLAssetLoader()
 
         const auto assetName = asset.path().filename().stem().string();
 
-        auto font = std::make_shared<sf::Font>();
-        font->loadFromFile(asset.path().string());
+        auto cachedEntry = std::make_shared<Font>();
+        cachedEntry->font.loadFromFile(asset.path().string());
 
-        CachedFont cachedFont = {};
-        cachedFont.font = font;
-
-        m_fontCache.emplace(ToCacheKey(assetName), cachedFont);
+        m_fontCache.emplace(ToCacheKey(assetName), std::move(cachedEntry));
     }
 }
 

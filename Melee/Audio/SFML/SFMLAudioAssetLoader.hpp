@@ -23,15 +23,18 @@ namespace Melee
 									~SFMLAudioAssetLoader() = default;
 
 	public:
-		struct CachedSoundEffect
+		struct SoundEffect
 		{
-			std::shared_ptr<sf::SoundBuffer> soundEffect;
+			sf::SoundBuffer soundEffect;
 		};
 
-		struct CachedMusic
+		struct Music
 		{
-			std::shared_ptr<sf::Music> music;
+			sf::Music music;
 		};
+
+		using CachedSoundEffect = std::shared_ptr<SoundEffect>;
+		using CachedMusic = std::shared_ptr<Music>;
 
 		CachedSoundEffect			getSoundEffect(const std::string& name) const;
 		CachedMusic					getMusic(const std::string& name) const;

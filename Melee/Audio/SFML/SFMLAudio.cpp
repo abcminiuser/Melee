@@ -20,8 +20,8 @@ SFMLAudio::SFMLAudio(Engine& engine)
 {
     m_engine.addObserver(this);
 
-    m_music.music->setLoop(true);
-    m_music.music->play();
+    m_music->music.setLoop(true);
+    m_music->music.play();
 }
 
 SFMLAudio::~SFMLAudio()
@@ -40,7 +40,7 @@ void SFMLAudio::setMusicVolume(float percent)
 {
     percent = std::clamp(percent, 0.0f, 100.0f);
 
-    m_music.music->setVolume(percent);
+    m_music->music.setVolume(percent);
 }
 
 void SFMLAudio::entityAdded(Engine& engine, const std::shared_ptr<Entity>& entity)
@@ -93,7 +93,7 @@ void SFMLAudio::playSoundEffect(const std::string& name, Point position)
 
     auto soundEffect = SFMLAudioAssetLoader::Instance().getSoundEffect(name);
 
-    freeSoundEffect->setBuffer(*soundEffect.soundEffect);
+    freeSoundEffect->setBuffer(soundEffect->soundEffect);
     freeSoundEffect->setPosition(position.x, position.y, 0);
     freeSoundEffect->play();
 }

@@ -25,13 +25,11 @@ SFMLAudioAssetLoader::SFMLAudioAssetLoader()
 
 		auto assetName = asset.path().filename().stem().string();
 
-		auto soundEffect = std::make_shared<sf::SoundBuffer>();
-		soundEffect->loadFromFile(asset.path().string());
+		auto cachedEntry = std::make_shared<SoundEffect>();
 
-		CachedSoundEffect cachedSoundEffect = {};
-		cachedSoundEffect.soundEffect = soundEffect;
+		cachedEntry->soundEffect.loadFromFile(asset.path().string());
 
-		m_soundEffectCache.emplace(ToCacheKey(assetName), cachedSoundEffect);
+		m_soundEffectCache.emplace(ToCacheKey(assetName), std::move(cachedEntry));
 	}
 
 	for (const auto& asset : std::filesystem::directory_iterator(kAssetBasePath / "Music"))
@@ -41,13 +39,11 @@ SFMLAudioAssetLoader::SFMLAudioAssetLoader()
 
 		auto assetName = asset.path().filename().stem().string();
 
-		auto music = std::make_shared<sf::Music>();
-		music->openFromFile(asset.path().string());
+		auto cachedEntry = std::make_shared<Music>();
 
-		CachedMusic cachedMusic = {};
-		cachedMusic.music = music;
+		cachedEntry->music.openFromFile(asset.path().string());
 
-		m_musicCache.emplace(ToCacheKey(assetName), cachedMusic);
+		m_musicCache.emplace(ToCacheKey(assetName), std::move(cachedEntry));
 	}
 }
 
