@@ -33,6 +33,8 @@ void Engine::update(uint32_t msElapsed)
 
         m_updateMsElapsed -= kMaxUpdateTimestepMs;
     }
+
+    handleDeferredEntityAddRemove();
 }
 
 void Engine::addEntity(const std::shared_ptr<Entity>& entity, InsertionOrder zOrder) noexcept
