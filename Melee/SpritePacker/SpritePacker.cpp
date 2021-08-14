@@ -67,6 +67,12 @@ namespace
                 continue;
             }
 
+            if (imageInfo.name.rfind("-nopack") != imageInfo.name.npos)
+            {
+                std::cout << "Not packing asset '" << imageInfo.name << "' due to exclusion suffix.\n";
+                continue;
+            }
+
             // Sort the free spaces smallest first, so we always try to pick the smallest free space that will accommodate our new image.
             freeSpaces.sort([](const auto& space1, const auto& space2) -> bool { return std::min(space1.width, space1.height) < std::min(space2.width, space2.height); });
 
@@ -170,16 +176,19 @@ namespace
             if (imageInfo.packPosition.has_value())
                 continue;
 
-            const auto outputPath = outputFolder / (imageInfo.name + ".png");
+            auto outputName = imageInfo.name;
+            outputName = outputName.substr(0, outputName.find("-nopack"));
+
+            const auto outputPath = outputFolder / (outputName + ".png");
 
             if (!imageInfo.image.saveToFile(outputPath.string()))
             {
-                std::cerr << "Failed to save asset '" << imageInfo.name << "!\n";
+                std::cerr << "Failed to save asset '" << outputName << "!\n";
                 exit(1);
             }
             else
             {
-                std::cout << "Saved asset '" << imageInfo.name << "'.\n";
+                std::cout << "Saved asset '" << outputName << "'.\n";
             }
         }
     }
