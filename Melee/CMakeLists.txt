@@ -15,6 +15,10 @@ target_compile_features (Melee PUBLIC cxx_std_17)
 
 if (MSVC)
     target_compile_options (Melee PUBLIC /W3 /WX)
+
+    if (CMAKE_BUILD_TYPE STREQUAL "Release")
+		set_property(TARGET Melee APPEND_STRING PROPERTY LINK_FLAGS " /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+	endif ()
 else ()
     target_compile_options (Melee PUBLIC -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion)
 endif ()
