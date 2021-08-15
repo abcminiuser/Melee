@@ -17,12 +17,12 @@ namespace Melee
         Vector2d origin;
         Vector2d size;
 
-        inline void inflate(const Vector2d& v)
+        inline void inflate(const Vector2d& v) noexcept
         {
             inflate(v.x, v.y);
         }
 
-        inline void inflate(float width, float height)
+        inline void inflate(float width, float height) noexcept
         {
             origin.x -= width / 2;
             origin.y -= height / 2;
@@ -31,7 +31,7 @@ namespace Melee
             size.y += height;
         }
 
-        inline Vector2d center() const
+        inline Vector2d center() const noexcept
         {
             return { origin.x + (size.x / 2), origin.y + (size.y / 2) };
         }

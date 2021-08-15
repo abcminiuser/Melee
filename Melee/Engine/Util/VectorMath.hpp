@@ -13,6 +13,9 @@ namespace Melee
 
         Vector2d normalised() const noexcept
         {
+            if (!x && ! y)
+                return { 0, 0 };
+
             return Vector2d{ x, y } / length();
         }
 
