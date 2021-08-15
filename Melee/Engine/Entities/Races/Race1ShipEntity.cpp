@@ -19,11 +19,7 @@ void Race1ShipEntity::onPrimaryWeaponFired(Engine& engine)
 {
 	const auto spawnLocation = m_position + (m_heading * m_radius_km);
 
-    WeaponEntity::WeaponProperties weaponProps = {};
-
-    weaponProps.visualType = WeaponEntity::VisualType::Race1Missile;
-
-    auto weaponEntity = std::make_shared<WeaponEntity>(shared_from_this(), weaponProps, spawnLocation, m_velocity, m_heading);
+    auto weaponEntity = std::make_shared<WeaponEntity>(shared_from_this(), MakePrimaryWeaponProperties(), spawnLocation, m_velocity, m_heading);
     engine.addEntity(weaponEntity);
 }
 
@@ -64,6 +60,9 @@ WeaponEntity::WeaponProperties Race1ShipEntity::MakePrimaryWeaponProperties()
     WeaponEntity::WeaponProperties weaponProps = {};
 
     weaponProps.visualType = WeaponEntity::VisualType::Race1Missile;
+    weaponProps.homing = true;
+    weaponProps.rotation_degPerSec = 120;
+    weaponProps.damage = 1;
 
     return weaponProps;
 }

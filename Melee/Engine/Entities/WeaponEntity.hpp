@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Entity.hpp"
+#include "Engine/Util/Periodic.hpp"
 
 namespace Melee
 {
@@ -27,6 +28,8 @@ namespace Melee
             uint32_t   firingForce_N = 20000;
             uint32_t   maxAge_ms = 2000;
             uint8_t    damage = 1;
+            bool       homing = false;
+            float      rotation_degPerSec = 0;
         };
 
     public:
@@ -46,11 +49,23 @@ namespace Melee
         void                        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
     private:
+        void                        updateTargetLock(Engine& engine);
+
+    private:
         VisualType                  m_visualType = VisualType::Race1Missile;
 
         uint32_t                    m_maxAge_ms = 0;
         uint8_t                     m_damage = 0;
+        bool                        m_homing = false;
+        float                       m_rotation_degPerSec = 0;
 
         uint32_t                    m_age = 0;
+
+        Matrix2x2                   m_rotationalThrustLeft;
+        Matrix2x2                   m_rotationalThrustRight;
+
+        Periodic                    m_rotationTimer;
+
+        std::weak_ptr<Entity>       m_lockedTarget;
     };
 }
