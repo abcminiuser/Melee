@@ -43,19 +43,22 @@ void WeaponEntity::update(Engine& engine, uint32_t msElapsed)
 
         m_rotationTimer.add(msElapsed);
 
-        while (m_rotationTimer.expired())
+        if (const auto target = m_lockedTarget.lock())
         {
-            const auto selfToTarget = (m_lockedTarget.lock()->position() - m_position);
+            while (m_rotationTimer.expired())
+            {
+                const auto selfToTarget = (target->position() - m_position);
 
-            const auto selfToTargetRadians = std::atan2(selfToTarget.y, selfToTarget.x);
-            const auto currentHeadingRadians = std::atan2(m_heading.y, m_heading.x);
+                const auto selfToTargetRadians = std::atan2(selfToTarget.y, selfToTarget.x);
+                const auto currentHeadingRadians = std::atan2(m_heading.y, m_heading.x);
 
-            const auto angleDiffRadians = selfToTargetRadians - currentHeadingRadians;
+                const auto angleDiffRadians = selfToTargetRadians - currentHeadingRadians;
 
-            if (std::abs(angleDiffRadians) < M_PI)
-                m_heading = ((angleDiffRadians < 0) ? m_rotationalThrustLeft : m_rotationalThrustRight) * m_heading;
-            else
-                m_heading = ((angleDiffRadians > 0) ? m_rotationalThrustLeft : m_rotationalThrustRight) * m_heading;
+                if (std::abs(angleDiffRadians) < M_PI)
+                    m_heading = ((angleDiffRadians < 0) ? m_rotationalThrustLeft : m_rotationalThrustRight) * m_heading;
+                else
+                    m_heading = ((angleDiffRadians > 0) ? m_rotationalThrustLeft : m_rotationalThrustRight) * m_heading;
+            }
         }
 
         m_acceleration = m_heading;
