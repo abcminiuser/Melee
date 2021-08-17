@@ -20,8 +20,10 @@ void SFMLAsteroidEntityRenderer::render(sf::RenderTarget& renderer)
     const auto asteroidHeading = m_entity.heading();
     const auto asteroidPos = m_entity.position();
 
+    const auto scaleFactor = asteroidRadius * 2 / std::max(m_asteroidImage->region.width, m_asteroidImage->region.height);
+
     m_sprite.setRotation(ToDegrees(asteroidHeading));
-    m_sprite.setScale(sf::Vector2f{ asteroidRadius * 2 / m_asteroidImage->region.width, asteroidRadius * 2 / m_asteroidImage->region.height });
+    m_sprite.setScale(sf::Vector2f{ scaleFactor, scaleFactor });
     m_sprite.setPosition(ToSFMLVector(asteroidPos));
 
     renderer.draw(m_sprite);

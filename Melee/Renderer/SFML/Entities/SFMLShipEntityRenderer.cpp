@@ -31,8 +31,10 @@ void SFMLShipEntityRenderer::render(sf::RenderTarget& renderer)
     const auto playerPos = m_entity.position();
     const auto playerRadius = m_entity.radius();
 
+    const auto scaleFactor = playerRadius * 2 / std::max(m_shipImage->region.width, m_shipImage->region.height);
+
     m_sprite.setRotation(ToDegrees(playerHeading));
-    m_sprite.setScale(sf::Vector2f{ playerRadius * 2 / m_shipImage->region.width, playerRadius * 2 / m_shipImage->region.height });
+    m_sprite.setScale(sf::Vector2f{ scaleFactor, scaleFactor });
     m_sprite.setPosition(ToSFMLVector(playerPos));
 
     renderer.draw(m_sprite);

@@ -32,8 +32,10 @@ void SFMLWeaponEntityRenderer::render(sf::RenderTarget& renderer)
     const auto projectilePos = m_entity.position();
     const auto projectileRadius = m_entity.radius();
 
+    const auto scaleFactor = projectileRadius * 2 / std::max(m_weaponImage->region.width, m_weaponImage->region.height);
+
     m_sprite.setRotation(ToDegrees(projectileHeading));
-    m_sprite.setScale(sf::Vector2f{ projectileRadius * 2 / m_weaponImage->region.width, projectileRadius * 2 / m_weaponImage->region.height });
+    m_sprite.setScale(sf::Vector2f{ scaleFactor, scaleFactor });
     m_sprite.setPosition(ToSFMLVector(projectilePos));
 
     renderer.draw(m_sprite);

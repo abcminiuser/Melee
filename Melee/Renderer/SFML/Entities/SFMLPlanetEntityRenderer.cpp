@@ -28,7 +28,9 @@ void SFMLPlanetEntityRenderer::render(sf::RenderTarget& renderer)
     const auto planetRadius = m_entity.radius();
     const auto planetPos = m_entity.position();
 
-    m_sprite.setScale(sf::Vector2f{ planetRadius * 2 / m_planetImage->region.width, planetRadius * 2 / m_planetImage->region.height });
+    const auto scaleFactor = planetRadius * 2 / std::max(m_planetImage->region.width, m_planetImage->region.height);
+
+    m_sprite.setScale(sf::Vector2f{ scaleFactor, scaleFactor });
     m_sprite.setPosition(ToSFMLVector(planetPos));
 
     renderer.draw(m_sprite);
