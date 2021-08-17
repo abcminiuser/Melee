@@ -25,10 +25,21 @@ endif ()
 
 add_dependencies (Melee SpritePacker)
 
-add_custom_command (TARGET Melee PRE_BUILD
-                    COMMAND "$<TARGET_FILE:SpritePacker>"
-                    ARGS "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Images" "$<TARGET_FILE_DIR:Melee>/Assets/Images"
-                    COMMENT "Packing image assets...")
+list (APPEND IMAGE_ASSET_FOLDERS
+	${CMAKE_CURRENT_SOURCE_DIR}/Assets/Images=Images
+	${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/uqm-0.8.0-content/base/ships/human/=Human
+)
+
+foreach (IMAGE_FOLDER ${IMAGE_ASSET_FOLDERS})
+	string(REPLACE "=" ";" IMAGE_FOLDER_PARAMS ${IMAGE_FOLDER})
+	list(GET IMAGE_FOLDER_PARAMS 0 IMAGE_FOLDER_PATH)
+	list(GET IMAGE_FOLDER_PARAMS 1 IMAGE_FOLDER_SPRITESHEET_NAME)
+
+	add_custom_command (TARGET Melee POST_BUILD
+	                    COMMAND "$<TARGET_FILE:SpritePacker>"
+	                    ARGS "${IMAGE_FOLDER_PATH}" "$<TARGET_FILE_DIR:Melee>/Assets/Images" "${IMAGE_FOLDER_SPRITESHEET_NAME}"
+	                    COMMENT "Packing '${IMAGE_FOLDER_SPRITESHEET_NAME}' image assets...")
+endforeach ()
 
 add_custom_command (TARGET Melee POST_BUILD
                     COMMAND ${CMAKE_COMMAND}

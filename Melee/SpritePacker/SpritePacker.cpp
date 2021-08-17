@@ -134,10 +134,10 @@ namespace
         return outputSize;
     }
 
-    void WritePackedSprites(const std::list<ImageInfo>& images, const std::filesystem::path& outputFolder, const sf::Vector2u& outputImageSize)
+    void WritePackedSprites(const std::list<ImageInfo>& images, const std::filesystem::path& outputFolder, const std::string& spriteSheetName, const sf::Vector2u& outputImageSize)
     {
-        const auto outputImagePath = outputFolder / "SpriteSheet.png";
-        const auto outputMetadataPath = outputFolder / "SpriteSheet.dat";
+        const auto outputImagePath = outputFolder / (spriteSheetName + ".png");
+        const auto outputMetadataPath = outputFolder / (spriteSheetName + ".dat");
 
         std::ofstream packedImageMetadata(outputMetadataPath);
 
@@ -196,15 +196,16 @@ namespace
 
 int main(int argc, char** argv)
 {
-    if (argc != 3)
+    if (argc != 4)
     {
         std::cout << "Sprite sheet packer.\n";
-        std::cout << "\tUsage: " << argv[0] << " {Input Images Path} {Output Images Path}\n";
+        std::cout << "\tUsage: " << argv[0] << " {Input Images Path} {Output Images Path} {Sprite Sheet Name}\n";
         exit(1);
     }
 
     const auto inputFolder = std::filesystem::path(argv[1]);
     const auto outputFolder = std::filesystem::path(argv[2]);
+    const auto spriteSheetName = argv[3];
 
     std::filesystem::create_directories(outputFolder);
 
@@ -217,7 +218,7 @@ int main(int argc, char** argv)
 
     // Write the final sprite sheet out to the output folder.
     if (outputImageSize.x && outputImageSize.y)
-        WritePackedSprites(images, outputFolder, outputImageSize);
+        WritePackedSprites(images, outputFolder, spriteSheetName, outputImageSize);
 
     // Any images rejected for packing should just be saved as-is to the output folder.
     WriteRejectedSprites(images, outputFolder);
