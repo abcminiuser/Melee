@@ -11,9 +11,7 @@ namespace
 {
     const std::map<WeaponEntity::VisualType, std::string> kWeaponAssetNames
         {
-            { WeaponEntity::VisualType::Race1Missile, "race1missile" },
-            { WeaponEntity::VisualType::Race1Mine,    "race1mine" },
-            { WeaponEntity::VisualType::Race2Missile, "race2missile" },
+            { WeaponEntity::VisualType::HumanMissile, "saturn-big-000" },
         };
 }
 
@@ -21,7 +19,7 @@ SFMLWeaponEntityRenderer::SFMLWeaponEntityRenderer(WeaponEntity& entity)
     : m_entity(entity)
     , m_weaponImage(SFMLAssetLoader::Instance().getTexture(kWeaponAssetNames.at(entity.visualType())))
 {
-    m_sprite.setTexture(m_weaponImage->texture);
+    m_sprite.setTexture(*m_weaponImage->texture);
     m_sprite.setTextureRect(m_weaponImage->region);
     m_sprite.setOrigin(sf::Vector2f{ m_weaponImage->region.width / 2.0f, m_weaponImage->region.height / 2.0f });
 }

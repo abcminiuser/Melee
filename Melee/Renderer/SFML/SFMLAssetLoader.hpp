@@ -25,8 +25,8 @@ namespace Melee
     public:
         struct Texture
         {
-            sf::Texture         texture;
-            sf::IntRect         region;
+            std::shared_ptr<sf::Texture>    texture;
+            sf::IntRect                     region;
         };
 
         struct Font

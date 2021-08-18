@@ -7,9 +7,9 @@ using namespace Melee;
 
 SFMLAsteroidEntityRenderer::SFMLAsteroidEntityRenderer(AsteroidEntity& entity)
     : m_entity(entity)
-    , m_asteroidImage(SFMLAssetLoader::Instance().getTexture("asteroid"))
+    , m_asteroidImage(SFMLAssetLoader::Instance().getTexture("asteroid-big-000"))
 {
-    m_sprite.setTexture(m_asteroidImage->texture);
+    m_sprite.setTexture(*m_asteroidImage->texture);
     m_sprite.setTextureRect(m_asteroidImage->region);
     m_sprite.setOrigin(sf::Vector2f{ m_asteroidImage->region.width / 2.0f, m_asteroidImage->region.height / 2.0f });
 }

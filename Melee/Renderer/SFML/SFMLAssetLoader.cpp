@@ -23,6 +23,9 @@ SFMLAssetLoader::SFMLAssetLoader()
         if (asset.path().extension() != ".png")
             continue;
 
+        auto texture = std::make_shared<sf::Texture>();
+        texture->loadFromFile(asset.path().string());
+
         if (std::ifstream metadata(asset.path().parent_path() / (asset.path().stem().string() + ".dat")); metadata.is_open())
         {
             std::string line;
@@ -46,7 +49,7 @@ SFMLAssetLoader::SFMLAssetLoader()
 
                 auto cachedEntry = std::make_shared<Texture>();
 
-                cachedEntry->texture.loadFromFile(asset.path().string());
+                cachedEntry->texture = texture;
 
                 for (auto* coordinate : { &cachedEntry->region.left, &cachedEntry->region.top, &cachedEntry->region.width, &cachedEntry->region.height })
                     *coordinate = std::stoi(NextField());
@@ -60,9 +63,9 @@ SFMLAssetLoader::SFMLAssetLoader()
 
             auto cachedEntry = std::make_shared<Texture>();
 
-            cachedEntry->texture.loadFromFile(asset.path().string());
+            cachedEntry->texture = texture;
 
-            const auto textureSize = cachedEntry->texture.getSize();
+            const auto textureSize = cachedEntry->texture->getSize();
 
             cachedEntry->region = { 0, 0, static_cast<int>(textureSize.x), static_cast<int>(textureSize.y) };
 

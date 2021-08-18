@@ -11,8 +11,7 @@ namespace
 {
     const std::map<ShipEntity::VisualType, std::string> kShipAssetNames
         {
-            { ShipEntity::VisualType::Race1Ship, "race1ship" },
-            { ShipEntity::VisualType::Race2Ship, "race2ship" },
+            { ShipEntity::VisualType::Human, "cruiser-big-000" },
         };
 }
 
@@ -20,7 +19,7 @@ SFMLShipEntityRenderer::SFMLShipEntityRenderer(ShipEntity& entity)
     : m_entity(entity)
     , m_shipImage(SFMLAssetLoader::Instance().getTexture(kShipAssetNames.at(entity.visualType())))
 {
-    m_sprite.setTexture(m_shipImage->texture);
+    m_sprite.setTexture(*m_shipImage->texture);
     m_sprite.setTextureRect(m_shipImage->region);
     m_sprite.setOrigin(sf::Vector2f{ m_shipImage->region.width / 2.0f, m_shipImage->region.height / 2.0f });
 }

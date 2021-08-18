@@ -11,8 +11,8 @@
 #include "Entities/PlanetEntity.hpp"
 #include "Entities/ShipEntity.hpp"
 #include "Entities/WeaponEntity.hpp"
-#include "Entities/Races/Race1ShipEntity.hpp"
-#include "Entities/Races/Race2ShipEntity.hpp"
+
+#include "Entities/Races/HumanShipEntity.hpp"
 
 #include <deque>
 #include <forward_list>

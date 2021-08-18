@@ -19,10 +19,8 @@ add_library (Engine
     Entities/ShipEntity.hpp
     Entities/WeaponEntity.cpp
     Entities/WeaponEntity.hpp
-    Entities/Races/Race1ShipEntity.cpp
-    Entities/Races/Race1ShipEntity.hpp
-    Entities/Races/Race2ShipEntity.cpp
-    Entities/Races/Race2ShipEntity.hpp
+    Entities/Races/HumanShipEntity.cpp
+    Entities/Races/HumanShipEntity.hpp
 
     Generators/AsteroidGenerator.cpp
     Generators/AsteroidGenerator.hpp

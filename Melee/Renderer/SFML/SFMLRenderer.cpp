@@ -58,7 +58,7 @@ SFMLRenderer::SFMLRenderer(Engine& engine)
 
     const auto playfieldSize = m_engine.getPlayfieldSize();
 
-    m_backgroundSprite.setTexture(m_backgroundTexture->texture);
+    m_backgroundSprite.setTexture(*m_backgroundTexture->texture);
     m_backgroundSprite.setTextureRect(m_backgroundTexture->region);
     m_backgroundSprite.setScale(sf::Vector2f{ playfieldSize / m_backgroundTexture->region.width, playfieldSize / m_backgroundTexture->region.height });
 }

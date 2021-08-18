@@ -10,9 +10,7 @@ namespace Melee
     public:
         enum class VisualType
         {
-            Race1Missile,
-            Race1Mine,
-            Race2Missile,
+            HumanMissile,
         };
 
         struct WeaponProperties : public Properties
@@ -24,7 +22,7 @@ namespace Melee
                 mass_kg = 1000;
             }
 
-            VisualType visualType = VisualType::Race1Missile;
+            VisualType visualType = VisualType::HumanMissile;
             uint32_t   firingForce_N = 20000;
             uint32_t   maxAge_ms = 2000;
             uint8_t    damage = 1;
@@ -52,7 +50,7 @@ namespace Melee
         void                        updateTargetLock(Engine& engine);
 
     private:
-        VisualType                  m_visualType = VisualType::Race1Missile;
+        VisualType                  m_visualType = VisualType::HumanMissile;
 
         uint32_t                    m_maxAge_ms = 0;
         uint8_t                     m_damage = 0;

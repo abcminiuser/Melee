@@ -21,10 +21,10 @@ int main(int argc, char* argv[])
     SFMLRenderer      renderer(engine);
     SFMLAudio         audio(engine);
 
-    auto player1 = std::make_shared<Race1ShipEntity>(Point{ kPlayfieldSize * .2f, kPlayfieldSize * .2f });
+    auto player1 = std::make_shared<HumanShipEntity>(Point{ kPlayfieldSize * .2f, kPlayfieldSize * .2f });
     engine.addEntity(player1);
 
-    auto player2 = std::make_shared<Race2ShipEntity>(Point{ kPlayfieldSize * .1f, kPlayfieldSize * .1f });
+    auto player2 = std::make_shared<HumanShipEntity>(Point{ kPlayfieldSize * .1f, kPlayfieldSize * .1f });
     engine.addEntity(player2);
 
     engine.update(0);

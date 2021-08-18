@@ -5,18 +5,20 @@
 
 namespace Melee
 {
-    class Race2ShipEntity : public ShipEntity
+    class HumanShipEntity : public ShipEntity
     {
     public:
-        explicit    Race2ShipEntity(const Point& position);
-        virtual     ~Race2ShipEntity() = default;
+        explicit    HumanShipEntity(const Point& position);
+        virtual     ~HumanShipEntity() = default;
 
     protected:
+        void        onEngineExhaustGenerated(Engine& engine) override;
         void        onPrimaryWeaponFired(Engine& engine) override;
         void        onSpecialWeaponFired(Engine& engine) override;
 
     private:
         static ShipEntity::ShipProperties		MakeShipProperties();
         static WeaponEntity::WeaponProperties	MakePrimaryWeaponProperties();
+        static WeaponEntity::WeaponProperties	MakeSpecialWeaponProperties();
     };
 }

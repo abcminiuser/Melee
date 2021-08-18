@@ -22,13 +22,12 @@ namespace Melee
 
         enum class VisualType
         {
-            Race1Ship,
-            Race2Ship,
+            Human,
         };
 
         struct ShipProperties : public Properties
         {
-            VisualType  visualType            = VisualType::Race1Ship;
+            VisualType  visualType            = VisualType::Human;
 
             float       engineForce_N         = 0;
             float       rotation_degPerSec    = 0;
@@ -65,6 +64,7 @@ namespace Melee
         void                        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
     protected:
+        virtual void                onEngineExhaustGenerated(Engine& engine) = 0;
         virtual void                onPrimaryWeaponFired(Engine& engine) = 0;
         virtual void                onSpecialWeaponFired(Engine& engine) = 0;
 
@@ -87,7 +87,7 @@ namespace Melee
             };
         };
 
-        VisualType                  m_visualType = VisualType::Race1Ship;
+        VisualType                  m_visualType = VisualType::Human;
         float                       m_engineForce_N = 0;
         float                       m_rotation_degPerSec = 0;
         uint32_t                    m_maxHealth = 0;

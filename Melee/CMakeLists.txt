@@ -27,7 +27,9 @@ add_dependencies (Melee SpritePacker)
 
 list (APPEND IMAGE_ASSET_FOLDERS
 	${CMAKE_CURRENT_SOURCE_DIR}/Assets/Images=Images
+	${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/uqm-0.8.0-content/base/planets/=Planets
 	${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/uqm-0.8.0-content/base/ships/human/=Human
+	${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/uqm-0.8.0-content/base/battle/=Battle
 )
 
 foreach (IMAGE_FOLDER ${IMAGE_ASSET_FOLDERS})

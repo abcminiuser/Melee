@@ -17,8 +17,7 @@ namespace
 
     static const std::map<ShipEntity::VisualType, std::string> kRaceNames
     {
-        { ShipEntity::VisualType::Race1Ship, "Race 1" },
-        { ShipEntity::VisualType::Race2Ship, "Race 2" },
+        { ShipEntity::VisualType::Human, "Earthling" },
     };
 }
 

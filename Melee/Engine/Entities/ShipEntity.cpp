@@ -90,10 +90,7 @@ void ShipEntity::update(Engine& engine, uint32_t msElapsed)
 
         m_thrustExhaustTimer.add(msElapsed);
         if (m_thrustExhaustTimer.expired())
-        {
-            auto exhaustEntity = std::make_shared<ExhaustEntity>(shared_from_this(), ExhaustEntity::ExhaustProperties{}, m_position, m_velocity + -m_acceleration);
-            engine.addEntity(exhaustEntity, Engine::InsertionOrder::Bottom);
-        }
+            onEngineExhaustGenerated(engine);
     }
     else
     {
