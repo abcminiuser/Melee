@@ -17,7 +17,7 @@ HumanShipEntity::HumanShipEntity(const Point& position)
 
 void HumanShipEntity::onEngineExhaustGenerated(Engine& engine)
 {
-    const auto spawnLocation = m_position + (-m_heading * m_radius_km);
+    const auto spawnLocation = m_position + (-m_heading * (m_radius_km - 2));
 
     auto exhaustEntity = std::make_shared<ExhaustEntity>(shared_from_this(), ExhaustEntity::ExhaustProperties{}, spawnLocation, m_velocity);
     engine.addEntity(exhaustEntity, Engine::InsertionOrder::Bottom);
