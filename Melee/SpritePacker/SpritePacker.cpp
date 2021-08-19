@@ -74,6 +74,7 @@ namespace
             }
 
             // Sort the free spaces smallest first, so we always try to pick the smallest free space that will accommodate our new image.
+            freeSpaces.remove_if([](const auto& space) { return !space.width || !space.height; });
             freeSpaces.sort([](const auto& space1, const auto& space2) -> bool { return std::min(space1.width, space1.height) < std::min(space2.width, space2.height); });
 
             const auto foundSpace = std::find_if(freeSpaces.begin(), freeSpaces.end(), [&](const auto& space) { return (space.width >= imageInfo.size.x) && (space.height >= imageInfo.size.y); });
@@ -101,7 +102,7 @@ namespace
                     // rect goes below it.
                     if (imageInfo.size.y > outputSize.y)
                         freeSpaces.push_back({ 0, outputSize.y, outputSize.x, imageInfo.size.y - outputSize.y });
-                    else if ((imageInfo.size.x < outputSize.x))
+                    else if ((imageInfo.size.y < outputSize.y))
                         freeSpaces.push_back({ outputSize.x, imageInfo.size.y, imageInfo.size.x, outputSize.y - imageInfo.size.y });
                 }
             }
@@ -111,15 +112,25 @@ namespace
 
                 imageInfo.packPosition = sf::Vector2u(foundSpace->left, foundSpace->top);
 
-                // Check if we will have any remaining space rect to right of the new image, if so add a new space rect.
-                if (foundSpace->width > imageInfo.size.x)
-                    freeSpaces.push_back({ foundSpace->left + imageInfo.size.x, foundSpace->top, foundSpace->width - imageInfo.size.x, foundSpace->height });
-
-                // Check if we will have any remaining space rect below the new image, if so add a new space rect.
-                if (foundSpace->height > imageInfo.size.y)
-                    freeSpaces.push_back({ foundSpace->left, foundSpace->top + imageInfo.size.y, foundSpace->width, foundSpace->height - imageInfo.size.y });
-
+                const auto insertionSpace = *foundSpace;
                 freeSpaces.erase(foundSpace);
+
+                // We need to split the remaining free space (if any) after inserting this image. We want to split the remaining space
+                // to give the largest free area rects post-split.
+
+                const size_t freeAreaRight = (insertionSpace.width <= imageInfo.size.x) ? 0 : (insertionSpace.width - imageInfo.size.x) * insertionSpace.height;
+                const size_t freeAreaBelow = (insertionSpace.height <= imageInfo.size.y) ? 0 : insertionSpace.width * (insertionSpace.height - imageInfo.size.y);
+
+                if (freeAreaRight > freeAreaBelow)
+                {
+                    freeSpaces.push_back({ insertionSpace.left + imageInfo.size.x, insertionSpace.top, insertionSpace.width - imageInfo.size.x, insertionSpace.height });
+                    freeSpaces.push_back({ insertionSpace.left, insertionSpace.top + imageInfo.size.y, imageInfo.size.x, insertionSpace.height - imageInfo.size.y });
+                }
+                else
+                {
+                    freeSpaces.push_back({ insertionSpace.left, insertionSpace.top + imageInfo.size.y, insertionSpace.width, insertionSpace.height - imageInfo.size.y });
+                    freeSpaces.push_back({ insertionSpace.left + imageInfo.size.x, insertionSpace.top, insertionSpace.width - imageInfo.size.x, imageInfo.size.y });
+                }
             }
 
             // Bump output sheet size if this asset's pack position exceeds the current bounds.
@@ -205,7 +216,7 @@ int main(int argc, char** argv)
 
     const auto inputFolder = std::filesystem::path(argv[1]);
     const auto outputFolder = std::filesystem::path(argv[2]);
-    const auto spriteSheetName = argv[3];
+    const auto spriteSheetName = std::string(argv[3]);
 
     std::filesystem::create_directories(outputFolder);
 
