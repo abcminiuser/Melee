@@ -39,7 +39,11 @@ void WeaponEntity::update(Engine& engine, uint32_t msElapsed)
     if (m_homing)
     {
         if (m_lockedTarget.expired())
-            updateTargetLock(engine);
+        {
+            auto [distanceSquared, targetEntity] = engine.closestEntity(*this, [this](const Entity& other) { return other.type() == Entity::Type::Ship && other.targetable() && &other != parentEntity().get(); });
+
+            m_lockedTarget = targetEntity;
+        }
 
         m_rotationTimer.add(msElapsed);
 
@@ -81,25 +85,4 @@ void WeaponEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherE
     engine.addEntity(explosionEntity, Engine::InsertionOrder::Bottom);
 
     Entity::collide(engine, otherEntity, otherEntityState);
-}
-
-void WeaponEntity::updateTargetLock(Engine& engine)
-{
-    float minDistanceSquared = std::numeric_limits<float>::max();
-
-    for (const auto& entity : engine.getEntities())
-    {
-        if (entity->type() != Entity::Type::Ship)
-            continue;
-
-        if (entity == this->parentEntity())
-            continue;
-
-        const auto distanceToTargetSquared = (entity->position() - m_position).lengthSquared();
-        if (distanceToTargetSquared > minDistanceSquared)
-            continue;
-
-        m_lockedTarget = entity;
-        minDistanceSquared = distanceToTargetSquared;
-    }
 }

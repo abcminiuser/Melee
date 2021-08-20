@@ -6,7 +6,7 @@ using namespace Melee;
 
 namespace
 {
-    constexpr auto kMaxMines = 5;
+    constexpr auto kMaxLaserTargetDistance = 10000;
 }
 
 HumanShipEntity::HumanShipEntity(const Point& position)
@@ -23,17 +23,32 @@ void HumanShipEntity::onEngineExhaustGenerated(Engine& engine)
     engine.addEntity(exhaustEntity, Engine::InsertionOrder::Bottom);
 }
 
-void HumanShipEntity::onPrimaryWeaponFired(Engine& engine)
+bool HumanShipEntity::onPrimaryWeaponFired(Engine& engine)
 {
-	const auto spawnLocation = m_position + (m_heading * m_radius_km);
+    const auto spawnLocation = m_position + (m_heading * m_radius_km);
 
     auto weaponEntity = std::make_shared<WeaponEntity>(shared_from_this(), MakePrimaryWeaponProperties(), spawnLocation, m_velocity, m_heading);
     engine.addEntity(weaponEntity);
+
+    return true;
 }
 
-void HumanShipEntity::onSpecialWeaponFired(Engine& engine)
+bool HumanShipEntity::onSpecialWeaponFired(Engine& engine)
 {
-	// TODO:
+    auto [distanceSquared, targetEntity] = engine.closestEntity(*this, [this](const Entity& other) { return (other.type() == Entity::Type::Ship || other.type() == Entity::Type::Asteroid) && &other != parentEntity().get(); });
+
+    if (distanceSquared > (kMaxLaserTargetDistance * kMaxLaserTargetDistance))
+        return false;
+
+    // We need two entities, since this is a laser; a collidable one (which will damage instantly) and a non-collidable one (which will provide the visual feedback).
+
+    auto weaponEntity = std::make_shared<WeaponEntity>(shared_from_this(), MakeSpecialWeaponProperties(true), targetEntity->position());
+    engine.addEntity(weaponEntity);
+
+    auto weaponEntity2 = std::make_shared<WeaponEntity>(shared_from_this(), MakeSpecialWeaponProperties(false), targetEntity->position());
+    engine.addEntity(weaponEntity2);
+
+    return true;
 }
 
 ShipEntity::ShipProperties HumanShipEntity::MakeShipProperties()
@@ -44,10 +59,14 @@ ShipEntity::ShipProperties HumanShipEntity::MakeShipProperties()
     shipProps.mass_kg = 9.718e5;
     shipProps.engineForce_N = 8e3;
     shipProps.rotation_degPerSec = 100;
-    shipProps.maxVelocity_km_s = 40;
-    shipProps.maxHealth = 2;
-    shipProps.maxEnergy = 10;
+    shipProps.maxVelocity_km_s = 24;
+    shipProps.maxHealth = 18;
+    shipProps.maxEnergy = 18;
     shipProps.radius_km = 1000;
+    shipProps.primaryEnergyCost = 9;
+    shipProps.specialEnergyCost = 4;
+    shipProps.primaryFireRate_ms = 3000;
+    shipProps.specialFireRate_ms = 300;
 
     return shipProps;
 }
@@ -57,18 +76,22 @@ WeaponEntity::WeaponProperties HumanShipEntity::MakePrimaryWeaponProperties()
     WeaponEntity::WeaponProperties weaponProps = {};
 
     weaponProps.visualType = WeaponEntity::VisualType::HumanMissile;
+    weaponProps.damage = 4;
     weaponProps.homing = true;
     weaponProps.rotation_degPerSec = 120;
-    weaponProps.damage = 1;
+    weaponProps.maxAge_ms = 8000;
 
     return weaponProps;
 }
 
-WeaponEntity::WeaponProperties HumanShipEntity::MakeSpecialWeaponProperties()
+WeaponEntity::WeaponProperties HumanShipEntity::MakeSpecialWeaponProperties(bool collidable)
 {
     WeaponEntity::WeaponProperties weaponProps = {};
 
-    // TODO:
+    weaponProps.visualType = WeaponEntity::VisualType::HumanLaser;
+    weaponProps.damage = 1;
+    weaponProps.maxAge_ms = 100;
+    weaponProps.collidable = collidable;
 
     return weaponProps;
 }

@@ -3,6 +3,7 @@
 #include "Renderer/SFML/SFMLUtils.hpp"
 #include "Engine/Engine.hpp"
 
+#include <array>
 #include <map>
 
 using namespace Melee;
@@ -12,6 +13,7 @@ namespace
     const std::map<WeaponEntity::VisualType, std::string> kWeaponAssetNames
         {
             { WeaponEntity::VisualType::HumanMissile, "saturn-big-000" },
+            { WeaponEntity::VisualType::HumanLaser,   "empty" },
         };
 }
 
@@ -36,5 +38,18 @@ void SFMLWeaponEntityRenderer::render(sf::RenderTarget& renderer)
     m_sprite.setScale(sf::Vector2f{ scaleFactor, scaleFactor });
     m_sprite.setPosition(ToSFMLVector(projectilePos));
 
-    renderer.draw(m_sprite);
+    if (m_entity.visualType() == WeaponEntity::VisualType::HumanLaser)
+    {
+        std::array<sf::Vertex, 2> line;
+        line[0].position = ToSFMLVector(m_entity.parentEntity()->position());
+        line[0].color = sf::Color::White;
+        line[1].position = ToSFMLVector(m_entity.position());
+        line[1].color = sf::Color::White;
+
+        renderer.draw(line.data(), line.size(), sf::Lines);
+    }
+    else
+    {
+        renderer.draw(m_sprite);
+    }
 }

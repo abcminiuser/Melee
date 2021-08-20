@@ -33,12 +33,14 @@ public:
             m_elapsed = std::min(m_elapsed, m_maxValue);
     }
 
-    bool        expired() noexcept
+    bool        expired(bool decrement = true) noexcept
     {
         if (m_elapsed < m_interval)
             return false;
 
-        m_elapsed -= m_interval;
+        if (decrement)
+            m_elapsed -= m_interval;
+
         return true;
     }
 

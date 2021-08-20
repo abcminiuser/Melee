@@ -100,6 +100,31 @@ bool Engine::checkCollison(const std::shared_ptr<Entity>& entity1, const std::sh
 	return (distanceBetweenEntitiesSquared < (minCollisionRadius * minCollisionRadius));
 }
 
+std::pair<float, const std::shared_ptr<Entity>> Engine::closestEntity(Entity& originEntity, const std::function<bool(const Entity&)> filter)
+{
+    float minDistanceSquared = std::numeric_limits<float>::max();
+
+    std::shared_ptr<Entity> closestEntity;
+
+    for (const auto& entity : m_entities)
+    {
+        if (entity.get() == &originEntity)
+            continue;
+
+        if (filter && !filter(*entity))
+            continue;
+
+        const auto distanceToTargetSquared = (entity->position() - originEntity.position()).lengthSquared();
+        if (distanceToTargetSquared < minDistanceSquared)
+        {
+            minDistanceSquared = distanceToTargetSquared;
+            closestEntity = entity;
+        }
+    }
+
+    return std::make_pair(minDistanceSquared, closestEntity);
+}
+
 void Engine::checkForEntityCollisions()
 {
     const auto totalEntities = m_entities.size();

@@ -11,6 +11,7 @@ namespace Melee
         enum class VisualType
         {
             HumanMissile,
+            HumanLaser,
         };
 
         struct WeaponProperties : public Properties
@@ -45,9 +46,6 @@ namespace Melee
     public:
         void                        update(Engine& engine, uint32_t msElapsed) override;
         void                        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
-
-    private:
-        void                        updateTargetLock(Engine& engine);
 
     private:
         VisualType                  m_visualType = VisualType::HumanMissile;

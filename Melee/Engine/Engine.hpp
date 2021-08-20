@@ -16,6 +16,7 @@
 
 #include <deque>
 #include <forward_list>
+#include <functional>
 #include <utility>
 #include <vector>
 
@@ -48,7 +49,8 @@ namespace Melee
         void        addEntity(const std::shared_ptr<Entity>& entity, InsertionOrder zOrder = InsertionOrder::Top) noexcept;
         void        removeEntity(const std::shared_ptr<Entity>& entity) noexcept;
 
-        bool		checkCollison(const std::shared_ptr<Entity>& entity1, const std::shared_ptr<Entity>& entity2) const noexcept;
+        bool	    checkCollison(const std::shared_ptr<Entity>& entity1, const std::shared_ptr<Entity>& entity2) const noexcept;
+        std::pair<float, const std::shared_ptr<Entity>> closestEntity(Entity& originEntity, const std::function<bool(const Entity&)> filter);
 
     private:
         void        handleDeferredEntityAddRemove();

@@ -65,8 +65,8 @@ namespace Melee
 
     protected:
         virtual void                onEngineExhaustGenerated(Engine& engine) = 0;
-        virtual void                onPrimaryWeaponFired(Engine& engine) = 0;
-        virtual void                onSpecialWeaponFired(Engine& engine) = 0;
+        virtual bool                onPrimaryWeaponFired(Engine& engine) = 0;
+        virtual bool                onSpecialWeaponFired(Engine& engine) = 0;
 
         void                        applyDamage(int amount);
         void                        consumeEnergy(int amount);

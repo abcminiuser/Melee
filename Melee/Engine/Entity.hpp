@@ -28,6 +28,7 @@ namespace Melee
             uint32_t    maxVelocity_km_s = 0;
             bool        collidable = true;
             bool        wrappable = true;
+            bool        targetable = true;
         };
 
         struct PreCollisionState
@@ -53,6 +54,7 @@ namespace Melee
         auto                            maxVelocity() const         { return m_maxVelocity_km_s; }
         auto                            collidable() const          { return m_collidable; }
         auto                            wrappable() const           { return m_wrappable; }
+        auto                            targetable() const          { return m_targetable; }
 
         Point                           position() const			{ return m_position; }
         Vector2d                        heading() const				{ return m_heading; }
@@ -75,6 +77,7 @@ namespace Melee
         uint32_t                        m_maxVelocity_km_s = 0;
         bool                            m_collidable = true;
         bool                            m_wrappable = true;
+        bool                            m_targetable = true;
 
         Point                           m_position;
         Vector2d                        m_heading = { 1, 0 };

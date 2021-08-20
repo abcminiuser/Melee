@@ -13,12 +13,12 @@ namespace Melee
 
     protected:
         void        onEngineExhaustGenerated(Engine& engine) override;
-        void        onPrimaryWeaponFired(Engine& engine) override;
-        void        onSpecialWeaponFired(Engine& engine) override;
+        bool        onPrimaryWeaponFired(Engine& engine) override;
+        bool        onSpecialWeaponFired(Engine& engine) override;
 
     private:
         static ShipEntity::ShipProperties		MakeShipProperties();
         static WeaponEntity::WeaponProperties	MakePrimaryWeaponProperties();
-        static WeaponEntity::WeaponProperties	MakeSpecialWeaponProperties();
+        static WeaponEntity::WeaponProperties	MakeSpecialWeaponProperties(bool collidable);
     };
 }

@@ -9,7 +9,7 @@ using namespace Melee;
 namespace
 {
     constexpr uint32_t kRotationIntervalMs = 10;
-    constexpr uint32_t kThrustExhaustIntervalMs = 100;
+    constexpr uint32_t kThrustExhaustIntervalMs = 200;
 }
 
 ShipEntity::ShipEntity(const ShipProperties& properties, const Point& position)
@@ -99,19 +99,23 @@ void ShipEntity::update(Engine& engine, uint32_t msElapsed)
     }
 
     m_primaryFireTimer.add(msElapsed);
-    if (m_flags.test(Flags::FirePrimaryActive) && m_energy >= m_primaryEnergyCost && m_primaryFireTimer.expired())
+    if (m_flags.test(Flags::FirePrimaryActive) && m_energy >= m_primaryEnergyCost && m_primaryFireTimer.expired(false))
     {
-        onPrimaryWeaponFired(engine);
-
-        consumeEnergy(m_primaryEnergyCost);
+        if (onPrimaryWeaponFired(engine))
+        {
+            consumeEnergy(m_primaryEnergyCost);
+            m_primaryFireTimer.expired(true);
+        }
     }
 
     m_specialFireTimer.add(msElapsed);
-    if (m_flags.test(Flags::FireSpecialActive) && m_energy >= m_specialEnergyCost && m_specialFireTimer.expired())
+    if (m_flags.test(Flags::FireSpecialActive) && m_energy >= m_specialEnergyCost && m_specialFireTimer.expired(false))
     {
-        onSpecialWeaponFired(engine);
-
-        consumeEnergy(m_specialEnergyCost);
+        if (onSpecialWeaponFired(engine))
+        {
+            consumeEnergy(m_specialEnergyCost);
+            m_specialFireTimer.expired(true);
+        }
     }
 
     m_energyRechargeTimer.add(msElapsed);
