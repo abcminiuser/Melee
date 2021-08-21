@@ -12,7 +12,6 @@ namespace Melee
         virtual     ~HumanShipEntity() = default;
 
     protected:
-        void        onEngineExhaustGenerated(Engine& engine) override;
         bool        onPrimaryWeaponFired(Engine& engine) override;
         bool        onSpecialWeaponFired(Engine& engine) override;
 

@@ -8,8 +8,7 @@ namespace
 {
     const std::map<WeaponEntity::VisualType, std::string> kWeaponEffectAssetNames
     {
-        { WeaponEntity::VisualType::HumanMissile, "laser-shot-3" },
-        { WeaponEntity::VisualType::HumanLaser, "laser-shot-3" },
+        { WeaponEntity::VisualType::Laser, "laser-shot-3" },
     };
 }
 
@@ -59,7 +58,9 @@ void SFMLAudio::entityAdded(Engine& engine, const std::shared_ptr<Entity>& entit
         {
             const auto weaponEntity = std::dynamic_pointer_cast<WeaponEntity>(entity);
 
-            playSoundEffect(kWeaponEffectAssetNames.at(weaponEntity->visualType()), entity->position());
+            if (auto soundEffect = kWeaponEffectAssetNames.find(weaponEntity->visualType()); soundEffect != kWeaponEffectAssetNames.end())
+                playSoundEffect(soundEffect->second, entity->position());
+
             break;
         }
 

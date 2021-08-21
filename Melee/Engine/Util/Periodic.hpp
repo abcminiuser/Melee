@@ -21,9 +21,9 @@ public:
         m_maxValue = maxValue;
     }
 
-    void        reset() noexcept
+    void        reset(bool expired = false) noexcept
     {
-        m_elapsed = 0;
+        m_elapsed = expired ? m_interval : 0;
     }
 
     void        add(uint32_t ms) noexcept

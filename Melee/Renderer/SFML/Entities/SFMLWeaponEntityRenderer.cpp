@@ -12,8 +12,8 @@ namespace
 {
     const std::map<WeaponEntity::VisualType, std::string> kWeaponAssetNames
         {
+            { WeaponEntity::VisualType::Laser,        "empty" },
             { WeaponEntity::VisualType::HumanMissile, "saturn-big-000" },
-            { WeaponEntity::VisualType::HumanLaser,   "empty" },
         };
 }
 
@@ -38,7 +38,7 @@ void SFMLWeaponEntityRenderer::render(sf::RenderTarget& renderer)
     m_sprite.setScale(sf::Vector2f{ scaleFactor, scaleFactor });
     m_sprite.setPosition(ToSFMLVector(projectilePos));
 
-    if (m_entity.visualType() == WeaponEntity::VisualType::HumanLaser)
+    if (m_entity.visualType() == WeaponEntity::VisualType::Laser)
     {
         std::array<sf::Vertex, 2> line;
         line[0].position = ToSFMLVector(m_entity.parentEntity()->position());

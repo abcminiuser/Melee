@@ -29,6 +29,7 @@ namespace Melee
             bool        collidable = true;
             bool        wrappable = true;
             bool        targetable = true;
+            uint8_t     collisionDamage = 0;
         };
 
         struct PreCollisionState
@@ -55,6 +56,7 @@ namespace Melee
         auto                            collidable() const          { return m_collidable; }
         auto                            wrappable() const           { return m_wrappable; }
         auto                            targetable() const          { return m_targetable; }
+        auto                            collisionDamage() const     { return m_collisionDamage; }
 
         Point                           position() const			{ return m_position; }
         Vector2d                        heading() const				{ return m_heading; }
@@ -78,6 +80,7 @@ namespace Melee
         bool                            m_collidable = true;
         bool                            m_wrappable = true;
         bool                            m_targetable = true;
+        uint8_t                         m_collisionDamage = 0;
 
         Point                           m_position;
         Vector2d                        m_heading = { 1, 0 };

@@ -71,6 +71,12 @@ namespace Melee
 
         struct PlanetProperties : public Properties
         {
+			PlanetProperties()
+			{
+				collidable = true;
+				collisionDamage = 1;
+			}
+
             VisualType visualType = VisualType::Acid;
         };
 

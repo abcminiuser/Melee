@@ -13,7 +13,6 @@ WeaponEntity::WeaponEntity(const std::shared_ptr<Entity>& parent,const WeaponPro
     : Entity(Entity::Type::Weapon, parent, properties, position)
     , m_visualType(properties.visualType)
     , m_maxAge_ms(properties.maxAge_ms)
-    , m_damage(properties.damage)
     , m_homing(properties.homing)
     , m_rotation_degPerSec(properties.rotation_degPerSec)
     , m_rotationTimer(kRotationIntervalMs)

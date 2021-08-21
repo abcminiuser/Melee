@@ -10,23 +10,23 @@ namespace Melee
     public:
         enum class VisualType
         {
+            Laser,
             HumanMissile,
-            HumanLaser,
         };
 
         struct WeaponProperties : public Properties
         {
             WeaponProperties()
             {
+                collidable = true;
                 wrappable = false;
                 radius_km = 200;
                 mass_kg = 1000;
             }
 
-            VisualType visualType = VisualType::HumanMissile;
+            VisualType visualType = VisualType::Laser;
             uint32_t   firingForce_N = 20000;
             uint32_t   maxAge_ms = 2000;
-            uint8_t    damage = 1;
             bool       homing = false;
             float      rotation_degPerSec = 0;
         };
@@ -38,7 +38,6 @@ namespace Melee
         VisualType                  visualType() const          { return m_visualType; }
 
         auto                        maxAge() const              { return m_maxAge_ms; }
-        auto                        damage() const              { return m_damage; }
 
         uint32_t                    age() const { return m_age; }
 
@@ -48,10 +47,9 @@ namespace Melee
         void                        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
     private:
-        VisualType                  m_visualType = VisualType::HumanMissile;
+        VisualType                  m_visualType = VisualType::Laser;
 
         uint32_t                    m_maxAge_ms = 0;
-        uint8_t                     m_damage = 0;
         bool                        m_homing = false;
         float                       m_rotation_degPerSec = 0;
 

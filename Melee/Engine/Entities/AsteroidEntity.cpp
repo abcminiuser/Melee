@@ -46,17 +46,16 @@ void AsteroidEntity::collide(Engine& engine, const std::shared_ptr<Entity>& othe
         case Entity::Type::Planet:
         case Entity::Type::Explosion:
         case Entity::Type::Weapon:
-        {
-            engine.removeEntity(shared_from_this());
-
-            auto explosionEntity = std::make_shared<ExplosionEntity>(nullptr, ExplosionEntity::ExplosionProperties{}, m_position);
-            engine.addEntity(explosionEntity);
-
-            break;
-        }
-
         case Entity::Type::Exhaust:
             break;
+    }
+
+    if (otherEntity->collisionDamage())
+    {
+        engine.removeEntity(shared_from_this());
+
+        auto explosionEntity = std::make_shared<ExplosionEntity>(nullptr, ExplosionEntity::ExplosionProperties{}, m_position);
+        engine.addEntity(explosionEntity);
     }
 
     Entity::collide(engine, otherEntity, otherEntityState);

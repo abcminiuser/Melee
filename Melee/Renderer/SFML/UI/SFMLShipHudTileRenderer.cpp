@@ -17,7 +17,9 @@ namespace
 
     static const std::map<ShipEntity::VisualType, std::string> kRaceNames
     {
-        { ShipEntity::VisualType::Human, "Earthling" },
+        { ShipEntity::VisualType::Androsynth,           "Androsynth" },
+        { ShipEntity::VisualType::AndrosynthBlazer,     "Androsynth" },
+        { ShipEntity::VisualType::Human,                "Earthling" },
     };
 }
 

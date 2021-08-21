@@ -133,33 +133,30 @@ void ShipEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEnt
         case Entity::Type::Planet:
         case Entity::Type::Ship:
         {
+            // Bonk: colliding with these is an inelastic collision.
+
             m_acceleration = {};
             m_velocity = -m_velocity;
-
-            if (otherEntity->type() == Entity::Type::Planet)
-                applyDamage(1);
-
             break;
         }
 
         case Entity::Type::Weapon:
-        {
-            if (otherEntity->parentEntity() != shared_from_this())
-            {
-                const auto& weaponEntity = std::dynamic_pointer_cast<const WeaponEntity>(otherEntity);
-
-                applyDamage(weaponEntity->damage());
-            }
-
-            break;
-        }
-
         case Entity::Type::Exhaust:
         case Entity::Type::Explosion:
             break;
     }
 
+    applyDamage(otherEntity->collisionDamage());
+
     Entity::collide(engine, otherEntity, otherEntityState);
+}
+
+void ShipEntity::onEngineExhaustGenerated(Engine& engine)
+{
+    const auto spawnLocation = m_position + (-m_heading * (m_radius_km - 1));
+
+    auto exhaustEntity = std::make_shared<ExhaustEntity>(shared_from_this(), ExhaustEntity::ExhaustProperties{}, spawnLocation, m_velocity);
+    engine.addEntity(exhaustEntity, Engine::InsertionOrder::Bottom);
 }
 
 void ShipEntity::applyDamage(int amount)

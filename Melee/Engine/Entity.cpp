@@ -12,6 +12,7 @@ Entity::Entity(Type type, const std::shared_ptr<Entity>& parent, const Propertie
     , m_collidable(properties.collidable)
     , m_wrappable(properties.wrappable)
     , m_targetable(properties.targetable)
+    , m_collisionDamage(properties.collisionDamage)
     , m_position(pos)
 {
 

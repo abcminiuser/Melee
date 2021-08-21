@@ -22,6 +22,8 @@ namespace Melee
 
         enum class VisualType
         {
+        	Androsynth,
+        	AndrosynthBlazer,
             Human,
         };
 
@@ -58,18 +60,18 @@ namespace Melee
         uint32_t                    health() const              { return m_health; }
         uint32_t                    energy() const              { return m_energy; }
 
+        void                        applyDamage(int amount);
+        void                        consumeEnergy(int amount);
+
     // Entity i/f:
     public:
         void                        update(Engine& engine, uint32_t msElapsed) override;
         void                        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
     protected:
-        virtual void                onEngineExhaustGenerated(Engine& engine) = 0;
+        virtual void                onEngineExhaustGenerated(Engine& engine);
         virtual bool                onPrimaryWeaponFired(Engine& engine) = 0;
         virtual bool                onSpecialWeaponFired(Engine& engine) = 0;
-
-        void                        applyDamage(int amount);
-        void                        consumeEnergy(int amount);
 
     protected:
         struct Flags

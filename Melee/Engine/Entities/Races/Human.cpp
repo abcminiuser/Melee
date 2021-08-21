@@ -1,4 +1,4 @@
-#include "HumanShipEntity.hpp"
+#include "Human.hpp"
 
 #include "Engine/Engine.hpp"
 
@@ -13,14 +13,6 @@ HumanShipEntity::HumanShipEntity(const Point& position)
     : ShipEntity(MakeShipProperties(), position)
 {
 
-}
-
-void HumanShipEntity::onEngineExhaustGenerated(Engine& engine)
-{
-    const auto spawnLocation = m_position + (-m_heading * (m_radius_km - 2));
-
-    auto exhaustEntity = std::make_shared<ExhaustEntity>(shared_from_this(), ExhaustEntity::ExhaustProperties{}, spawnLocation, m_velocity);
-    engine.addEntity(exhaustEntity, Engine::InsertionOrder::Bottom);
 }
 
 bool HumanShipEntity::onPrimaryWeaponFired(Engine& engine)
@@ -76,7 +68,7 @@ WeaponEntity::WeaponProperties HumanShipEntity::MakePrimaryWeaponProperties()
     WeaponEntity::WeaponProperties weaponProps = {};
 
     weaponProps.visualType = WeaponEntity::VisualType::HumanMissile;
-    weaponProps.damage = 4;
+    weaponProps.collisionDamage = 4;
     weaponProps.homing = true;
     weaponProps.rotation_degPerSec = 120;
     weaponProps.maxAge_ms = 8000;
@@ -88,8 +80,8 @@ WeaponEntity::WeaponProperties HumanShipEntity::MakeSpecialWeaponProperties(bool
 {
     WeaponEntity::WeaponProperties weaponProps = {};
 
-    weaponProps.visualType = WeaponEntity::VisualType::HumanLaser;
-    weaponProps.damage = 1;
+    weaponProps.visualType = WeaponEntity::VisualType::Laser;
+    weaponProps.collisionDamage = 1;
     weaponProps.maxAge_ms = 100;
     weaponProps.collidable = collidable;
 

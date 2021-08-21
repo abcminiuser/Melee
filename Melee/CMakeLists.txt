@@ -30,6 +30,7 @@ list (APPEND IMAGE_ASSET_FOLDERS
 	${CMAKE_CURRENT_SOURCE_DIR}/Assets/Images=Core
 	${VENDOR_BASE_DIR}/uqm-0.8.0-content/base/planets/=Planets
 	${VENDOR_BASE_DIR}/uqm-0.8.0-content/base/ships/human/=Human
+	${VENDOR_BASE_DIR}/uqm-0.8.0-content/base/ships/androsynth/=Androsynth
 	${VENDOR_BASE_DIR}/uqm-0.8.0-content/base/battle/=Battle
 )
 

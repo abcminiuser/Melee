@@ -12,7 +12,8 @@
 #include "Entities/ShipEntity.hpp"
 #include "Entities/WeaponEntity.hpp"
 
-#include "Entities/Races/HumanShipEntity.hpp"
+#include "Entities/Races/Androsynth.hpp"
+#include "Entities/Races/Human.hpp"
 
 #include <deque>
 #include <forward_list>
