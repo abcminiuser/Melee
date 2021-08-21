@@ -1,9 +1,10 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
+set (VENDOR_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor")
+
 add_subdirectory ("Audio")
 add_subdirectory ("Engine")
 add_subdirectory ("Renderer")
-add_subdirectory ("SpritePacker")
 
 add_executable (Melee
     Main.cpp
@@ -23,9 +24,7 @@ else ()
     target_compile_options (Melee PUBLIC -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion)
 endif ()
 
-add_dependencies (Melee SpritePacker)
-
-set (VENDOR_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor")
+add_dependencies (Melee HoleySheet)
 
 list (APPEND IMAGE_ASSET_FOLDERS
 	${CMAKE_CURRENT_SOURCE_DIR}/Assets/Images=Core
@@ -52,7 +51,7 @@ foreach (IMAGE_FOLDER ${IMAGE_ASSET_FOLDERS})
 	list(GET IMAGE_FOLDER_PARAMS 1 IMAGE_FOLDER_NAME)
 
 	add_custom_command (TARGET Melee POST_BUILD
-	                    COMMAND "$<TARGET_FILE:SpritePacker>"
+	                    COMMAND "$<TARGET_FILE:HoleySheet>"
 	                    ARGS "${IMAGE_FOLDER_PATH}" "$<TARGET_FILE_DIR:Melee>/Assets/Images" "${IMAGE_FOLDER_NAME}"
 	                    COMMENT "Packing '${IMAGE_FOLDER_NAME}' image assets...")
 endforeach ()

@@ -209,7 +209,7 @@ int main(int argc, char** argv)
 {
     if (argc != 4)
     {
-        std::cout << "Sprite sheet packer.\n";
+        std::cout << "Holey Sheet: Sprite sheet packer, by Dean Camera.\n";
         std::cout << "\tUsage: " << argv[0] << " {Input Images Path} {Output Images Path} {Sprite Sheet Name}\n";
         exit(1);
     }

@@ -22,13 +22,11 @@ if (MSVC)
     list (APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Vendor)
 endif ()
 
-project ("Melee")
+project ("HoleySheet")
 
-add_subdirectory ("Vendor/holeysheet-3e37194d")
+add_subdirectory ("HoleySheet")
 
-add_subdirectory ("Melee")
-
-set(CPACK_PACKAGE_NAME "Melee")
+set(CPACK_PACKAGE_NAME "Holey Sheet")
 set(CPACK_PACKAGE_VERSION "0.0.0")
 set(CPACK_PACKAGE_VENDOR "Dean Camera")
 
