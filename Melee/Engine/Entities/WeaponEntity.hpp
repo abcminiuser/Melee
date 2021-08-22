@@ -12,6 +12,7 @@ namespace Melee
         {
             Laser,
             HumanMissile,
+            AndrosynthBubble,
         };
 
         struct WeaponProperties : public Properties
@@ -47,7 +48,7 @@ namespace Melee
         void                        update(Engine& engine, uint32_t msElapsed) override;
         void                        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
-    private:
+    protected:
         VisualType                  m_visualType = VisualType::Laser;
 
         uint32_t                    m_maxAge_ms = 0;

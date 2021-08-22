@@ -6,7 +6,7 @@ using namespace Melee;
 
 AndrosynthShipEntity::AndrosynthShipEntity(const Point& position)
     : ShipEntity(MakeShipProperties(), position)
-    , m_blazerEnergyRequired(200)
+    , m_blazerEnergyRequired(20)
 {
 
 }
@@ -37,7 +37,10 @@ bool AndrosynthShipEntity::onPrimaryWeaponFired(Engine& engine)
     if (m_blazerMode)
         return false;
 
-    // TODO: Bubbles
+    const auto spawnLocation = m_position + (m_heading * m_radius_km);
+
+    auto weaponEntity = std::make_shared<AndrosynthBubbleWeaponEntity>(shared_from_this(), spawnLocation, m_velocity, m_heading);
+    engine.addEntity(weaponEntity);
 
     return true;
 }
@@ -74,9 +77,40 @@ ShipEntity::ShipProperties AndrosynthShipEntity::MakeShipProperties()
     shipProps.maxHealth = 20;
     shipProps.maxEnergy = 24;
     shipProps.radius_km = 800;
-    shipProps.primaryEnergyCost = 9;
+    shipProps.primaryEnergyCost = 3;
     shipProps.specialEnergyCost = 1;
-    shipProps.primaryFireRate_ms = 3000;
+    shipProps.primaryFireRate_ms = 50;
 
     return shipProps;
+}
+
+// --
+
+AndrosynthBubbleWeaponEntity::AndrosynthBubbleWeaponEntity(const std::shared_ptr<Entity>& parent, const Point& position, const Vector2d& velocity, const Vector2d& heading)
+    : WeaponEntity(parent, MakeWeaponProperties(), position, velocity, heading)
+    , m_bubbleRotator(0, 25)
+{
+
+}
+
+WeaponEntity::WeaponProperties AndrosynthBubbleWeaponEntity::MakeWeaponProperties()
+{
+    WeaponEntity::WeaponProperties weaponProps = {};
+
+    weaponProps.visualType = WeaponEntity::VisualType::AndrosynthBubble;
+    weaponProps.collisionDamage = 2;
+    weaponProps.homing = true;
+    weaponProps.rotation_degPerSec = 30;
+    weaponProps.maxAge_ms = 2000;
+
+    return weaponProps;
+}
+
+void AndrosynthBubbleWeaponEntity::update(Engine& engine, uint32_t msElapsed)
+{
+    WeaponEntity::update(engine, msElapsed);
+
+    m_bubbleRotator.add(msElapsed);
+    if (m_bubbleRotator.expired())
+        m_heading = ((NormalizedRandom() < .5f) ? RotationMatrix(-3) : RotationMatrix(3)) * m_heading;
 }

@@ -12,8 +12,9 @@ namespace
 {
     const std::map<WeaponEntity::VisualType, std::string> kWeaponAssetNames
         {
-            { WeaponEntity::VisualType::Laser,        "empty" },
-            { WeaponEntity::VisualType::HumanMissile, "saturn-big-000" },
+            { WeaponEntity::VisualType::Laser,              "empty" },
+            { WeaponEntity::VisualType::HumanMissile,       "saturn-big-000" },
+            { WeaponEntity::VisualType::AndrosynthBubble,   "bubble-big-000" },
         };
 }
 

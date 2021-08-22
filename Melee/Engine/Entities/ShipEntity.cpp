@@ -162,7 +162,15 @@ void ShipEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEnt
             break;
     }
 
-    applyDamage(otherEntity->collisionDamage());
+    // Collisions will only damage us if:
+    //   - The other entity's parent is not us, and
+    //   - Our parent is not the other entity, and
+    //   - We don't have a parent in common.
+    const bool otherEntityParentIsUs = otherEntity->parentEntity() == shared_from_this();
+    const bool ourParentIsTheOtherEntity = m_parentEntity == otherEntity;
+    const bool parentsInCommon = m_parentEntity && (m_parentEntity == otherEntity->parentEntity());
+    if (!otherEntityParentIsUs && !ourParentIsTheOtherEntity && !parentsInCommon)
+        applyDamage(otherEntity->collisionDamage());
 
     Entity::collide(engine, otherEntity, otherEntityState);
 }
