@@ -22,7 +22,7 @@ namespace Melee
         float           m_minMass_kg = 3.9736e16f;
         float           m_maxMass_kg = 4.9736e16f;
 
-        float           m_minRadius_km = 4000;
+        float           m_minRadius_km = 7000;
         float           m_maxRadius_km = 8000;
 
         uint8_t         m_minDistanceMultiplier = 10;

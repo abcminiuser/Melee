@@ -21,8 +21,6 @@ SFMLShipEntityRenderer::SFMLShipEntityRenderer(ShipEntity& entity)
     : m_entity(entity)
 {
     updateTexture();
-
-    m_sprite.setOrigin(sf::Vector2f{ m_shipImage->region.width / 2.0f, m_shipImage->region.height / 2.0f });
 }
 
 void SFMLShipEntityRenderer::updateTexture()
@@ -32,6 +30,7 @@ void SFMLShipEntityRenderer::updateTexture()
 
     m_sprite.setTexture(*m_shipImage->texture);
     m_sprite.setTextureRect(m_shipImage->region);
+    m_sprite.setOrigin(ToOrigin(m_shipImage->region.width, m_shipImage->region.height));
 }
 
 void SFMLShipEntityRenderer::render(sf::RenderTarget& renderer)
@@ -40,13 +39,11 @@ void SFMLShipEntityRenderer::render(sf::RenderTarget& renderer)
     const auto playerPos = m_entity.position();
     const auto playerRadius = m_entity.radius();
 
-    const auto scaleFactor = playerRadius * 2 / std::max(m_shipImage->region.width, m_shipImage->region.height);
-
     if (m_entity.visualType() != m_cachedVisualType)
         updateTexture();
 
     m_sprite.setRotation(ToDegrees(playerHeading));
-    m_sprite.setScale(sf::Vector2f{ scaleFactor, scaleFactor });
+    m_sprite.setScale(ToScaleFactor(playerRadius, m_shipImage->region.width, m_shipImage->region.height));
     m_sprite.setPosition(ToSFMLVector(playerPos));
 
     renderer.draw(m_sprite);
