@@ -44,6 +44,8 @@ namespace Melee
 
             uint32_t    specialFireRate_ms    = 1000;
             uint32_t    specialEnergyCost     = 5;
+
+            bool        generatesExhaust      = true;
         };
 
     public:
@@ -69,12 +71,12 @@ namespace Melee
         void                        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
     protected:
-        virtual void                onEngineExhaustGenerated(Engine& engine);
         virtual bool                onPrimaryWeaponFired(Engine& engine) = 0;
         virtual bool                onSpecialWeaponFired(Engine& engine) = 0;
+        virtual void                onControlFlagsUpdated() {}
 
     protected:
-        struct Flags
+        struct ControlFlags
         {
             enum
             {
@@ -99,12 +101,13 @@ namespace Melee
         uint32_t                    m_primaryEnergyCost = 0;
         uint32_t                    m_specialFireRate_ms = 0;
         uint32_t                    m_specialEnergyCost = 0;
+        bool                        m_generatesExhaust = true;
 
         float                       m_engineAcceleration_ms2 = 0;
         Matrix2x2                   m_rotationalThrustLeft;
         Matrix2x2                   m_rotationalThrustRight;
 
-        std::bitset<Flags::_Count>  m_flags;
+        std::bitset<ControlFlags::_Count>  m_controlFlags;
 
         Periodic                    m_energyRechargeTimer;
         Periodic                    m_rotationTimer;

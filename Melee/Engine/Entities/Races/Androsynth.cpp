@@ -31,12 +31,6 @@ void AndrosynthShipEntity::update(Engine& engine, uint32_t msElapsed)
     }  
 }
 
-void AndrosynthShipEntity::onEngineExhaustGenerated(Engine& engine)
-{
-    if (!m_blazerMode)
-        ShipEntity::onEngineExhaustGenerated(engine);
-}
-
 bool AndrosynthShipEntity::onPrimaryWeaponFired(Engine& engine)
 {
     if (m_blazerMode)
@@ -62,6 +56,7 @@ void AndrosynthShipEntity::setBlazerMode(bool enabled)
     m_visualType = enabled ? ShipEntity::VisualType::AndrosynthBlazer : props.visualType;
     m_collisionDamage = enabled ? 1 : 0;
     m_maxVelocity_km_s = enabled ? props.maxVelocity_km_s * 1.5f : props.maxVelocity_km_s;
+    m_generatesExhaust = !enabled;
 
     m_blazerEnergyRequired.reset(true);
 }

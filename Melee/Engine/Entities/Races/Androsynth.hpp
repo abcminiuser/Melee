@@ -16,7 +16,6 @@ namespace Melee
     protected:
         void        update(Engine& engine, uint32_t msElapsed) override;
 
-        void        onEngineExhaustGenerated(Engine& engine) override;
         bool        onPrimaryWeaponFired(Engine& engine) override;
         bool        onSpecialWeaponFired(Engine& engine) override;
 

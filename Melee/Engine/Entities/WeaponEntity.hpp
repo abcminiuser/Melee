@@ -28,6 +28,7 @@ namespace Melee
             uint32_t   firingForce_N = 20000;
             uint32_t   maxAge_ms = 2000;
             bool       homing = false;
+            bool       linger = false;
             float      rotation_degPerSec = 0;
         };
 
@@ -51,6 +52,7 @@ namespace Melee
 
         uint32_t                    m_maxAge_ms = 0;
         bool                        m_homing = false;
+        bool                        m_linger = false;
         float                       m_rotation_degPerSec = 0;
 
         uint32_t                    m_age = 0;

@@ -43,17 +43,19 @@ ShipEntity::ShipEntity(const ShipProperties& properties, const Point& position)
 void ShipEntity::handleKey(KeyEvent key, bool down)
 {
     if (key == KeyEvent::Thrust)
-        m_flags.set(Flags::ThrustActive, down);
+        m_controlFlags.set(ControlFlags::ThrustActive, down);
     else if (key == KeyEvent::ReverseThrust)
-        m_flags.set(Flags::ReverseThrustActive, down);
+        m_controlFlags.set(ControlFlags::ReverseThrustActive, down);
     else if (key == KeyEvent::RotateLeft)
-        m_flags.set(Flags::RotateLeftActive, down);
+        m_controlFlags.set(ControlFlags::RotateLeftActive, down);
     else if (key == KeyEvent::RotateRight)
-        m_flags.set(Flags::RotateRightActive, down);
+        m_controlFlags.set(ControlFlags::RotateRightActive, down);
     else if (key == KeyEvent::FirePrimary)
-        m_flags.set(Flags::FirePrimaryActive, down);
+        m_controlFlags.set(ControlFlags::FirePrimaryActive, down);
     else if (key == KeyEvent::FireSpecial)
-        m_flags.set(Flags::FireSpecialActive, down);
+        m_controlFlags.set(ControlFlags::FireSpecialActive, down);
+
+    onControlFlagsUpdated();
 }
 
 void ShipEntity::update(Engine& engine, uint32_t msElapsed)
@@ -68,11 +70,11 @@ void ShipEntity::update(Engine& engine, uint32_t msElapsed)
         return;
     }
 
-    if (m_flags.test(Flags::RotateLeftActive) || m_flags.test(Flags::RotateRightActive))
+    if (m_controlFlags.test(ControlFlags::RotateLeftActive) || m_controlFlags.test(ControlFlags::RotateRightActive))
     {
         m_rotationTimer.add(msElapsed);
 
-        const auto thrustRotationVector = m_flags.test(Flags::RotateLeftActive) ? m_rotationalThrustLeft : m_rotationalThrustRight;
+        const auto thrustRotationVector = m_controlFlags.test(ControlFlags::RotateLeftActive) ? m_rotationalThrustLeft : m_rotationalThrustRight;
 
         while (m_rotationTimer.expired())
             m_heading = thrustRotationVector * m_heading;
@@ -82,15 +84,23 @@ void ShipEntity::update(Engine& engine, uint32_t msElapsed)
         m_rotationTimer.reset();
     }
 
-    if (m_flags.test(Flags::ThrustActive) || m_flags.test(Flags::ReverseThrustActive))
+    if (m_controlFlags.test(ControlFlags::ThrustActive) || m_controlFlags.test(ControlFlags::ReverseThrustActive))
     {
-        const auto thrustVector = m_flags.test(Flags::ThrustActive) ? m_heading : -m_heading;
+        const auto thrustVector = m_controlFlags.test(ControlFlags::ThrustActive) ? m_heading : -m_heading;
 
         m_acceleration = thrustVector * m_engineAcceleration_ms2;
 
         m_thrustExhaustTimer.add(msElapsed);
         if (m_thrustExhaustTimer.expired())
-            onEngineExhaustGenerated(engine);
+        {
+            if (m_generatesExhaust)
+            {
+                const auto spawnLocation = m_position + (-m_heading * (m_radius_km - 1));
+
+                auto exhaustEntity = std::make_shared<ExhaustEntity>(shared_from_this(), ExhaustEntity::ExhaustProperties{}, spawnLocation, m_velocity);
+                engine.addEntity(exhaustEntity, Engine::InsertionOrder::Bottom);
+            }
+        }
     }
     else
     {
@@ -99,7 +109,7 @@ void ShipEntity::update(Engine& engine, uint32_t msElapsed)
     }
 
     m_primaryFireTimer.add(msElapsed);
-    if (m_flags.test(Flags::FirePrimaryActive) && m_energy >= m_primaryEnergyCost && m_primaryFireTimer.expired(false))
+    if (m_controlFlags.test(ControlFlags::FirePrimaryActive) && m_energy >= m_primaryEnergyCost && m_primaryFireTimer.expired(false))
     {
         if (onPrimaryWeaponFired(engine))
         {
@@ -109,7 +119,7 @@ void ShipEntity::update(Engine& engine, uint32_t msElapsed)
     }
 
     m_specialFireTimer.add(msElapsed);
-    if (m_flags.test(Flags::FireSpecialActive) && m_energy >= m_specialEnergyCost && m_specialFireTimer.expired(false))
+    if (m_controlFlags.test(ControlFlags::FireSpecialActive) && m_energy >= m_specialEnergyCost && m_specialFireTimer.expired(false))
     {
         if (onSpecialWeaponFired(engine))
         {
@@ -149,14 +159,6 @@ void ShipEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEnt
     applyDamage(otherEntity->collisionDamage());
 
     Entity::collide(engine, otherEntity, otherEntityState);
-}
-
-void ShipEntity::onEngineExhaustGenerated(Engine& engine)
-{
-    const auto spawnLocation = m_position + (-m_heading * (m_radius_km - 1));
-
-    auto exhaustEntity = std::make_shared<ExhaustEntity>(shared_from_this(), ExhaustEntity::ExhaustProperties{}, spawnLocation, m_velocity);
-    engine.addEntity(exhaustEntity, Engine::InsertionOrder::Bottom);
 }
 
 void ShipEntity::applyDamage(int amount)

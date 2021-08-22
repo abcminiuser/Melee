@@ -14,6 +14,7 @@ WeaponEntity::WeaponEntity(const std::shared_ptr<Entity>& parent,const WeaponPro
     , m_visualType(properties.visualType)
     , m_maxAge_ms(properties.maxAge_ms)
     , m_homing(properties.homing)
+    , m_linger(properties.linger)
     , m_rotation_degPerSec(properties.rotation_degPerSec)
     , m_rotationTimer(kRotationIntervalMs)
 {
@@ -75,7 +76,11 @@ void WeaponEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherE
     if (otherEntity == m_parentEntity || otherEntity->parentEntity() == m_parentEntity)
         return;
 
-    engine.removeEntity(shared_from_this());
+    // Some weapons, like lasers, need to linger even after a collision, they just become no longer collidable.
+    if (!m_linger)
+        engine.removeEntity(shared_from_this());
+    else
+        m_collidable = false;
 
     ExplosionEntity::ExplosionProperties explosionProps = {};
     explosionProps.radius_km = 1000;

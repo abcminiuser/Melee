@@ -4,11 +4,6 @@
 
 using namespace Melee;
 
-namespace
-{
-    constexpr auto kMaxLaserTargetDistance = 10000;
-}
-
 HumanShipEntity::HumanShipEntity(const Point& position)
     : ShipEntity(MakeShipProperties(), position)
 {
@@ -19,7 +14,7 @@ bool HumanShipEntity::onPrimaryWeaponFired(Engine& engine)
 {
     const auto spawnLocation = m_position + (m_heading * m_radius_km);
 
-    auto weaponEntity = std::make_shared<WeaponEntity>(shared_from_this(), MakePrimaryWeaponProperties(), spawnLocation, m_velocity, m_heading);
+    auto weaponEntity = std::make_shared<HumanMissileWeaponEntity>(shared_from_this(), spawnLocation, m_velocity, m_heading);
     engine.addEntity(weaponEntity);
 
     return true;
@@ -29,16 +24,12 @@ bool HumanShipEntity::onSpecialWeaponFired(Engine& engine)
 {
     auto [distanceSquared, targetEntity] = engine.closestEntity(*this, [this](const Entity& other) { return (other.type() == Entity::Type::Ship || other.type() == Entity::Type::Asteroid) && &other != parentEntity().get(); });
 
+    constexpr auto kMaxLaserTargetDistance = 5000;
     if (distanceSquared > (kMaxLaserTargetDistance * kMaxLaserTargetDistance))
         return false;
 
-    // We need two entities, since this is a laser; a collidable one (which will damage instantly) and a non-collidable one (which will provide the visual feedback).
-
-    auto weaponEntity = std::make_shared<WeaponEntity>(shared_from_this(), MakeSpecialWeaponProperties(true), targetEntity->position());
+    auto weaponEntity = std::make_shared<HumanLaserWeaponEntity>(shared_from_this(), targetEntity->position());
     engine.addEntity(weaponEntity);
-
-    auto weaponEntity2 = std::make_shared<WeaponEntity>(shared_from_this(), MakeSpecialWeaponProperties(false), targetEntity->position());
-    engine.addEntity(weaponEntity2);
 
     return true;
 }
@@ -63,7 +54,15 @@ ShipEntity::ShipProperties HumanShipEntity::MakeShipProperties()
     return shipProps;
 }
 
-WeaponEntity::WeaponProperties HumanShipEntity::MakePrimaryWeaponProperties()
+// --
+
+HumanMissileWeaponEntity::HumanMissileWeaponEntity(const std::shared_ptr<Entity>& parent, const Point& position, const Vector2d& velocity, const Vector2d& heading)
+    : WeaponEntity(parent, MakeWeaponProperties(), position, velocity, heading)
+{
+
+}
+
+WeaponEntity::WeaponProperties HumanMissileWeaponEntity::MakeWeaponProperties()
 {
     WeaponEntity::WeaponProperties weaponProps = {};
 
@@ -76,14 +75,22 @@ WeaponEntity::WeaponProperties HumanShipEntity::MakePrimaryWeaponProperties()
     return weaponProps;
 }
 
-WeaponEntity::WeaponProperties HumanShipEntity::MakeSpecialWeaponProperties(bool collidable)
+// --
+
+HumanLaserWeaponEntity::HumanLaserWeaponEntity(const std::shared_ptr<Entity>& parent, const Point& position)
+    : WeaponEntity(parent, MakeWeaponProperties(), position)
+{
+
+}
+
+WeaponEntity::WeaponProperties HumanLaserWeaponEntity::MakeWeaponProperties()
 {
     WeaponEntity::WeaponProperties weaponProps = {};
 
     weaponProps.visualType = WeaponEntity::VisualType::Laser;
     weaponProps.collisionDamage = 1;
     weaponProps.maxAge_ms = 100;
-    weaponProps.collidable = collidable;
+    weaponProps.linger = true;
 
     return weaponProps;
 }
