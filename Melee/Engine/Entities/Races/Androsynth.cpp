@@ -6,7 +6,7 @@ using namespace Melee;
 
 AndrosynthShipEntity::AndrosynthShipEntity(const Point& position)
     : ShipEntity(MakeShipProperties(), position)
-    , m_blazerEnergyRequired(20)
+    , m_blazerEnergyRequired(100)
 {
 
 }

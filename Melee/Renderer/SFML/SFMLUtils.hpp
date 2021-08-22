@@ -47,13 +47,13 @@ namespace Melee
         return 90 + (180 * std::atan2(v.y, v.x) / static_cast<float>(M_PI));
     }
 
-    static inline sf::Vector2f ToScaleFactor(float radius, float imageWidth, float imageHeight)
+    static inline sf::Vector2f ToScaleFactor(float radius, int imageWidth, int imageHeight)
     {
         float scaleFactor = radius * 2 / std::max(imageWidth, imageHeight);
         return sf::Vector2f{ scaleFactor, scaleFactor };
     }
 
-    static inline sf::Vector2f ToOrigin(float imageWidth, float imageHeight)
+    static inline sf::Vector2f ToOrigin(int imageWidth, int imageHeight)
     {
         return sf::Vector2f{ imageWidth / 2.0f, imageHeight / 2.0f };
     }

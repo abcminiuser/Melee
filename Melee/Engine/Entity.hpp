@@ -25,7 +25,7 @@ namespace Melee
         {
             float       mass_kg = 0;
             float       radius_km = 0;
-            uint32_t    maxVelocity_km_s = 0;
+            float       maxVelocity_km_s = 0;
             bool        collidable = true;
             bool        wrappable = true;
             bool        targetable = true;
@@ -76,7 +76,7 @@ namespace Melee
 
         float                           m_mass_kg = 0;
         float                           m_radius_km = 0;
-        uint32_t                        m_maxVelocity_km_s = 0;
+        float                           m_maxVelocity_km_s = 0;
         bool                            m_collidable = true;
         bool                            m_wrappable = true;
         bool                            m_targetable = true;

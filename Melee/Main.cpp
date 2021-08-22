@@ -10,7 +10,7 @@ using namespace Melee;
 
 namespace
 {
-    constexpr auto kPlayfieldSize = 200000;
+    constexpr auto kPlayfieldSize = 150000;
 }
 
 int main(int argc, char* argv[])
