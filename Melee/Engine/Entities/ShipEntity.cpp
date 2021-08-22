@@ -29,6 +29,7 @@ ShipEntity::ShipEntity(const ShipProperties& properties, const Point& position)
     , m_thrustExhaustTimer(kThrustExhaustIntervalMs, kThrustExhaustIntervalMs, true)
     , m_primaryFireTimer(properties.primaryFireRate_ms, properties.primaryFireRate_ms, true)
     , m_specialFireTimer(properties.specialFireRate_ms, properties.specialFireRate_ms, true)
+    , m_thrustDelayTimer(300, 300, true)
 {
     m_engineAcceleration_ms2    = properties.engineForce_N / properties.mass_kg;
 
@@ -60,6 +61,8 @@ void ShipEntity::handleKey(KeyEvent key, bool down)
 
 void ShipEntity::update(Engine& engine, uint32_t msElapsed)
 {
+    m_thrustDelayTimer.add(msElapsed);
+
     if (!m_health)
     {
         engine.removeEntity(shared_from_this());
@@ -91,7 +94,7 @@ void ShipEntity::update(Engine& engine, uint32_t msElapsed)
         m_acceleration = thrustVector * m_engineAcceleration_ms2;
 
         m_thrustExhaustTimer.add(msElapsed);
-        if (m_thrustExhaustTimer.expired())
+        if (m_thrustDelayTimer.expired(false) && m_thrustExhaustTimer.expired())
         {
             if (m_generatesExhaust)
             {
@@ -147,6 +150,9 @@ void ShipEntity::collide(Engine& engine, const std::shared_ptr<Entity>& otherEnt
 
             m_acceleration = {};
             m_velocity = -m_velocity;
+
+            m_thrustDelayTimer.reset();
+
             break;
         }
 

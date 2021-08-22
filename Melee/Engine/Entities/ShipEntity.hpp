@@ -114,6 +114,7 @@ namespace Melee
         Periodic                    m_thrustExhaustTimer;
         Periodic                    m_primaryFireTimer;
         Periodic                    m_specialFireTimer;
+        Periodic                    m_thrustDelayTimer;
 
         uint32_t                    m_health = 0;
         uint32_t                    m_energy = 0;

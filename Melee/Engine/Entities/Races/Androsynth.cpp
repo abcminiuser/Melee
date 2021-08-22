@@ -19,7 +19,8 @@ void AndrosynthShipEntity::update(Engine& engine, uint32_t msElapsed)
     {
         m_blazerEnergyRequired.add(msElapsed);
 
-        m_velocity = m_heading * m_maxVelocity_km_s;
+        if (m_thrustDelayTimer.expired(false))
+            m_velocity = m_heading * m_maxVelocity_km_s;
 
         if (m_blazerEnergyRequired.expired())
         {
