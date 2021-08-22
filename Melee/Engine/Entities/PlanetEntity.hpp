@@ -74,6 +74,7 @@ namespace Melee
 			PlanetProperties()
 			{
 				collidable = true;
+				affectedByGravity = false,
 				collisionDamage = 1;
 			}
 

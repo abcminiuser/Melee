@@ -8,7 +8,8 @@ namespace
 {
     const std::map<WeaponEntity::VisualType, std::string> kWeaponEffectAssetNames
     {
-        { WeaponEntity::VisualType::Laser, "laser-shot-3" },
+        { WeaponEntity::VisualType::LaserWhite, "laser-shot-3" },
+        { WeaponEntity::VisualType::LaserYellow, "laser-shot-3" },
     };
 }
 

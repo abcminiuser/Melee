@@ -13,6 +13,7 @@
 #include "Entities/WeaponEntity.hpp"
 
 #include "Entities/Races/Androsynth.hpp"
+#include "Entities/Races/Arilou.hpp"
 #include "Entities/Races/Human.hpp"
 
 #include <deque>

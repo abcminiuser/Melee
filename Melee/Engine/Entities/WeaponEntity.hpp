@@ -10,7 +10,8 @@ namespace Melee
     public:
         enum class VisualType
         {
-            Laser,
+            LaserWhite,
+            LaserYellow,
             HumanMissile,
             AndrosynthBubble,
         };
@@ -25,7 +26,7 @@ namespace Melee
                 mass_kg = 1000;
             }
 
-            VisualType visualType = VisualType::Laser;
+            VisualType visualType = VisualType::LaserWhite;
             uint32_t   firingForce_N = 20000;
             uint32_t   maxAge_ms = 2000;
             bool       homing = false;
@@ -49,7 +50,7 @@ namespace Melee
         void                        collide(Engine& engine, const std::shared_ptr<Entity>& otherEntity, const PreCollisionState& otherEntityState) override;
 
     protected:
-        VisualType                  m_visualType = VisualType::Laser;
+        VisualType                  m_visualType = VisualType::LaserWhite;
 
         uint32_t                    m_maxAge_ms = 0;
         bool                        m_homing = false;

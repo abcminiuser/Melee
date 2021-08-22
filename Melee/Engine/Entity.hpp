@@ -29,6 +29,7 @@ namespace Melee
             bool        collidable = true;
             bool        wrappable = true;
             bool        targetable = true;
+            bool        affectedByGravity = true;
             uint8_t     collisionDamage = 0;
         };
 
@@ -56,6 +57,7 @@ namespace Melee
         auto                            collidable() const          { return m_collidable; }
         auto                            wrappable() const           { return m_wrappable; }
         auto                            targetable() const          { return m_targetable; }
+        auto                            affectedByGravity() const   { return m_affectedByGravity; }
         auto                            collisionDamage() const     { return m_collisionDamage; }
 
         Point                           position() const			{ return m_position; }
@@ -80,6 +82,7 @@ namespace Melee
         bool                            m_collidable = true;
         bool                            m_wrappable = true;
         bool                            m_targetable = true;
+        bool                            m_affectedByGravity = true;
         uint8_t                         m_collisionDamage = 0;
 
         Point                           m_position;

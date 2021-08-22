@@ -29,7 +29,7 @@ void AndrosynthShipEntity::update(Engine& engine, uint32_t msElapsed)
             else
                 setBlazerMode(false);
         }
-    }  
+    }
 }
 
 bool AndrosynthShipEntity::onPrimaryWeaponFired(Engine& engine)

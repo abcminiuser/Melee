@@ -22,6 +22,8 @@ add_library (Engine
 
 	Entities/Races/Androsynth.cpp
     Entities/Races/Androsynth.hpp
+	Entities/Races/Arilou.cpp
+    Entities/Races/Arilou.hpp
     Entities/Races/Human.cpp
     Entities/Races/Human.hpp
 

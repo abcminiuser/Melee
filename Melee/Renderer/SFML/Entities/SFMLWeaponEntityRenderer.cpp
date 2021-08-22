@@ -12,7 +12,8 @@ namespace
 {
     const std::map<WeaponEntity::VisualType, std::string> kWeaponAssetNames
         {
-            { WeaponEntity::VisualType::Laser,              "empty" },
+            { WeaponEntity::VisualType::LaserWhite,         "empty" },
+            { WeaponEntity::VisualType::LaserYellow,        "empty" },
             { WeaponEntity::VisualType::HumanMissile,       "saturn-big-000" },
             { WeaponEntity::VisualType::AndrosynthBubble,   "bubble-big-000" },
         };
@@ -33,15 +34,29 @@ void SFMLWeaponEntityRenderer::render(sf::RenderTarget& renderer)
     const auto weaponPos = m_entity.position();
     const auto weaponRadius = m_entity.radius();
 
-    if (m_entity.visualType() == WeaponEntity::VisualType::Laser)
+    if (m_entity.visualType() == WeaponEntity::VisualType::LaserWhite)
     {
         const auto parentPos = m_entity.parentEntity()->position();
 
         std::array<sf::Vertex, 2> line;
         line[0].position = ToSFMLVector(parentPos);
-        line[0].color = sf::Color::White;
         line[1].position = ToSFMLVector(weaponPos);
+
+        line[0].color = sf::Color::White;
         line[1].color = sf::Color::White;
+
+        renderer.draw(line.data(), line.size(), sf::Lines);
+    }
+    else if (m_entity.visualType() == WeaponEntity::VisualType::LaserYellow)
+    {
+        const auto parentPos = m_entity.parentEntity()->position();
+
+        std::array<sf::Vertex, 2> line;
+        line[0].position = ToSFMLVector(parentPos);
+        line[1].position = ToSFMLVector(weaponPos);
+
+        line[0].color = sf::Color::Yellow;
+        line[1].color = sf::Color::Yellow;
 
         renderer.draw(line.data(), line.size(), sf::Lines);
     }

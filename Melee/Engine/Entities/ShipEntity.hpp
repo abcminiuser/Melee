@@ -24,6 +24,7 @@ namespace Melee
         {
         	Androsynth,
         	AndrosynthBlazer,
+            Arilou,
             Human,
         };
 
@@ -97,9 +98,7 @@ namespace Melee
         uint32_t                    m_maxHealth = 0;
         uint32_t                    m_maxEnergy = 0;
         uint32_t                    m_energyRechargeRate_ms = 0;
-        uint32_t                    m_primaryFireRate_ms = 0;
         uint32_t                    m_primaryEnergyCost = 0;
-        uint32_t                    m_specialFireRate_ms = 0;
         uint32_t                    m_specialEnergyCost = 0;
         bool                        m_generatesExhaust = true;
 

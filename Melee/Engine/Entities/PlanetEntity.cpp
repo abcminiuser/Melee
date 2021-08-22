@@ -20,10 +20,7 @@ void PlanetEntity::update(Engine& engine, uint32_t msElapsed)
 {
     for (const auto& entity : engine.getEntities())
     {
-        if (entity->type() == Entity::Type::Planet)
-            continue;
-
-        if (!entity->mass() || entity->position() == m_position)
+        if (!entity->mass() || entity->position() == m_position || !entity->affectedByGravity())
             continue;
 
         const auto entityToPlanetVector = (m_position - entity->position());

@@ -24,7 +24,6 @@ namespace Melee
 
     private:
         static ShipEntity::ShipProperties		MakeShipProperties();
-        static WeaponEntity::WeaponProperties	MakePrimaryWeaponProperties();
 
     private:
         bool        m_blazerMode = false;

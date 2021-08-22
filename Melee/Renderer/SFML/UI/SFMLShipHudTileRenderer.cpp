@@ -19,6 +19,7 @@ namespace
     {
         { ShipEntity::VisualType::Androsynth,           "Androsynth" },
         { ShipEntity::VisualType::AndrosynthBlazer,     "Androsynth" },
+        { ShipEntity::VisualType::Arilou,               "Arilou" },
         { ShipEntity::VisualType::Human,                "Human" },
     };
 }

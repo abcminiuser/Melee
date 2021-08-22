@@ -13,6 +13,7 @@ namespace
         {
 			{ ShipEntity::VisualType::Androsynth, 				"guardian-big-000" },
 			{ ShipEntity::VisualType::AndrosynthBlazer, 		"blazer-big-000" },
+            { ShipEntity::VisualType::Arilou, 					"skiff-big-000" },
             { ShipEntity::VisualType::Human, 					"cruiser-big-000" },
         };
 }

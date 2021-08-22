@@ -87,7 +87,7 @@ WeaponEntity::WeaponProperties HumanLaserWeaponEntity::MakeWeaponProperties()
 {
     WeaponEntity::WeaponProperties weaponProps = {};
 
-    weaponProps.visualType = WeaponEntity::VisualType::Laser;
+    weaponProps.visualType = WeaponEntity::VisualType::LaserWhite;
     weaponProps.collisionDamage = 1;
     weaponProps.maxAge_ms = 100;
     weaponProps.linger = true;
