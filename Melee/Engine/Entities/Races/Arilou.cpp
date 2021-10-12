@@ -38,7 +38,7 @@ bool ArilouShipEntity::onSpecialWeaponFired(Engine& engine)
         const auto position = Point{ startingXPos, startingYPos };
 
         constexpr auto kMinDistanceAllowedSquared = 100;
-        const bool tooClose = std::any_of(engine.getEntities().begin(), engine.getEntities().end(), [&](const auto& e) { return e != shared_from_this() && (e->position() - position).lengthSquared() < kMinDistanceAllowedSquared; });
+        const bool tooClose = std::any_of(engine.getEntities().begin(), engine.getEntities().end(), [&](const auto& e) { return e != shared_from_this() && (e->position() - position).lengthSquared() < (e->radius() + radius() + kMinDistanceAllowedSquared); });
         if (tooClose)
             continue;
 
