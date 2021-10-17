@@ -5,9 +5,9 @@ if (MSVC)
     set(SFML_STATIC_LIBRARIES TRUE)
 endif ()
 
-find_package (SFML REQUIRED COMPONENTS audio)
+find_package (SFML CONFIG REQUIRED COMPONENTS audio)
 
-add_library (SFMLAudio
+add_library (SFMLAudio STATIC
     SFMLAudio.cpp
     SFMLAudio.hpp
     SFMLAudioAssetLoader.cpp

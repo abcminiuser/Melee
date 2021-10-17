@@ -5,9 +5,9 @@ if (MSVC)
     set(SFML_STATIC_LIBRARIES TRUE)
 endif ()
 
-find_package (SFML REQUIRED COMPONENTS graphics)
+find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
 
-add_library (SFMLRenderer
+add_library (SFMLRenderer STATIC
     SFMLAssetLoader.cpp
     SFMLAssetLoader.hpp
     SFMLRenderer.cpp

@@ -92,7 +92,7 @@ foreach (SOUND_EFFECT_FOLDER ${SOUND_EFFECT_ASSET_FOLDERS})
 endforeach ()
 
 install (FILES
-         $<TARGET_FILE:Melee>
-         $<TARGET_FILE_DIR:Melee>/Assets
-         DESTINATION .
+	$<TARGET_FILE:Melee>
+	$<TARGET_FILE_DIR:Melee>/Assets
+	DESTINATION .
 )

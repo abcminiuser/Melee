@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required (VERSION 3.18)
 
-add_library (Engine
+add_library (Engine STATIC
     Engine.cpp
     Engine.hpp
     EngineTypes.hpp
