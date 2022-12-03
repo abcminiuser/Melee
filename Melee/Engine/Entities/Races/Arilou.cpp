@@ -18,7 +18,7 @@ bool ArilouShipEntity::onPrimaryWeaponFired(Engine& engine)
     if (distanceSquared > (kMaxLaserTargetDistance * kMaxLaserTargetDistance))
         distanceSquared = (kMaxLaserTargetDistance * kMaxLaserTargetDistance);
 
-    auto laserTargetPos = m_position + (targetEntity->position() - m_position).normalised() * std::sqrtf(distanceSquared);
+    auto laserTargetPos = m_position + (targetEntity->position() - m_position).normalised() * sqrtf(distanceSquared);
 
     auto weaponEntity = std::make_shared<ArilouLaserWeaponEntity>(shared_from_this(), laserTargetPos);
     engine.addEntity(weaponEntity);
