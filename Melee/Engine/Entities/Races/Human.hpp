@@ -11,6 +11,7 @@ namespace Melee
         explicit    HumanShipEntity(const Point& position);
         virtual     ~HumanShipEntity() = default;
 
+    // ShipEntity i/f:
     protected:
         bool        onPrimaryWeaponFired(Engine& engine) override;
         bool        onSpecialWeaponFired(Engine& engine) override;

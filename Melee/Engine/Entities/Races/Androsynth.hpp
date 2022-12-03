@@ -13,9 +13,9 @@ namespace Melee
         explicit    AndrosynthShipEntity(const Point& position);
         virtual     ~AndrosynthShipEntity() = default;
 
+    // ShipEntity i/f:
     protected:
         void        update(Engine& engine, uint32_t msElapsed) override;
-
         bool        onPrimaryWeaponFired(Engine& engine) override;
         bool        onSpecialWeaponFired(Engine& engine) override;
 

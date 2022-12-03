@@ -13,6 +13,7 @@ namespace Melee
         explicit    ArilouShipEntity(const Point& position);
         virtual     ~ArilouShipEntity() = default;
 
+    // ShipEntity i/f:
     protected:
         bool        onPrimaryWeaponFired(Engine& engine) override;
         bool        onSpecialWeaponFired(Engine& engine) override;
