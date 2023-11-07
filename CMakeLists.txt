@@ -16,7 +16,7 @@ if (CPPCHECK_BIN)
     )
 
     message ("Using cppcheck configuration: ${CMAKE_CXX_CPPCHECK}")
-endif()
+endif ()
 
 if (MSVC)
     list (APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Vendor)
@@ -28,8 +28,8 @@ add_subdirectory ("Vendor/holeysheet-3e37194d")
 
 add_subdirectory ("Melee")
 
-set(CPACK_PACKAGE_NAME "Melee")
-set(CPACK_PACKAGE_VERSION "0.0.0")
-set(CPACK_PACKAGE_VENDOR "Dean Camera")
+set (CPACK_PACKAGE_NAME "Melee")
+set (CPACK_PACKAGE_VERSION "0.0.0")
+set (CPACK_PACKAGE_VENDOR "Dean Camera")
 
-include(CPack)
+include (CPack)
