@@ -74,10 +74,10 @@ namespace
             }
 
             // Sort the free spaces smallest first, so we always try to pick the smallest free space that will accommodate our new image.
-            freeSpaces.remove_if([](const auto& space) { return !space.width || !space.height; });
-            freeSpaces.sort([](const auto& space1, const auto& space2) -> bool { return std::min(space1.width, space1.height) < std::min(space2.width, space2.height); });
+            freeSpaces.remove_if([](const auto& space) { return !space.size.x || !space.size.y; });
+            freeSpaces.sort([](const auto& space1, const auto& space2) -> bool { return std::min(space1.size.x, space1.size.y) < std::min(space2.size.x, space2.size.y); });
 
-            const auto foundSpace = std::find_if(freeSpaces.begin(), freeSpaces.end(), [&](const auto& space) { return (space.width >= imageInfo.size.x) && (space.height >= imageInfo.size.y); });
+            const auto foundSpace = std::find_if(freeSpaces.begin(), freeSpaces.end(), [&](const auto& space) { return (space.size.x >= imageInfo.size.x) && (space.size.y >= imageInfo.size.y); });
             if (foundSpace == freeSpaces.end())
             {
                 // No free space that can accommodate this sprite: we need to increase out output dimensions, so we should expand the sprite sheet
@@ -90,9 +90,9 @@ namespace
                     // If the new image is wider than the current total size, we need to add a space rect above it. If it's smaller, the new space
                     // rect goes to the right of it.
                     if (imageInfo.size.x > outputSize.x)
-                        freeSpaces.push_back({ outputSize.x, 0, imageInfo.size.x - outputSize.x, outputSize.y });
+                        freeSpaces.emplace_back(sf::Vector2u(outputSize.x, 0), sf::Vector2u(imageInfo.size.x - outputSize.x, outputSize.y));
                     else if ((imageInfo.size.x < outputSize.x))
-                        freeSpaces.push_back({ imageInfo.size.x, outputSize.y, outputSize.x - imageInfo.size.x, imageInfo.size.y });
+                        freeSpaces.emplace_back(sf::Vector2u(imageInfo.size.x, outputSize.y), sf::Vector2u(outputSize.x - imageInfo.size.x, imageInfo.size.y));
                 }
                 else
                 {
@@ -101,16 +101,16 @@ namespace
                     // If the new image is taller than the current total size, we need to add a space rect to the left of it. If it's smaller, the new space
                     // rect goes below it.
                     if (imageInfo.size.y > outputSize.y)
-                        freeSpaces.push_back({ 0, outputSize.y, outputSize.x, imageInfo.size.y - outputSize.y });
+                        freeSpaces.emplace_back(sf::Vector2u(0, outputSize.y), sf::Vector2u(outputSize.x, imageInfo.size.y - outputSize.y));
                     else if ((imageInfo.size.y < outputSize.y))
-                        freeSpaces.push_back({ outputSize.x, imageInfo.size.y, imageInfo.size.x, outputSize.y - imageInfo.size.y });
+                        freeSpaces.emplace_back(sf::Vector2u(outputSize.x, imageInfo.size.y), sf::Vector2u(imageInfo.size.x, outputSize.y - imageInfo.size.y));
                 }
             }
             else
             {
                 // Found a space: pack at this position, then split the remaining space into new rectangles.
 
-                imageInfo.packPosition = sf::Vector2u(foundSpace->left, foundSpace->top);
+                imageInfo.packPosition = sf::Vector2u(foundSpace->position.x, foundSpace->position.y);
 
                 const auto insertionSpace = *foundSpace;
                 freeSpaces.erase(foundSpace);
@@ -118,18 +118,18 @@ namespace
                 // We need to split the remaining free space (if any) after inserting this image. We want to split the remaining space
                 // to give the largest free area rects post-split.
 
-                const size_t freeAreaRight = (insertionSpace.width <= imageInfo.size.x) ? 0 : (insertionSpace.width - imageInfo.size.x) * insertionSpace.height;
-                const size_t freeAreaBelow = (insertionSpace.height <= imageInfo.size.y) ? 0 : insertionSpace.width * (insertionSpace.height - imageInfo.size.y);
+                const size_t freeAreaRight = (insertionSpace.size.x <= imageInfo.size.x) ? 0 : (insertionSpace.size.x - imageInfo.size.x) * insertionSpace.size.y;
+                const size_t freeAreaBelow = (insertionSpace.size.y <= imageInfo.size.y) ? 0 : insertionSpace.size.x * (insertionSpace.size.y - imageInfo.size.y);
 
                 if (freeAreaRight > freeAreaBelow)
                 {
-                    freeSpaces.push_back({ insertionSpace.left + imageInfo.size.x, insertionSpace.top, insertionSpace.width - imageInfo.size.x, insertionSpace.height });
-                    freeSpaces.push_back({ insertionSpace.left, insertionSpace.top + imageInfo.size.y, imageInfo.size.x, insertionSpace.height - imageInfo.size.y });
+                    freeSpaces.emplace_back(sf::Vector2(insertionSpace.position.x + imageInfo.size.x, insertionSpace.position.y), sf::Vector2(insertionSpace.size.x - imageInfo.size.x, insertionSpace.size.y));
+                    freeSpaces.emplace_back(sf::Vector2(insertionSpace.position.x, insertionSpace.position.y + imageInfo.size.y), sf::Vector2(imageInfo.size.x, insertionSpace.size.y - imageInfo.size.y));
                 }
                 else
                 {
-                    freeSpaces.push_back({ insertionSpace.left, insertionSpace.top + imageInfo.size.y, insertionSpace.width, insertionSpace.height - imageInfo.size.y });
-                    freeSpaces.push_back({ insertionSpace.left + imageInfo.size.x, insertionSpace.top, insertionSpace.width - imageInfo.size.x, imageInfo.size.y });
+                    freeSpaces.emplace_back(sf::Vector2(insertionSpace.position.x, insertionSpace.position.y + imageInfo.size.y), sf::Vector2(insertionSpace.size.x, insertionSpace.size.y - imageInfo.size.y));
+                    freeSpaces.emplace_back(sf::Vector2(insertionSpace.position.x + imageInfo.size.x, insertionSpace.position.y), sf::Vector2(insertionSpace.size.x - imageInfo.size.x, imageInfo.size.y));
                 }
             }
 
@@ -152,15 +152,18 @@ namespace
 
         std::ofstream packedImageMetadata(outputMetadataPath);
 
-        sf::Image packedImage;
-        packedImage.create(outputImageSize.x, outputImageSize.y, sf::Color::Transparent);
+        sf::Image packedImage(sf::Vector2u(outputImageSize.x, outputImageSize.y), sf::Color::Transparent);
 
         for (const auto& imageInfo : images)
         {
             if (!imageInfo.packPosition.has_value())
                 continue;
 
-            packedImage.copy(imageInfo.image, imageInfo.packPosition->x, imageInfo.packPosition->y, {}, true);
+            if (!packedImage.copy(imageInfo.image, *imageInfo.packPosition, {}, true))
+            {
+                std::cerr << "Failed to copy sprite to packed image!\n";
+                exit(1);
+            }
 
             packedImageMetadata << imageInfo.name << ",";
             packedImageMetadata << imageInfo.packPosition->x << ",";

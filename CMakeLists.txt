@@ -24,7 +24,7 @@ endif ()
 
 project ("Melee")
 
-add_subdirectory ("Vendor/holeysheet-3e37194d")
+add_subdirectory ("Vendor/holeysheet-983c7c3")
 
 add_subdirectory ("Melee")
 
