@@ -22,10 +22,9 @@ namespace
 SFMLWeaponEntityRenderer::SFMLWeaponEntityRenderer(WeaponEntity& entity)
     : m_entity(entity)
     , m_weaponImage(SFMLAssetLoader::Instance().getTexture(kWeaponAssetNames.at(entity.visualType())))
+    , m_sprite(*m_weaponImage->texture, m_weaponImage->region)
 {
-    m_sprite.setTexture(*m_weaponImage->texture);
-    m_sprite.setTextureRect(m_weaponImage->region);
-    m_sprite.setOrigin(ToOrigin(m_weaponImage->region.width, m_weaponImage->region.height));
+    m_sprite.setOrigin(ToOrigin(m_weaponImage->region.size.x, m_weaponImage->region.size.y));
 }
 
 void SFMLWeaponEntityRenderer::render(sf::RenderTarget& renderer)
@@ -45,7 +44,7 @@ void SFMLWeaponEntityRenderer::render(sf::RenderTarget& renderer)
         line[0].color = sf::Color::White;
         line[1].color = sf::Color::White;
 
-        renderer.draw(line.data(), line.size(), sf::Lines);
+        renderer.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
     }
     else if (m_entity.visualType() == WeaponEntity::VisualType::LaserYellow)
     {
@@ -58,12 +57,12 @@ void SFMLWeaponEntityRenderer::render(sf::RenderTarget& renderer)
         line[0].color = sf::Color::Yellow;
         line[1].color = sf::Color::Yellow;
 
-        renderer.draw(line.data(), line.size(), sf::Lines);
+        renderer.draw(line.data(), line.size(), sf::PrimitiveType::Lines);
     }
     else
     {
-        m_sprite.setRotation(ToDegrees(weaponHeading));
-        m_sprite.setScale(ToScaleFactor(weaponRadius, m_weaponImage->region.width, m_weaponImage->region.height));
+        m_sprite.setRotation(sf::degrees(ToDegrees(weaponHeading)));
+        m_sprite.setScale(ToScaleFactor(weaponRadius, m_weaponImage->region.size.x, m_weaponImage->region.size.y));
         m_sprite.setPosition(ToSFMLVector(weaponPos));
 
         renderer.draw(m_sprite);

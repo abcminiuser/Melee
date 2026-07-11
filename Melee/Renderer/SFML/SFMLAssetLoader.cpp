@@ -1,5 +1,6 @@
 #include "SFMLAssetLoader.hpp"
 
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 
@@ -51,7 +52,7 @@ SFMLAssetLoader::SFMLAssetLoader()
 
                 cachedEntry->texture = texture;
 
-                for (auto* coordinate : { &cachedEntry->region.left, &cachedEntry->region.top, &cachedEntry->region.width, &cachedEntry->region.height })
+                for (auto* coordinate : { &cachedEntry->region.position.x, &cachedEntry->region.position.y, &cachedEntry->region.size.x, &cachedEntry->region.size.y })
                     *coordinate = std::stoi(NextField());
 
                 m_textureCache.emplace(ToCacheKey(assetName), std::move(cachedEntry));
@@ -67,7 +68,7 @@ SFMLAssetLoader::SFMLAssetLoader()
 
             const auto textureSize = cachedEntry->texture->getSize();
 
-            cachedEntry->region = { 0, 0, static_cast<int>(textureSize.x), static_cast<int>(textureSize.y) };
+            cachedEntry->region = sf::IntRect( sf::Vector2(0, 0), sf::Vector2(static_cast<int>(textureSize.x), static_cast<int>(textureSize.y)) );
 
             m_textureCache.emplace(ToCacheKey(assetName), std::move(cachedEntry));
         }
@@ -81,7 +82,7 @@ SFMLAssetLoader::SFMLAssetLoader()
         const auto assetName = asset.path().filename().stem().string();
 
         auto cachedEntry = std::make_shared<Font>();
-        cachedEntry->font.loadFromFile(asset.path().string());
+        cachedEntry->font.openFromFile(asset.path().string());
 
         m_fontCache.emplace(ToCacheKey(assetName), std::move(cachedEntry));
     }

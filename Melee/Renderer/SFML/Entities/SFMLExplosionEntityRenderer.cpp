@@ -38,7 +38,7 @@ void SFMLExplosionEntityRenderer::render(sf::RenderTarget& renderer)
     const auto explosionColour = kExplosionColours[LinearInterpolateIndex(kExplosionColours, ageNormalized)];
 
     m_shape.setRadius(currentRadius);
-    m_shape.setOrigin(currentRadius, currentRadius);
+    m_shape.setOrigin(sf::Vector2f(currentRadius, currentRadius));
 
     m_shape.setFillColor(explosionColour);
     m_shape.setPosition(ToSFMLVector(explosionPos));

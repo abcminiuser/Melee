@@ -2,6 +2,8 @@
 
 #include "Engine/Engine.hpp"
 
+#include <algorithm>
+
 using namespace Melee;
 
 ArilouShipEntity::ArilouShipEntity(const Point& position)

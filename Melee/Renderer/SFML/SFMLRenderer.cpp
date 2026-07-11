@@ -28,7 +28,7 @@ namespace
         { sf::Keyboard::Key::A,          ShipEntity::KeyEvent::RotateLeft },
         { sf::Keyboard::Key::S,          ShipEntity::KeyEvent::ReverseThrust },
         { sf::Keyboard::Key::D,          ShipEntity::KeyEvent::RotateRight },
-        { sf::Keyboard::Key::Tilde,      ShipEntity::KeyEvent::FirePrimary },
+        { sf::Keyboard::Key::Grave,      ShipEntity::KeyEvent::FirePrimary },
         { sf::Keyboard::Key::Tab,        ShipEntity::KeyEvent::FireSpecial },
     };
     const KeyMap kPlayer2Keys =
@@ -53,14 +53,13 @@ namespace
 SFMLRenderer::SFMLRenderer(Engine& engine)
     : m_engine(engine)
     , m_backgroundTexture(SFMLAssetLoader::Instance().getTexture("background"))
+    , m_backgroundSprite(*m_backgroundTexture->texture, m_backgroundTexture->region)
 {
     m_engine.addObserver(this);
 
     const auto playfieldSize = m_engine.getPlayfieldSize();
 
-    m_backgroundSprite.setTexture(*m_backgroundTexture->texture);
-    m_backgroundSprite.setTextureRect(m_backgroundTexture->region);
-    m_backgroundSprite.setScale(sf::Vector2f{ playfieldSize / m_backgroundTexture->region.width, playfieldSize / m_backgroundTexture->region.height });
+    m_backgroundSprite.setScale(sf::Vector2f{ playfieldSize / m_backgroundTexture->region.size.x, playfieldSize / m_backgroundTexture->region.size.y });
 }
 
 SFMLRenderer::~SFMLRenderer()
@@ -72,16 +71,16 @@ int SFMLRenderer::runModal()
 {
     constexpr auto kWindowWidth = static_cast<int>(kWindowHeight * kWindowWidthMultiplierForHud);
 
-    sf::RenderWindow window(sf::VideoMode(kWindowWidth, kWindowHeight), "Melee");
+    sf::RenderWindow window(sf::VideoMode(sf::Vector2u(kWindowWidth, kWindowHeight)), "Melee");
 
     constexpr auto kMillisecondsPerFrame = 1000 / kTargetFPS;
     constexpr auto kWidthForPlayfield = 1.0f / kWindowWidthMultiplierForHud;
 
-    m_playfieldView.setViewport(sf::FloatRect(0, 0, kWidthForPlayfield, 1));
-    m_playerHudView.setViewport(sf::FloatRect(kWidthForPlayfield, 0, 1 - kWidthForPlayfield, 1));
+    m_playfieldView.setViewport(sf::FloatRect(sf::Vector2f(0, 0), sf::Vector2f(kWidthForPlayfield, 1)));
+    m_playerHudView.setViewport(sf::FloatRect(sf::Vector2f(kWidthForPlayfield, 0), sf::Vector2f(1 - kWidthForPlayfield, 1)));
 
-    m_playerHudView.setSize(250, 1000);
-    m_playerHudView.setCenter(250 / 2, 1000 / 2);
+    m_playerHudView.setSize(sf::Vector2f(250, 1000));
+    m_playerHudView.setCenter(sf::Vector2f(250 / 2, 1000 / 2));
 
     window.setFramerateLimit(kTargetFPS);
     window.setVerticalSyncEnabled(true);
@@ -135,26 +134,20 @@ void SFMLRenderer::updatePlayfieldViewport()
 
 void SFMLRenderer::processEvents(sf::RenderWindow& window)
 {
-    sf::Event event;
-    while (window.pollEvent(event))
+    while (auto event = window.pollEvent())
     {
-        switch (event.type)
+        if (event->is<sf::Event::Closed>())
         {
-            case sf::Event::Closed:
-            {
-                window.close();
-                break;
-            }
-
-            case sf::Event::KeyPressed:
-            case sf::Event::KeyReleased:
-            {
-                handleKey(event.key.code, event.type == sf::Event::KeyPressed);
-                break;
-            }
-
-            default:
-                break;
+            window.close();
+            break;
+        }
+        else if (auto keyPressEvent = event->getIf<sf::Event::KeyPressed>())
+        {
+            handleKey(keyPressEvent->code, true);
+        }
+        else if (auto keyReleaseEvent = event->getIf<sf::Event::KeyReleased>())
+        {
+            handleKey(keyReleaseEvent->code, false);
         }
     }
 }
@@ -252,7 +245,7 @@ std::shared_ptr<RenderContext> SFMLRenderer::getEntityRenderContext(const std::s
 
             m_shipEntities.push_back(shipEntity);
 
-            sf::FloatRect tileArea(0, 1000 * shipIndex / 4.0f, 250, 1000 / 4.0f);
+            sf::FloatRect tileArea(sf::Vector2f(0, 1000 * shipIndex / 4.0f), sf::Vector2f(250, 1000 / 4.0f));
 
             rendererContext->playfieldRenderer = std::make_unique<SFMLShipEntityRenderer>(*shipEntity);
             rendererContext->uiRenderer = std::make_unique<SFMLShipHudTileRenderer>(*shipEntity, tileArea);

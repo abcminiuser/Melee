@@ -36,47 +36,40 @@ void SFMLShipHudTileRenderer::render(sf::RenderTarget& renderer)
 {
     sf::RectangleShape r;
     r.setFillColor(sf::Color(150, 150, 150));
-    r.setPosition(m_renderArea.left, m_renderArea.top);
-    r.setSize(sf::Vector2f{ m_renderArea.width, m_renderArea.height });
+    r.setPosition(m_renderArea.position);
+    r.setSize(m_renderArea.size);
     renderer.draw(r);
 
-    sf::Text text;
-    text.setString(kRaceNames.at(m_entity.visualType()));
-    text.setPosition(m_renderArea.left + m_renderArea.width / 2, m_renderArea.top + 10);
-    text.setFillColor(sf::Color::Black);
-    text.setFont(m_font->font);
+    sf::Text text(m_font->font, kRaceNames.at(m_entity.visualType()));
+    text.setPosition(sf::Vector2f(m_renderArea.position.x + m_renderArea.size.x / 2, m_renderArea.position.y + 10));
     text.setCharacterSize(22);
     sf::FloatRect textRect = text.getLocalBounds();
-    text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top);
+    text.setOrigin(sf::Vector2f(textRect.position.x + textRect.size.x / 2.0f, textRect.position.y));
     renderer.draw(text);
 
     const float healthNormalized = m_entity.health() / (float)m_entity.maxHealth();
-    drawVerticalBarGraph(renderer, sf::FloatRect{ m_renderArea.left + 30, m_renderArea.top + 40, 20, 100 }, kLifeBarInactiveFillColour, kLifeBarActiveFillColour, healthNormalized);
+    drawVerticalBarGraph(renderer, sf::FloatRect( sf::Vector2f(m_renderArea.position.x + 30, m_renderArea.position.y + 40), sf::Vector2f(20, 100) ), kLifeBarInactiveFillColour, kLifeBarActiveFillColour, healthNormalized);
 
     {
-        sf::Text text;
-        text.setString("Health");
-        text.setPosition(m_renderArea.left + 40, m_renderArea.top + 145);
+        sf::Text text(m_font->font, "Health");
+        text.setPosition(sf::Vector2f(m_renderArea.position.x + 40, m_renderArea.position.y + 145));
         text.setFillColor(sf::Color::Black);
-        text.setFont(m_font->font);
         text.setCharacterSize(16);
         sf::FloatRect textRect = text.getLocalBounds();
-        text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top);
+        text.setOrigin(sf::Vector2f(textRect.position.x + textRect.size.x / 2.0f, textRect.position.y));
         renderer.draw(text);
     }
 
     const float energyNormalized = m_entity.energy() / (float)m_entity.maxEnergy();
-    drawVerticalBarGraph(renderer, sf::FloatRect{ m_renderArea.left + m_renderArea.width - 30 - 20, m_renderArea.top + 40, 20, 100 }, kEnergyBarInactiveFillColour, kEnergyBarActiveFillColour, energyNormalized);
+    drawVerticalBarGraph(renderer, sf::FloatRect(sf::Vector2f(m_renderArea.position.x + m_renderArea.size.x - 30 - 20, m_renderArea.position.y + 40), sf::Vector2f(20, 100) ), kEnergyBarInactiveFillColour, kEnergyBarActiveFillColour, energyNormalized);
 
     {
-        sf::Text text;
-        text.setString("Energy");
-        text.setPosition(m_renderArea.left + m_renderArea.width - 30 - 10, m_renderArea.top + 145);
+        sf::Text text(m_font->font, "Energy");
+        text.setPosition(sf::Vector2f(m_renderArea.position.x + m_renderArea.size.x - 30 - 10, m_renderArea.position.y + 145));
         text.setFillColor(sf::Color::Black);
-        text.setFont(m_font->font);
         text.setCharacterSize(16);
         sf::FloatRect textRect = text.getLocalBounds();
-        text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top);
+        text.setOrigin(sf::Vector2f(textRect.position.x + textRect.size.x / 2.0f, textRect.position.y));
         renderer.draw(text);
     }
 }
@@ -87,8 +80,8 @@ void SFMLShipHudTileRenderer::drawVerticalBarGraph(sf::RenderTarget& renderer, s
     {
         sf::RectangleShape bg;
         bg.setFillColor(inactiveColour);
-        bg.setPosition(area.left, area.top);
-        bg.setSize(sf::Vector2f{ area.width, area.height });
+        bg.setPosition(area.position);
+        bg.setSize(area.size);
         renderer.draw(bg);
     }
 
@@ -96,8 +89,8 @@ void SFMLShipHudTileRenderer::drawVerticalBarGraph(sf::RenderTarget& renderer, s
     {
         sf::RectangleShape fg;
         fg.setFillColor(activeColour);
-        fg.setPosition(area.left, area.top + area.height * (1 - valueNormalized));
-        fg.setSize(sf::Vector2f{ area.width, area.height * valueNormalized });
+        fg.setPosition(sf::Vector2f(area.position.x, area.position.y + area.size.y * (1 - valueNormalized)));
+        fg.setSize(sf::Vector2f(area.size.x, area.size.y * valueNormalized));
         renderer.draw(fg);
     }
 }

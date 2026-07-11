@@ -5,7 +5,7 @@ if (MSVC)
     set(SFML_STATIC_LIBRARIES TRUE)
 endif ()
 
-find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
+find_package (SFML 3 CONFIG REQUIRED COMPONENTS Graphics)
 
 add_library (SFMLRenderer STATIC
     SFMLAssetLoader.cpp
@@ -34,4 +34,4 @@ add_library (SFMLRenderer STATIC
 
 target_include_directories (SFMLRenderer PRIVATE ../../)
 target_compile_features (SFMLRenderer PUBLIC cxx_std_17)
-target_link_libraries (SFMLRenderer PUBLIC sfml-graphics Engine)
+target_link_libraries (SFMLRenderer PUBLIC SFML::Graphics Engine)

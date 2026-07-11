@@ -3,6 +3,9 @@
 #include "Renderer/SFML/SFMLUtils.hpp"
 #include "Engine/Engine.hpp"
 
+#include <map>
+#include <string>
+
 using namespace Melee;
 
 namespace
@@ -73,10 +76,9 @@ namespace
 SFMLPlanetEntityRenderer::SFMLPlanetEntityRenderer(PlanetEntity& entity)
     : m_entity(entity)
     , m_planetImage(SFMLAssetLoader::Instance().getTexture(kPlanetAssetNames.at(entity.visualType())))
+	, m_sprite(*m_planetImage->texture, m_planetImage->region)
 {
-    m_sprite.setTexture(*m_planetImage->texture);
-    m_sprite.setTextureRect(m_planetImage->region);
-    m_sprite.setOrigin(ToOrigin(m_planetImage->region.width, m_planetImage->region.height));
+    m_sprite.setOrigin(ToOrigin(m_planetImage->region.size.x, m_planetImage->region.size.y));
 }
 
 void SFMLPlanetEntityRenderer::render(sf::RenderTarget& renderer)
@@ -84,7 +86,7 @@ void SFMLPlanetEntityRenderer::render(sf::RenderTarget& renderer)
     const auto planetRadius = m_entity.radius();
     const auto planetPos = m_entity.position();
 
-    m_sprite.setScale(ToScaleFactor(planetRadius, m_planetImage->region.width, m_planetImage->region.height));
+    m_sprite.setScale(ToScaleFactor(planetRadius, m_planetImage->region.size.x, m_planetImage->region.size.y));
     m_sprite.setPosition(ToSFMLVector(planetPos));
 
     renderer.draw(m_sprite);

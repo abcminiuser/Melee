@@ -12,7 +12,7 @@ namespace
         {
             sf::CircleShape circle;
             circle.setRadius(50);
-            circle.setOrigin(50, 50);
+            circle.setOrigin(sf::Vector2f(50, 50));
 
             return circle;
         }();

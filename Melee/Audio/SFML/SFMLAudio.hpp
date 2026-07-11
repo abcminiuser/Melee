@@ -6,7 +6,7 @@
 
 #include "SFMLAudioAssetLoader.hpp"
 
-#include <array>
+#include <vector>
 
 namespace Melee
 {
@@ -32,12 +32,13 @@ namespace Melee
         void            playSoundEffect(const std::string& name, Point position);
 
     private:
-        using SoundList = std::array<sf::Sound, kMaxSimultaneousSounds>;
+        using SoundList = std::vector<sf::Sound>;
 
         Engine&                             m_engine;
 
         SFMLAudioAssetLoader::CachedMusic   m_music;
 
+        sf::SoundBuffer                     m_emptySoundBuffer;
         SoundList                           m_sounds;
     };
 }

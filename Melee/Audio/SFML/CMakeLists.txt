@@ -5,7 +5,7 @@ if (MSVC)
     set(SFML_STATIC_LIBRARIES TRUE)
 endif ()
 
-find_package (SFML CONFIG REQUIRED COMPONENTS audio)
+find_package (SFML 3 CONFIG REQUIRED COMPONENTS Audio)
 
 add_library (SFMLAudio STATIC
     SFMLAudio.cpp
@@ -16,4 +16,4 @@ add_library (SFMLAudio STATIC
 
 target_include_directories (SFMLAudio PRIVATE ../../)
 target_compile_features (SFMLAudio PUBLIC cxx_std_17)
-target_link_libraries (SFMLAudio PUBLIC sfml-audio Engine)
+target_link_libraries (SFMLAudio PUBLIC SFML::Audio Engine)

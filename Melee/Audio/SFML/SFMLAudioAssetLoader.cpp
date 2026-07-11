@@ -1,5 +1,6 @@
 #include "SFMLAudioAssetLoader.hpp"
 
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 

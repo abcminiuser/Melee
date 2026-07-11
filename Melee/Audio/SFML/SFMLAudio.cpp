@@ -1,5 +1,6 @@
 #include "SFMLAudio.hpp"
 
+#include <algorithm>
 #include <map>
 
 using namespace Melee;
@@ -19,7 +20,10 @@ SFMLAudio::SFMLAudio(Engine& engine)
 {
     m_engine.addObserver(this);
 
-    m_music->music.setLoop(true);
+    for (size_t i = 0; i < kMaxSimultaneousSounds; i++)
+        m_sounds.emplace_back(m_emptySoundBuffer);
+
+    m_music->music.setLooping(true);
     m_music->music.play();
 }
 
@@ -88,13 +92,12 @@ void SFMLAudio::collision(Engine& engine, const std::shared_ptr<Entity>& entity1
 
 void SFMLAudio::playSoundEffect(const std::string& name, Point position)
 {
-    const auto freeSoundEffect = std::find_if(m_sounds.begin(), m_sounds.end(), [](const auto& s) { return s.getStatus() == sf::Sound::Stopped; });
+    const auto freeSoundEffect = std::find_if(m_sounds.begin(), m_sounds.end(), [](const auto& s) { return s.getStatus() == sf::Sound::Status::Stopped; });
     if (freeSoundEffect == m_sounds.end())
         return;
 
     auto soundEffect = SFMLAudioAssetLoader::Instance().getSoundEffect(name);
 
     freeSoundEffect->setBuffer(soundEffect->soundEffect);
-    freeSoundEffect->setPosition(position.x, position.y, 0);
     freeSoundEffect->play();
 }
